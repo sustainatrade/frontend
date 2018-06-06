@@ -1,0 +1,8 @@
+.post .actn-lbl {
+    width: 60px;
+    margin: 5px 5px 5px 0px;
+}
+
+.post .actn-lbl div {
+    display: inline
+}

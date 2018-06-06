@@ -1,0 +1,39 @@
+{
+  "name": "frontend",
+  "version": "0.0.1",
+  "dependencies": {
+    "antd": "^3.5.0",
+    "apollo-cache-inmemory": "^1.1.12",
+    "apollo-client": "^2.2.8",
+    "apollo-link-error": "^1.0.9",
+    "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
+    "axios": "^0.18.0",
+    "firebase": "^5.0.4",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.1",
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
+    "nanoid": "^1.0.2",
+    "prettyjson": "^1.2.1",
+    "react": "^16.3.2",
+    "react-apollo": "^2.1.3",
+    "react-content-loader": "^3.1.2",
+    "react-dom": "^16.3.2",
+    "react-facebook": "^5.0.3",
+    "react-scripts": "1.1.4",
+    "semantic-ui-react": "^0.79.1",
+    "subscriptions-transport-ws": "^0.9.9"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "node build.js",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "async-shelljs": "^0.1.2",
+    "cross-env": "^5.1.4"
+  }
+}
