@@ -50,6 +50,7 @@ class Provider extends React.Component {
       searches: {},
       unreadPosts: [],
       list: [],
+      postListTimeStamp: new Date().toISOString(),
       clearUnreadFn: async () =>{
         // const { limit } =  
         await this.setState({
@@ -68,7 +69,7 @@ class Provider extends React.Component {
         await this.state.loadMoreFn(0);
       },
       loadMoreFn: async (forceSkip) =>{
-        const { skip:oldSkip, limit, filters, searches, loadingMore } = this.state;
+        const { skip:oldSkip, limit, filters, searches, loadingMore, postListTimeStamp } = this.state;
         let skip = oldSkip;
         if(forceSkip>=0){
           skip = forceSkip
@@ -94,7 +95,8 @@ class Provider extends React.Component {
                 section: filters.section,
                 search: JSON.stringify(searches),
                 skip,
-                limit
+                limit,
+                requestTimeStamp: postListTimeStamp
               }
             }
           }),
@@ -135,7 +137,10 @@ class Provider extends React.Component {
             console.log('seting state: ');
             console.log(data.PostCreated.post);
             const { unreadPosts } = self.state;
-            self.setState({unreadPosts:[ data.PostCreated.post, ...unreadPosts]})
+            self.setState({
+                unreadPosts:[ data.PostCreated.post, ...unreadPosts],
+                postListTimeStamp: new Date().toISOString()
+            })
           }
         });
         

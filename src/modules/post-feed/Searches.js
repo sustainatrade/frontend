@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import {
     Search
     , List
+    , Icon
+    , Label
     , Dropdown
 } from 'semantic-ui-react'
 import gql from 'graphql-tag'
@@ -27,7 +29,7 @@ const TAG_LIST = gql`
 
 export default class SearchToolbar extends Component {
     state = {
-
+        results: []
     }
     render(){
         const { isLoading, searchTxt, results } = this.state;
@@ -35,22 +37,39 @@ export default class SearchToolbar extends Component {
                 {({isMobile})=>{
                     return <PostFeedContext.Consumer>
                     {({ setSearchesFn, searches })=>(<List horizontal={!isMobile}>
+                { searches.user && <List.Item style={{textAlign:'center'}}>
+                    <Label size='huge' image color='green'>
+                        <img src='https://react.semantic-ui.com/assets/images/avatar/small/ade.jpg' />
+                            Adrienne
+                            <Icon name='delete' />
+                    </Label>
+                </List.Item> }
+                { searches.tag && <List.Item style={{textAlign:'center'}}>
+                    <Label size='huge' image color='teal'>
+                        <img src='https://imgur.com/download/S18wVvv' />
+                            { searches.tag }
+                            <Icon name='delete' title='Remove tag search'
+                                onClick={()=>{
+                                    setSearchesFn({tag:undefined})
+                                }}
+                            />
+                    </Label>
+                </List.Item>}
                 <List.Item>
                 <Search
                     fluid
                     className='searcher'
                     loading={isLoading}
+                    placeholder='Search for User, Tag, Etc'
                     onResultSelect={(e, { result }) => {
-                            this.setState({ searchTxt: result.title })
+                            this.setState({ searchTxt: undefined })
                             setSearchesFn({tag:result.title})
                         }}
                     onSearchChange={_.debounce( async (e, { value }) => {
                             await this.setState({ isLoading: true, searchTxt: value })
                             
                             if (this.state.searchTxt.length < 1){
-                                await this.setState({ isLoading: false })
-                                if(searches.tag)
-                                    await setSearchesFn({tag:undefined})
+                                await this.setState({ isLoading: false, results: []})
                                 return;
                             }
 
@@ -60,17 +79,15 @@ export default class SearchToolbar extends Component {
                             })
                             const { PostTagList } = ret.data;
                             if (PostTagList) {
-                                console.log('PostTagList.list')//TRACE
-                                console.log(PostTagList.list)//TRACE
                                 const qResult = PostTagList.list.map(tag=>({
                                     title: tag.name,
-                                    price: `${tag.count}`
+                                    price: 'tag'
                                 }))
                                 this.setState({ isLoading: false, results: qResult })
                             }
                         }, 500, { leading: true })}
                     results={results}
-                    value={searchTxt || searches.tag}
+                    value={searchTxt}
                 />
                 </List.Item>
                 <List.Item>
@@ -92,3 +109,6 @@ export default class SearchToolbar extends Component {
         </ResponsiveContext.Consumer>
     }
 }
+
+
+
