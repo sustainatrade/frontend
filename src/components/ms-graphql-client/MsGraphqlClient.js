@@ -2,10 +2,10 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, from, split } from 'apollo-link';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+// import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
-import {onError, d} from 'apollo-link-error';
+import {onError} from 'apollo-link-error';
 const afterWareLink = onError(({operation, response, graphQLErrors, networkError}) => {
 
   const { variables } = operation || {};

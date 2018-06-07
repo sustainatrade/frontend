@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
     Image,
-    Item,
     Dimmer,
     Loader
 } from 'semantic-ui-react'
@@ -45,7 +44,7 @@ export default class MsImage extends Component {
                     <Loader/>
                 </Dimmer> }
                 { !loaded && <PlaceHolder height={height} width={width}/> }
-                { loaded && <img src={src}/>}
+                { loaded && <img src={src} alt='/'/>}
                 {children}
             </React.Fragment>
         </Comp>

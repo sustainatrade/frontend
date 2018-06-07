@@ -118,7 +118,7 @@ export default class PostItem extends Component {
                                 <div>
                                     {post.tags.map(tag => (
                                         <Label key={tag} size='small' 
-                                            onClick={()=>setSearchesFn({tag})}
+                                            onClick={()=>setSearchesFn({PostTag:tag})}
                                             style={{cursor:'pointer'}}
                                             content={tag} />
                                     ))}

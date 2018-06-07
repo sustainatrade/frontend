@@ -1,17 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Dropdown,
         Button,
         Icon,
         Modal,
-        Label,
+        // Label,
         Image,
         Header } from 'semantic-ui-react'
-import _ from 'lodash'
+// import _ from 'lodash'
 import { app, facebookProvider, googleProvider } from './firebase'
 import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import Cookie from 'tough-cookie'
+// import Cookie from 'tough-cookie'
 import LoginContext from './LoginContext'
 
 const GET_ME = gql`
@@ -166,9 +166,7 @@ export default class UserAuth extends React.Component {
                           { key: 2, text: 'Log Out', value: 2, onClick: logoutClicked}
                       ]
                     }
-                    const dropdownOptions = 
-                    console.log('data')
-                    console.log(data)
+                    
                     const user = data.Me.user;
                     const photoUrl = localStorage.getItem('photoUrl')
                     const trigger = (
@@ -236,7 +234,7 @@ export default class UserAuth extends React.Component {
         
     render() {
         const self = this;
-        const { authDetail } = this.state;
+        // const { authDetail } = this.state;
         return (
             <div>
                 <LoginContext.Provider value={ this.state }>

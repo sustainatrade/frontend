@@ -59,7 +59,7 @@ class Provider extends React.Component {
         await this.state.loadMoreFn(0);
       },
       setSearchesFn: async (newSearches) =>{
-        const oldSearches = this.state.filters;
+        const oldSearches = this.state.searches;
         await this.setState({searches:Object.assign({},oldSearches,newSearches)});
         await this.state.loadMoreFn(0);
       },

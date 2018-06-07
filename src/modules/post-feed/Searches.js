@@ -20,10 +20,30 @@ const TAG_LIST = gql`
     ){
         status
         list{
+          id
           name
+          displayName
           count
         } 
       }
+  }
+`;
+
+const USER_LIST = gql`
+  query( $search: String ){
+    UserList(input:{
+        search: $search
+        skip: 0
+        limit: 5
+    }){
+        status
+       
+        list{
+          id,
+          displayName
+          photoUrl
+        }
+    }
   }
 `;
 
@@ -37,20 +57,24 @@ export default class SearchToolbar extends Component {
                 {({isMobile})=>{
                     return <PostFeedContext.Consumer>
                     {({ setSearchesFn, searches })=>(<List horizontal={!isMobile}>
-                { searches.user && <List.Item style={{textAlign:'center'}}>
+                { searches.User && <List.Item style={{textAlign:'center'}}>
                     <Label size='huge' image color='green'>
-                        <img src='https://react.semantic-ui.com/assets/images/avatar/small/ade.jpg' />
-                            Adrienne
-                            <Icon name='delete' />
+                        <img alt='/' src='https://react.semantic-ui.com/assets/images/avatar/small/ade.jpg' />
+                            {searches.User}
+                            <Icon name='delete' 
+                                onClick={()=>{
+                                    setSearchesFn({User:undefined})
+                                }}
+                            />
                     </Label>
                 </List.Item> }
-                { searches.tag && <List.Item style={{textAlign:'center'}}>
+                { searches.PostTag && <List.Item style={{textAlign:'center'}}>
                     <Label size='huge' image color='teal'>
-                        <img src='https://imgur.com/download/S18wVvv' />
-                            { searches.tag }
+                        <img src='https://imgur.com/download/S18wVvv' alt='/'/>
+                            { searches.PostTag }
                             <Icon name='delete' title='Remove tag search'
                                 onClick={()=>{
-                                    setSearchesFn({tag:undefined})
+                                    setSearchesFn({PostTag:undefined})
                                 }}
                             />
                     </Label>
@@ -63,7 +87,7 @@ export default class SearchToolbar extends Component {
                     placeholder='Search for User, Tag, Etc'
                     onResultSelect={(e, { result }) => {
                             this.setState({ searchTxt: undefined })
-                            setSearchesFn({tag:result.title})
+                            setSearchesFn({[result.descriptor]:result.key})
                         }}
                     onSearchChange={_.debounce( async (e, { value }) => {
                             await this.setState({ isLoading: true, searchTxt: value })
@@ -73,18 +97,37 @@ export default class SearchToolbar extends Component {
                                 return;
                             }
 
-                            const ret = await apolloClient.query({
-                                query: TAG_LIST,
+                            const qResult = [];
+                            const ret = await Promise.all([TAG_LIST, USER_LIST].map((query) => apolloClient.query({
+                                query,
                                 variables: { search: value }
-                            })
-                            const { PostTagList } = ret.data;
-                            if (PostTagList) {
-                                const qResult = PostTagList.list.map(tag=>({
-                                    title: tag.name,
-                                    price: 'tag'
-                                }))
-                                this.setState({ isLoading: false, results: qResult })
-                            }
+                            })))
+                            ret.forEach(({data:retData})=>{
+                                for (const rKey in retData) {
+                                    if(rKey.endsWith('List') && retData[rKey]){
+                                        console.log('rKey')//TRACE
+                                        console.log(rKey)//TRACE
+                                        const descriptor = rKey.substring(0,rKey.length-4);
+                                        qResult.push(...retData[rKey].list.map(rItem=>({
+                                            key: rItem.id,
+                                            title: `${rItem.displayName}`,
+                                            image: rItem.photoUrl || 'https://imgur.com/download/S18wVvv',
+                                            price: descriptor,
+                                            descriptor
+                                        })))            
+                                    }
+                                }
+                            });
+                            // if (PostTagList) {
+                            //     qResult.push(PostTagList.list.map(tag=>({
+                            //         key: tag.name,
+                            //         title: `${tag.name}(${tag.count})`,
+                            //         price: 'tag'
+                            //     })))
+                            // }
+                            console.log('qResult')//TRACE
+                            console.log(qResult)//TRACE
+                            this.setState({ isLoading: false, results: qResult })
                         }, 500, { leading: true })}
                     results={results}
                     value={searchTxt}

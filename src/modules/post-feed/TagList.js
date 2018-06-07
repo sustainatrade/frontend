@@ -49,7 +49,7 @@ export default class TagList extends Component {
                 <PostFeedContext.Consumer>
                     {({setSearchesFn})=>(<Label.Group size='large'>
                         {data.PostTagList.list.map(tag=>(<Label key={tag.name}
-                            onClick={()=>setSearchesFn({tag:tag.name})}
+                            onClick={()=>setSearchesFn({PostTag:tag.name})}
                             style={{cursor:'pointer'}}
                         >
                             {tag.name}
