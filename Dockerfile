@@ -10,9 +10,9 @@ FROM nginx:alpine
 
 # VOLUME /app/env
 
-WORKDIR /app/dist
+WORKDIR /app
 
-COPY --from=builder /app/build /app/dist
+COPY --from=builder /app/build /app
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 RUN ls /etc/nginx/conf.d
