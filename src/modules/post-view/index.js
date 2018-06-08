@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
     Item,
     Grid,
@@ -11,10 +12,9 @@ import apolloClient from './../../lib/apollo'
 import PostViewContext from './../../contexts/PostViewContext'
 import gql from 'graphql-tag'
 import PostItem from './../post-feed/PostItem'
-// import { DisQusDiscussion } from './disqus'
 import { Comments } from 'react-facebook';
-// import StackGrid from "react-stack-grid";
 import { MsImage } from './../../components'
+import { manifests } from './../../components/widgets';
 
 const path = localStorage.getItem('postPhotoPath')
 const storage = localStorage.getItem('storage')
@@ -51,6 +51,28 @@ export default class PostView extends Component {
     renderComments(post) {
         return <Comments width="100%" href={`https://sustainatrade.com/posts/${post._refNo}`} />
     }
+
+    renderWidgets(){
+        const widget = manifests.HelloWorld
+        const HelloWorld = widget.component;
+        (async()=>{
+            console.log('await widget.propTypes())');
+            const testProps = await widget.propTypes()
+            console.log(testProps)
+            console.log(testProps.name.toString())
+            console.log(testProps.name == PropTypes.string);
+            const ret = PropTypes.checkPropTypes(testProps,{name:0})
+            console.log('ret');
+            console.log(ret);
+        })()
+        return <div>
+            widgets
+            <div>
+            <HelloWorld/>
+            </div>
+        </div>
+    }
+
     render() {
         const { categories } = this.state;
 
@@ -95,6 +117,9 @@ export default class PostView extends Component {
                         <Item.Group divided>
                             <PostItem post={post} categories={categories} />
                             { renderGallery() }
+                            <Item>
+                                {this.renderWidgets()}
+                            </Item>
                         </Item.Group>
                     </Grid.Column>
                     <Grid.Column width={6} style={{padding:0}}>
