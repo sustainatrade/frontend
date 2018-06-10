@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 
+
 export default class Widget extends Component {
     static propTypes = {
-        name: PropTypes.string
-    }
+        name: PropTypes.string,
+        yes: PropTypes.bool
+    };
     
-    state = {}
     render() {
-        return <div>Hello World!</div>
+        const { name, yes } = this.props;
+        return <div>
+            Hello World!
+            Name: { name }
+            Yes: { (yes && yes.toString()) }
+        </div>
     }
 }

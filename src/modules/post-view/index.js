@@ -1,20 +1,24 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import {
     Item,
     Grid,
     Segment,
     Modal,
-    // Divider,
+    Button,
+    Transition,
     Image
 } from 'semantic-ui-react'
 import apolloClient from './../../lib/apollo'
 import PostViewContext from './../../contexts/PostViewContext'
+import WidgetContext from './../../contexts/WidgetContext'
+import ResponsiveContext from './../../contexts/Responsive'
+import UserContext from './../../contexts/UserContext'
 import gql from 'graphql-tag'
 import PostItem from './../post-feed/PostItem'
+import WidgetCreator from './WidgetCreator'
+import PostWidget from './PostWidget'
 import { Comments } from 'react-facebook';
 import { MsImage } from './../../components'
-import { manifests } from './../../components/widgets';
 
 const path = localStorage.getItem('postPhotoPath')
 const storage = localStorage.getItem('storage')
@@ -31,7 +35,8 @@ const CATEGORY_LIST = gql`
 `;
 
 export default class PostView extends Component {
-    state = {}
+    state = {
+    }
 
     async componentWillMount() {
         const ret = await apolloClient.query({
@@ -52,32 +57,53 @@ export default class PostView extends Component {
         return <Comments width="100%" href={`https://sustainatrade.com/posts/${post._refNo}`} />
     }
 
-    renderWidgets(){
-        const widget = manifests.HelloWorld
-        const HelloWorld = widget.component;
-        (async()=>{
-            console.log('await widget.propTypes())');
-            const testProps = await widget.propTypes()
-            console.log(testProps)
-            console.log(testProps.name.toString())
-            console.log(testProps.name == PropTypes.string);
-            const ret = PropTypes.checkPropTypes(testProps,{name:0})
-            console.log('ret');
-            console.log(ret);
-        })()
-        return <div>
-            widgets
-            <div>
-            <HelloWorld/>
-            </div>
-        </div>
+    renderWidgets(post, widgets){
+        return <Item>
+            <UserContext.Consumer>
+                    {({ user, loading }) => {
+                        const isMyPost = post.createdBy === user.id;
+                        return (
+                <Item.Content>
+                    <WidgetContext.Consumer>
+                        {({ creating, setCreatingFn }) => (
+                        <Item.Header style={{width:'100%'}}>
+                            Specs
+                            { !creating && <Button size='tiny' content={'Add Spec'} 
+                                icon={'plus'} floated='right' 
+                                onClick={()=>setCreatingFn(true)}/>}
+                            <Transition visible={creating} animation='slide down' duration={300}>
+                                <Segment >
+                                    <WidgetCreator postRefNo={post._refNo} />
+                                </Segment>
+                            </Transition>
+                        </Item.Header>)}
+                    </WidgetContext.Consumer>
+                    <Item.Meta>
+                        {widgets.length || 0} Specs
+                    </Item.Meta>
+                    <Item.Description>
+                        <Segment tertiary>
+                            <ResponsiveContext.Consumer>
+                                {({isMobile})=>(
+                                    <Grid doubling stretched columns={isMobile?1:2}>
+                                        {widgets.map( wId =>(<Grid.Column key={wId}>
+                                            <PostWidget key={wId} refNo={wId} fluid editable={isMyPost}/>
+                                        </Grid.Column>))}
+                                    </Grid>
+                                )}
+                            </ResponsiveContext.Consumer>
+                        </Segment>
+                    </Item.Description>
+                </Item.Content>)}}
+            </UserContext.Consumer>
+        </Item>
     }
 
     render() {
         const { categories } = this.state;
 
         return <PostViewContext.Consumer>
-            {({ post }) => {
+            {({ post, widgets }) => {
                 if (!(post && categories)) return <div>Loading</div>;
 
                 const renderGallery = () => {
@@ -117,9 +143,7 @@ export default class PostView extends Component {
                         <Item.Group divided>
                             <PostItem post={post} categories={categories} />
                             { renderGallery() }
-                            <Item>
-                                {this.renderWidgets()}
-                            </Item>
+                            {this.renderWidgets(post, widgets)}
                         </Item.Group>
                     </Grid.Column>
                     <Grid.Column width={6} style={{padding:0}}>

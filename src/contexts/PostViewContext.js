@@ -12,6 +12,7 @@ const POST = gql`
         _refNo: $_refNo
       }){
         status
+        widgets
         post{
           id
           _refNo
@@ -33,6 +34,10 @@ class Provider extends React.Component {
       closeFn: () => {
         this.setState({post:undefined});
       },
+      addWidgetFn: (widgetRefNo) => {
+        const { widgets=[] } = this.state;
+        this.setState({widgets:[...widgets,widgetRefNo]});
+      },
       viewPostFn: async (_refNo) =>{
         const self = this;
         if(this.state.loading) return;
@@ -40,12 +45,18 @@ class Provider extends React.Component {
         
         const ret = await apolloClient.query({
           query: POST,
-          variables: { _refNo }
+          variables: { _refNo },
+          options: {
+            fetchPolicy: 'network-only'
+          }
         })
         console.log('ret')//TRACE
         console.log(ret)//TRACE
         if(ret.data.Post.status === 'SUCCESS'){
-          self.setState({post:ret.data.Post.post,loading:undefined});
+          self.setState({
+            post:ret.data.Post.post,
+            widgets:ret.data.Post.widgets,
+            loading:undefined});
         }
         else{
           self.setState({loading:undefined});
@@ -55,7 +66,7 @@ class Provider extends React.Component {
 
     //TESTING
     componentDidMount(){
-      // this.state.viewPostFn('POST-0000002')
+      // this.state.viewPostFn('POST-0000016')
     }
 
     render() {

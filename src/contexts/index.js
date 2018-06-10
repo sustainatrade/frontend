@@ -7,6 +7,7 @@ import UploaderContext from './Uploader'
 import PostFeedContext from './PostFeedContext'
 import PostViewContext from './PostViewContext'
 import CategoryContext from './CategoryContext'
+import WidgetContext from './WidgetContext'
 
 function compose(elArr = []) {
     let currEl = elArr.shift();
@@ -20,6 +21,7 @@ export default ({children}) => (compose([
     children,
     CreatePostContext.Provider,
     PostFeedContext.Provider,
+    WidgetContext.Provider,
     PostViewContext.Provider,
     CategoryContext.Provider,
     UserContext.Provider,

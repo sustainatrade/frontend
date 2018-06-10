@@ -10,7 +10,7 @@ import {
 import PostViewContext from './../../contexts/PostViewContext'
 import PostFeedContext from './../../contexts/PostFeedContext'
 import CategoryContext from './../../contexts/CategoryContext'
-import { CommentsCount } from 'react-facebook';
+// import { CommentsCount } from 'react-facebook';
 import moment from 'moment'
 import UserLabel from './../user-profile/UserLabel'
 import { MsImage } from './../../components'
@@ -40,7 +40,7 @@ export default class PostItem extends Component {
                     if(isMobile)
                         return <Label as='a' className='actn-lbl'>
                             <Icon name='quote left' />
-                            <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} />
+                            {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
                         </Label>
                     if(!isMobile)
                         return <Button as='div' labelPosition='right' title='Comments' onClick={()=>viewPostFn(post._refNo)}>
@@ -48,7 +48,7 @@ export default class PostItem extends Component {
                                 <Icon name='quote left' title='Comments' />
                             </Button>
                             <Label as='a' basic pointing='left'>
-                                <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} />
+                                {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
                             </Label>
                         </Button>
                     }}

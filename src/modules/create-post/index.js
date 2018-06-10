@@ -14,6 +14,7 @@ import {
 import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import CreatePostContext from './../../contexts/CreatePost'
+import PostViewContext from './../../contexts/PostViewContext'
 import UploaderContext from './../../contexts/Uploader'
 import UploadPhoto from './UploadPhoto'
 // import get from 'lodash/get'
@@ -115,12 +116,16 @@ export default class CreatePost extends Component {
         }
         if (data) {
             const { CreatePost } = data;
+            console.log('CreatePost')//TRACE
+            console.log(CreatePost)//TRACE
             if (CreatePost.status === 'SUCCESS') {
                 return (<center><Message info>
                     <Message.Header>Post has been created!</Message.Header>
                     <p>It will be posted in a while</p>
                     <CreatePostContext.Consumer>
                         {({ closeModal }) => (
+                            <PostViewContext.Consumer>
+                                {({ viewPostFn }) => (
                             <Button
                                 content='View Post'
                                 icon='eye'
@@ -131,8 +136,11 @@ export default class CreatePost extends Component {
                                         mutKey: Date.now()
                                     });
                                     closeModal();
+                                    viewPostFn(CreatePost.post._refNo)
                                  }}
                             />)}
+                        </PostViewContext.Consumer>
+                            )}
                     </CreatePostContext.Consumer>
                 </Message></center>)
             }
