@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import { WidgetPropTypes } from './lib';
 import { Label, Header, Icon } from 'semantic-ui-react'
 
 export default class Widget extends Component {
     static propTypes = {
-        color: PropTypes.string
+        color: WidgetPropTypes.string || 'wtf'
     };
 
     static propTypeOptions = {

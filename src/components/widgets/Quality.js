@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import { WidgetPropTypes } from './lib';
 import { Message, Header, Icon, Progress } from 'semantic-ui-react'
 import _ from 'lodash'
 
 export default class Widget extends Component {
     static propTypes = {
-        quality: PropTypes.number,
-        description: PropTypes.string
+        quality: WidgetPropTypes.number,
+        description: WidgetPropTypes.string
     };
 
     static propTypeOptions = {

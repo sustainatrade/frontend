@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import { WidgetPropTypes } from './lib';
 import { Label, Header, Icon } from 'semantic-ui-react'
 
 export default class Widget extends Component {
     static propTypes = {
-        price: PropTypes.number,
-        currency: PropTypes.string,
-        decimalCount: PropTypes.number
+        price: WidgetPropTypes.number,
+        currency: WidgetPropTypes.string,
+        decimalCount: WidgetPropTypes.number
     };
     
     render() {

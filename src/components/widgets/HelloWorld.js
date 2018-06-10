@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import { WidgetPropTypes } from './lib';
 
 
 export default class Widget extends Component {
     static propTypes = {
-        name: PropTypes.string,
-        yes: PropTypes.bool
+        name: WidgetPropTypes.string,
+        yes: WidgetPropTypes.bool
     };
     
     render() {

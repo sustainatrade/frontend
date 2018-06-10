@@ -6,24 +6,9 @@ import {
     List
 } from 'semantic-ui-react'
 
-const PROP_TYPE_NAMES = _.compact(
-    Object.keys(PropTypes).map(k => {
-      if (PropTypes[k] && PropTypes[k].name === "bound checkType") {
-        return k;
-      }
-      return undefined;
-    })
-  );
 function getPropTypeName(propType) {
-    for (const pName of PROP_TYPE_NAMES) {
-      if (
-        propType === PropTypes[pName] ||
-        propType === PropTypes[pName].isRequired
-      ) {
-        return pName;
-      }
-    }
-  }
+    return propType.typeName;
+}
 
 function resolveValue(value){
   let pFnc = value;

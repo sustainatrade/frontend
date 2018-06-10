@@ -6,7 +6,8 @@ import {
     Button,
     Dimmer
 } from 'semantic-ui-react'
-import { manifests, parseGraphData } from './../../components/widgets';
+import { parseGraphData } from './../../components/widgets/lib';
+import { manifests } from './../../components/widgets';
 import gql from 'graphql-tag';
 import apolloClient from './../../lib/apollo'
 
