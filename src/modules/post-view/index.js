@@ -6,7 +6,9 @@ import {
     Modal,
     Button,
     Transition,
-    Image
+    Image,
+    Divider,
+    Container
 } from 'semantic-ui-react'
 import apolloClient from './../../lib/apollo'
 import PostViewContext from './../../contexts/PostViewContext'
@@ -82,7 +84,7 @@ export default class PostView extends Component {
                         {widgets.length || 0} Specs
                     </Item.Meta>
                     <Item.Description>
-                        <Segment tertiary>
+                        <Segment secondary>
                             <ResponsiveContext.Consumer>
                                 {({isMobile})=>(
                                     <Grid doubling stretched columns={isMobile?1:2}>
@@ -134,7 +136,9 @@ export default class PostView extends Component {
                     </Item>
                 }
 
-                return <Grid
+                return <ResponsiveContext.Consumer>
+                {({isMobile})=>(
+                <Grid
                     doubling
                     columns={2}
                     style={{ margin: 0 }}
@@ -146,12 +150,13 @@ export default class PostView extends Component {
                             {this.renderWidgets(post, widgets)}
                         </Item.Group>
                     </Grid.Column>
-                    <Grid.Column width={6} style={{padding:0}}>
-                        <Segment>
+                    <Grid.Column width={6} style={{padding:0,paddingLeft:(isMobile?0:10)}}>
                             { this.renderComments(post) }
-                        </Segment>
+                        <Divider horizontal> More Posts</Divider>
+                        <Container textAlign='center'>No other posts.</Container>
                     </Grid.Column>
-                </Grid>
+                </Grid>)}
+                </ResponsiveContext.Consumer>
             }}
         </PostViewContext.Consumer>
     }
