@@ -68,7 +68,7 @@ export default class PostView extends Component {
                         {({ creating, setCreatingFn }) => (
                         <Item.Header style={{width:'100%'}}>
                             Specs
-                            { !creating && <Button size='tiny' content={'Add Spec'} 
+                            { !creating && isMyPost && <Button size='tiny' content={'Add Spec'} 
                                 icon={'plus'} floated='right' 
                                 onClick={()=>setCreatingFn(true)}/>}
                             <Transition visible={creating} animation='slide down' duration={300}>
