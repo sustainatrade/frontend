@@ -6,6 +6,10 @@ import ResponsiveContext from './contexts/Responsive'
 import {
     Menu,
     Dropdown,
+    Divider,
+    Dimmer,
+    Header,
+    Button,
     Container,
     Icon
 } from 'semantic-ui-react'
@@ -16,6 +20,11 @@ import 'antd/lib/modal/style/css';
 import 'antd/lib/notification/style/css';
 import FacebookProvider from 'react-facebook';
 import Modal from 'antd/lib/modal';
+
+// Service worker
+import { addNewContentAvailableListener,
+    fireNewContentAvaialbleEvent
+ } from './registerServiceWorker'
 
 const CenterItem = ({children, as = Menu, ...otherProps}) => (<as.Item as='a' {...otherProps}><span style={{margin:'auto'}}>{children}</span></as.Item>)
 export const Menus = ({mobile}) => {
@@ -40,13 +49,24 @@ export const Menus = ({mobile}) => {
 
 class Root extends React.Component {
     state = {
-        showMobileSidebar: false
+        showMobileSidebar: false,
+        showReloader: false
     }
+    componentWillMount(){
+        addNewContentAvailableListener('app',() => {
+            console.log('new update storage')
+            this.setState({showReloader:true});
+        })
+    }
+    
     render() {
-        const { showMobileSidebar } = this.state;
+        const { showMobileSidebar, showReloader } = this.state;
 
         return (
             <RootContextProvider>
+                {/* <Button primary content='test' onClick={()=>{
+                    fireNewContentAvaialbleEvent();
+                }}/> */}
                 <ResponsiveContext.Consumer>
                     {({ isMobile }) => {
 
@@ -87,6 +107,16 @@ class Root extends React.Component {
                         </React.Fragment>
                     }}
                 </ResponsiveContext.Consumer>
+                <Dimmer active={showReloader} onClickOutside={()=>this.setState({showReloader:false})} page>
+                    <Header as='h2' icon inverted>
+                        <Icon name='info' />
+                        New Update Available!
+                        <Header.Subheader>I need you to refresh this page</Header.Subheader>
+                        <Divider hidden/>
+                        <Button primary content='Reload' onClick={()=>window.location.reload()}/>
+                        <Button inverted basic content='Later' onClick={()=>this.setState({showReloader:false})}/>
+                    </Header>
+                </Dimmer>
             </RootContextProvider>
         );
     }

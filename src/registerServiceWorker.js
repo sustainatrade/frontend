@@ -51,7 +51,15 @@ export default function register() {
     });
   }
 }
-
+const newContentAvailableListeners = {}
+export function addNewContentAvailableListener(key,listener){
+  newContentAvailableListeners[key] = listener;
+}
+export function fireNewContentAvaialbleEvent(){
+  for (const key in newContentAvailableListeners) {
+    newContentAvailableListeners[key]();
+  }
+}
 function registerValidSW(swUrl) {
   navigator.serviceWorker
     .register(swUrl)
@@ -65,6 +73,7 @@ function registerValidSW(swUrl) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
+              fireNewContentAvaialbleEvent();
               console.log('New content is available; please refresh.');
             } else {
               // At this point, everything has been precached.
