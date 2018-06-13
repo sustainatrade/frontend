@@ -57,7 +57,7 @@ export default class PostWidget extends Component {
         if(!name) return <div>loading...</div>
 
         const Widget = manifests[name].component;
-        return <Dimmer.Dimmable  as={Segment} raised compact={!fluid} 
+        return <Dimmer.Dimmable  as={Segment} piled compact
             textAlign='center' dimmed={showControls}
             >
             { editable && <Label as='a' size='tiny' floating onClick={()=>this.setState({showControls:!showControls})} >
