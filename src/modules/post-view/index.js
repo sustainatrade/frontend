@@ -63,7 +63,7 @@ export default class PostView extends Component {
         return <Item>
             <UserContext.Consumer>
                     {({ user, loading }) => {
-                        const isMyPost = post.createdBy === user.id;
+                        const isMyPost = user && post.createdBy === user.id;
                         return (
                 <Item.Content>
                     <WidgetContext.Consumer>
@@ -84,7 +84,6 @@ export default class PostView extends Component {
                         {widgets.length || 0} Specs
                     </Item.Meta>
                     <Item.Description>
-                        <Segment secondary>
                             <ResponsiveContext.Consumer>
                                 {({isMobile})=>(
                                     <Grid doubling stretched columns={isMobile?1:2}>
@@ -94,7 +93,6 @@ export default class PostView extends Component {
                                     </Grid>
                                 )}
                             </ResponsiveContext.Consumer>
-                        </Segment>
                     </Item.Description>
                 </Item.Content>)}}
             </UserContext.Consumer>

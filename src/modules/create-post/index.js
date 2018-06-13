@@ -105,6 +105,20 @@ export default class CreatePost extends Component {
                 options={stateOptions} />
         )
     }
+    renderSpecs() {
+        return <div>
+            <Segment compact textAlign='center' 
+                className='ant-upload ant-upload-select-picture-card'
+                style={{width:104,height:104}}
+                >
+            <Icon.Group size='huge'>
+                <Icon name='window restore outline' />
+                <Icon corner name='add' />
+            </Icon.Group>
+            <div>Add Spec</div>
+        </Segment>
+    </div>
+    }
     renderForm(trigger, { loading, error, data } = {}) {
         const { formErrors, form } = this.state;
         const errsx = [];
@@ -116,8 +130,6 @@ export default class CreatePost extends Component {
         }
         if (data) {
             const { CreatePost } = data;
-            console.log('CreatePost')//TRACE
-            console.log(CreatePost)//TRACE
             if (CreatePost.status === 'SUCCESS') {
                 return (<center><Message info>
                     <Message.Header>Post has been created!</Message.Header>
@@ -234,10 +246,12 @@ export default class CreatePost extends Component {
                                         onChange={(e, { value }) => this.updateForm({ description: value })}
                                         required
                                     />
-                                    <Divider horizontal>Photos</Divider>
-                                    <UploadPhoto />
                                     <Divider horizontal>Tags</Divider>
                                     {this.renderTags()}
+                                    <Divider horizontal>Photos</Divider>
+                                    <UploadPhoto />
+                                    <Divider horizontal>Specs</Divider>
+                                    {this.renderSpecs()}
                                     <Divider />
                                     <div style={{ textAlign: 'right' }}>
                                         <Button

@@ -69,7 +69,7 @@ export default class PostFeed extends Component {
         return <PostViewContext.Consumer>
             {({ post, closeFn }) => {
                 return <Modal
-                    width='90%'
+                    width='1024px'
                     visible={post !== undefined}
                     title={<div><Icon name='sticky note' />Post View</div>}
                     footer={null}
