@@ -4,6 +4,7 @@ import {
     Button,
     Icon,
     Form,
+    Grid,
     Input,
     Message,
     TextArea,
@@ -15,10 +16,11 @@ import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import CreatePostContext from './../../contexts/CreatePost'
 import PostViewContext from './../../contexts/PostViewContext'
+import WidgetContext from './../../contexts/WidgetContext'
 import UploaderContext from './../../contexts/Uploader'
 import UploadPhoto from './UploadPhoto'
-// import get from 'lodash/get'
-// import Modal from 'antd/lib/modal';
+import PostWidget from './../post-view/PostWidget'
+import nanoid from 'nanoid'
 
 const CATEGORY_LIST = gql`
   query{
@@ -105,18 +107,33 @@ export default class CreatePost extends Component {
                 options={stateOptions} />
         )
     }
-    renderSpecs() {
+    renderSpecs({ addWidget, widgets }) {
         return <div>
-            <Segment compact textAlign='center' 
-                className='ant-upload ant-upload-select-picture-card'
-                style={{width:104,height:104}}
-                >
-            <Icon.Group size='huge'>
-                <Icon name='window restore outline' />
-                <Icon corner name='add' />
-            </Icon.Group>
-            <div>Add Spec</div>
-        </Segment>
+            <WidgetContext.Consumer>
+                {({ selectWidgetFn }) => (
+                    <React.Fragment>
+                    <Grid doubling stretched columns={1}>
+                        {widgets.map( widget =>(<Grid.Column key={nanoid()}>
+                            <PostWidget fromData={widget} fluid editable/>
+                        </Grid.Column>))}
+                    </Grid>
+                    <Segment compact textAlign='center' 
+                            className='ant-upload ant-upload-select-picture-card'
+                            style={{width:104,height:104}}
+                            onClick={ async ()=>{
+                                const widgetData = await selectWidgetFn();
+                                addWidget(widgetData);
+                            }}
+                            >
+                        <Icon.Group size='huge'>
+                            <Icon name='window restore outline' />
+                            <Icon corner name='add' />
+                        </Icon.Group>
+                        <div>Add Spec</div>
+                    </Segment>
+                </React.Fragment>
+                )}
+        </WidgetContext.Consumer>
     </div>
     }
     renderForm(trigger, { loading, error, data } = {}) {
@@ -168,7 +185,7 @@ export default class CreatePost extends Component {
                     </Message.List>
                 </Message>}
                 <CreatePostContext.Consumer>
-                    {({ photos, modalOpened, closeModal, openModal }) => (
+                    {({ photos, modalOpened, widgets, addWidget, closeModal, openModal }) => (
                         <UploaderContext.Consumer>
                             {({ upload, status, isUploading }) => (
                                 <Form
@@ -251,7 +268,7 @@ export default class CreatePost extends Component {
                                     <Divider horizontal>Photos</Divider>
                                     <UploadPhoto />
                                     <Divider horizontal>Specs</Divider>
-                                    {this.renderSpecs()}
+                                    {this.renderSpecs({addWidget, widgets})}
                                     <Divider />
                                     <div style={{ textAlign: 'right' }}>
                                         <Button

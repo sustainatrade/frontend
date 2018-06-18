@@ -7,10 +7,11 @@ import {
     Button,
     Divider
 } from 'semantic-ui-react'
-import PropsEditor from './PropsEditor'
+import PropsEditor from 'react-props-editor'
 import WidgetContext from '../../contexts/WidgetContext';
 import PostViewContext from '../../contexts/PostViewContext';
 import ResponsiveContext from '../../contexts/Responsive';
+import { debuglog } from 'util';
 
 const WIDGET_OPTS = [];
 Object.keys(manifests).forEach(wKey => {
@@ -23,13 +24,13 @@ Object.keys(manifests).forEach(wKey => {
     })
 })
 
-export default class WidgetCreator extends Component {
+export default class WidgetEditor extends Component {
     state = {
     }
 
     render() {
         const { widgetName, widgetProps = {}, added } = this.state;
-        const { postRefNo } = this.props;
+        const { onChange } = this.props;
         let WidgetPreview;
         if (widgetName) {
             WidgetPreview = manifests[widgetName].component;
@@ -65,14 +66,21 @@ export default class WidgetCreator extends Component {
                                     selection options={WIDGET_OPTS}
                                     onChange={(_, data) => {
                                         this.setState({ widgetName: data.value })
+                                        onChange && onChange({
+                                            name: widgetName
+                                        })
                                     }}
                                 />
                                 {WidgetPreview && <React.Fragment>
                                     Fields: <Segment>
-                                        <PropsEditor key={widgetName} propTypes={manifests[widgetName].propTypes}
-                                            propTypeOptions={manifests[widgetName].propTypeOptions}
+                                        <PropsEditor 
+                                            propObjects={manifests[widgetName].propObjects}
                                             onChange={(data) => {
-                                                this.setState({ widgetProps: data })
+                                                this.setState({widgetProps:data})
+                                                onChange && onChange({
+                                                    name: widgetName,
+                                                    ...widgetProps
+                                                })
                                             }} />
                                     </Segment>
                                     Preview: <div>
@@ -81,30 +89,6 @@ export default class WidgetCreator extends Component {
                                         </Segment>
                                     </div>
                                 </React.Fragment>}
-                                <Divider clearing hidden />
-                                <PostViewContext.Consumer>
-                                    {({ addWidgetFn }) => (
-                                        <Button content='Submit' icon='check' floated='right'
-                                            loading={submitting}
-                                            color='green' disabled={!WidgetPreview}
-                                            onClick={async () => {
-                                                const ret = await submitNewFn({
-                                                    name: widgetName,
-                                                    types: widgetProps.propTypes,
-                                                    values: widgetProps.propValues,
-                                                    postRefNo
-                                                })
-                                                addWidgetFn(ret)
-                                                this.setState({ added: true })
-                                            }}
-                                        />)}
-                                </PostViewContext.Consumer>
-                                <Button content='Cancel' icon='ban' floated='right'
-                                    onClick={async () => {
-                                        resetComponent();
-                                    }}
-                                />
-                                <Divider clearing hidden />
                             </div>
                         )}
                     </ResponsiveContext.Consumer>)
