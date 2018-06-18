@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { manifests } from './../components/widgets';
 
 const Context =  React.createContext();
 
@@ -9,6 +10,7 @@ class Provider extends React.Component {
         super(props);
         this.state = {
             modalOpened: false,
+            widgets:[],
             closeModal: () => {
                 this.setState({modalOpened:false});
             },
@@ -17,6 +19,9 @@ class Provider extends React.Component {
             },
             setPhotos: (photos)=> {
                 this.setState({photos});
+            },
+            addWidget: async(widgetData)=> {
+                this.setState({widgets:[...this.state.widgets,widgetData]});
             }
         }
     }

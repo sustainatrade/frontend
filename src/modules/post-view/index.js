@@ -17,7 +17,6 @@ import ResponsiveContext from './../../contexts/Responsive'
 import UserContext from './../../contexts/UserContext'
 import gql from 'graphql-tag'
 import PostItem from './../post-feed/PostItem'
-import WidgetCreator from './WidgetCreator'
 import PostWidget from './PostWidget'
 import { Comments } from 'react-facebook';
 import { MsImage } from './../../components'
@@ -67,17 +66,12 @@ export default class PostView extends Component {
                         return (
                 <Item.Content>
                     <WidgetContext.Consumer>
-                        {({ creating, setCreatingFn }) => (
+                        {({ showSelectWidget }) => (
                         <Item.Header style={{width:'100%'}}>
                             Specs
-                            { !creating && isMyPost && <Button size='tiny' content={'Add Spec'} 
+                            { isMyPost && <Button size='tiny' content={'Add Spec'} 
                                 icon={'plus'} floated='right' 
-                                onClick={()=>setCreatingFn(true)}/>}
-                            <Transition visible={creating} animation='slide down' duration={300}>
-                                <Segment >
-                                    <WidgetCreator postRefNo={post._refNo} />
-                                </Segment>
-                            </Transition>
+                                onClick={()=>showSelectWidget(true)}/>}
                         </Item.Header>)}
                     </WidgetContext.Consumer>
                     <Item.Meta>
@@ -88,7 +82,7 @@ export default class PostView extends Component {
                                 {({isMobile})=>(
                                     <Grid doubling stretched columns={isMobile?1:2}>
                                         {widgets.map( wId =>(<Grid.Column key={wId}>
-                                            <PostWidget key={wId} refNo={wId} fluid editable={isMyPost}/>
+                                            <PostWidget key={wId} fromRefNo={wId} fluid editable={isMyPost}/>
                                         </Grid.Column>))}
                                     </Grid>
                                 )}

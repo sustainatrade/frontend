@@ -33,22 +33,21 @@ export default class PostWidget extends Component {
         showControls: false
     };
     async componentWillMount(){
-        const { refNo } = this.props;
-        const { data } = await apolloClient.query({
-            query: POST_WIDGET,
-            variables: {
-                refNo
-            }
-          });
-        // self.setState({user:data.Me.user,loading:undefined})
-        // const {name,types,values,postRefNo} = data.PostWidget.postWidget;
-        // this.setState({
-        //     name,
-        //     types:JSON.parse(types),
-        //     values:JSON.parse(values),
-        //     postRefNo
-        // });
-        this.setState(parseGraphData(data.PostWidget.postWidget))
+        const { fromRefNo, fromData } = this.props;
+        if(fromRefNo){
+            const { data } = await apolloClient.query({
+                query: POST_WIDGET,
+                variables: {
+                    refNo: fromRefNo
+                }
+            });
+            this.setState(parseGraphData(data.PostWidget.postWidget))
+        }
+        else if(fromData){
+            // self.setState({user:data.Me.user,loading:undefined})
+            // const {name,types,values,postRefNo} = fromData
+            this.setState(fromData);
+        }
     }
     render(){
         const { fluid, editable } = this.props;
