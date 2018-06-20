@@ -122,7 +122,8 @@ export default class CreatePost extends Component {
                             style={{width:104,height:104}}
                             onClick={ async ()=>{
                                 const widgetData = await selectWidgetFn();
-                                addWidget(widgetData);
+                                if(widgetData)
+                                    addWidget(widgetData);
                             }}
                             >
                         <Icon.Group size='huge'>
