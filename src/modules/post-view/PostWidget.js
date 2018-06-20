@@ -44,14 +44,20 @@ export default class PostWidget extends Component {
             this.setState(parseGraphData(data.PostWidget.postWidget))
         }
         else if(fromData){
+            console.log('fromData')//TRACE
+            console.log(fromData)//TRACE
             // self.setState({user:data.Me.user,loading:undefined})
             // const {name,types,values,postRefNo} = fromData
-            this.setState(fromData);
+            this.setState({
+                types: fromData.propTypes,
+                values: fromData.propValues,
+                ...fromData
+            });
         }
     }
     render(){
         const { fluid, editable } = this.props;
-        const { name, types, values, showControls } = this.state;
+        const { name, propTypes, values, showControls } = this.state;
         
         if(!name) return <div>loading...</div>
 
@@ -65,16 +71,16 @@ export default class PostWidget extends Component {
             <Widget {...values}/>
             <Dimmer active={showControls}>
             <Button.Group>
-                <Button icon title='Move' onClick={()=>alert('Soon')}>
+                <Button type='button' icon title='Move' onClick={()=>alert('Soon')}>
                     <Icon name='move' />
                 </Button>
-                <Button icon title='Edit' onClick={()=>alert('Soon')}>
+                <Button type='button' icon title='Edit' onClick={()=>alert('Soon')}>
                     <Icon name='edit' />
                 </Button>
-                <Button icon title='Duplicate' onClick={()=>alert('Soon')}>
+                <Button type='button' icon title='Duplicate' onClick={()=>alert('Soon')}>
                     <Icon name='copy outline' />
                 </Button>
-                <Button icon title='Cancel' onClick={()=>this.setState({showControls:false})}>
+                <Button type='button' icon title='Cancel' onClick={()=>this.setState({showControls:false})}>
                     <Icon name='ban'/>
                 </Button>
             </Button.Group>

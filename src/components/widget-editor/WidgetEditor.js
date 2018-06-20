@@ -72,14 +72,14 @@ export default class WidgetEditor extends Component {
                                     }}
                                 />
                                 {WidgetPreview && <React.Fragment>
-                                    Fields: <Segment>
+                                    Fields: <Segment secondary>
                                         <PropsEditor 
                                             propObjects={manifests[widgetName].propObjects}
-                                            onChange={(data) => {
-                                                this.setState({widgetProps:data})
+                                            onChange={ async(data) => {
+                                                await this.setState({widgetProps:data})
                                                 onChange && onChange({
                                                     name: widgetName,
-                                                    ...widgetProps
+                                                    ...data
                                                 })
                                             }} />
                                     </Segment>

@@ -18,6 +18,7 @@ import {
 import 'antd/lib/upload/style/css';
 import 'antd/lib/modal/style/css';
 import 'antd/lib/notification/style/css';
+import 'antd/lib/slider/style/css';
 import FacebookProvider from 'react-facebook';
 import Modal from 'antd/lib/modal';
 
