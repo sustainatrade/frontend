@@ -24,7 +24,7 @@
     "react-dom": "^16.3.2",
     "react-facebook": "^5.0.3",
     "react-loadable": "^5.4.0",
-    "react-props-editor": "^1.0.1",
+    "react-props-editor": "^1.0.3",
     "react-scripts": "1.1.4",
     "semantic-ui-react": "^0.81.1",
     "subscriptions-transport-ws": "^0.9.9"
@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "async-shelljs": "^0.1.2",
-    "cross-env": "^5.1.4"
+    "cross-env": "^5.1.4",
+    "eslint-plugin-prettier": "^2.6.1",
+    "prettier": "1.13.5"
   }
 }

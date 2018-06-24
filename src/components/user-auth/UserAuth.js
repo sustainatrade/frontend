@@ -219,7 +219,7 @@ export default class UserAuth extends React.Component {
                                 >
                                 <Icon name='facebook' /> Log In with Facebook
                                 </Button>
-                                <Divider/>
+                                {/* <Divider/>
                                 <Button color='google plus'
                                     fluid
                                     onClick={async ()=>{
@@ -227,7 +227,7 @@ export default class UserAuth extends React.Component {
                                     }}
                                 >
                                 <Icon name='google' /> Log In with Google
-                                </Button>
+                                </Button> */}
                             </div>
                         </center>
                     </Modal.Content>
