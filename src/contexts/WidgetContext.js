@@ -65,7 +65,6 @@ class Provider extends React.Component {
   //TESTING
   componentDidMount() {}
 
-<<<<<<< HEAD
   render() {
     const { children } = this.props;
     return (
@@ -93,30 +92,6 @@ class Provider extends React.Component {
       </Context.Provider>
     );
   }
-=======
-    render() {
-        const { children } = this.props;
-        return <Context.Provider value={this.state}>
-                    { children }
-                    <Modal
-                      title="New Spec"
-                      visible={!!this.state.selectingWidget}
-                      onOk={()=>{
-                        const {selectingWidget,currentWidget} = this.state
-                        selectingWidget.resolve(currentWidget)
-                        this.setState({selectingWidget:false})
-
-                      }}
-                      onCancel={()=>{
-                        this.state.selectingWidget.resolve()
-                        this.setState({selectingWidget:false})
-                      }}
-                    >
-                      <WidgetEditor key={this.state.editorKey} onChange={(data)=>this.setState({currentWidget:data})}/>
-                    </Modal>
-                </Context.Provider>
-      }
->>>>>>> 979ed72... display widgets in create post
 }
 
 export default {
