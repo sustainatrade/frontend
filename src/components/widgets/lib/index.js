@@ -85,10 +85,10 @@ export function createWidget(widgetObj,opts){
 
             return widget.default.propTypes || {};
         },
-        async propTypeOptions(){
+        async propObjects(){
             const widget = await widgetObj;
-            
-            return widget.default.propTypeOptions || {};
+
+            return widget.default.propObjects || {};
         },
         component: Loadable({
             loader: () => widgetObj,

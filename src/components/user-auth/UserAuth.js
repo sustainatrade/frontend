@@ -6,7 +6,8 @@ import { Dropdown,
         Modal,
         // Label,
         Image,
-        Header } from 'semantic-ui-react'
+        Header, 
+        Divider} from 'semantic-ui-react'
 // import _ from 'lodash'
 import { app, facebookProvider, googleProvider } from './firebase'
 import { Query, Mutation } from "react-apollo";
@@ -208,24 +209,26 @@ export default class UserAuth extends React.Component {
                     </Header>
                     <Modal.Content>
                         <center>
-                            <p>Start selling your item now. User your social accounts to login</p>
-                            <Button.Group>
-                            <Button color='facebook'
-                                onClick={async ()=>{
-                                    await this.authWithFacebook()
-                                }}
-                            >
-                            <Icon name='facebook' /> Log In with Facebook
-                            </Button>
-                            <Button.Or/>
-                            <Button color='google plus'
-                                onClick={async ()=>{
-                                    await this.authWithGoogle()
-                                }}
-                            >
-                            <Icon name='google' /> Log In with Google
-                            </Button>
-                            </Button.Group>
+                            <div  style={{maxWidth:300}}>
+                                <p>Start selling your item now. User your social accounts to login</p>
+                                <Button color='facebook'
+                                    fluid
+                                    onClick={async ()=>{
+                                        await this.authWithFacebook()
+                                    }}
+                                >
+                                <Icon name='facebook' /> Log In with Facebook
+                                </Button>
+                                {/* <Divider/>
+                                <Button color='google plus'
+                                    fluid
+                                    onClick={async ()=>{
+                                        await this.authWithGoogle()
+                                    }}
+                                >
+                                <Icon name='google' /> Log In with Google
+                                </Button> */}
+                            </div>
                         </center>
                     </Modal.Content>
                 </Modal>)}}
