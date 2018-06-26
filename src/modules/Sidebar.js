@@ -19,6 +19,7 @@ import Modal from "antd/lib/modal";
 import ComposePost from "./compose-post";
 import { UserAuth } from "../components";
 import { Menus } from "./../App";
+import nanoid from "nanoid";
 
 export default class Sidebar extends Component {
   state = {};
@@ -117,10 +118,10 @@ export default class Sidebar extends Component {
     return (
       <div>
         <CreatePostContext.Consumer>
-          {({ modalOpened, closeModal, openModal }) => (
+          {({ key, modalOpened, closeModal, openModal }) => (
             <React.Fragment>
               <Modal visible={modalOpened} onCancel={closeModal} footer={null}>
-                <ComposePost />
+                <ComposePost key={key} />
               </Modal>
               <Button
                 disabled={modalOpened}

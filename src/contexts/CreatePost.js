@@ -2,6 +2,7 @@ import React from "react";
 import set from "lodash/set";
 import gql from "graphql-tag";
 import apolloClient from "./../lib/apollo";
+import nanoid from "nanoid";
 
 const Context = React.createContext();
 
@@ -25,13 +26,14 @@ class Provider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      key: nanoid(),
       modalOpened: false,
       widgets: [],
       closeModal: () => {
         this.setState({ modalOpened: false });
       },
       openModal: () => {
-        this.setState({ modalOpened: true });
+        this.setState({ modalOpened: true, key: nanoid() });
       },
       setPhotos: photos => {
         this.setState({ photos });
