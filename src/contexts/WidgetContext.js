@@ -44,6 +44,27 @@ class Provider extends React.Component {
     setCreatingFn: creating => {
       this.setState({ creating });
     },
+    submitWidgetsFn: async widgetArray => {
+      this.setState({ submitting: true });
+      const newWidgets = widgetArray.map(widget => {
+        widget.type = "CREATE";
+        const widgetInput = Object.assign({}, widget, {
+          types: JSON.stringify(widget.types || widget.propTypes),
+          values: JSON.stringify(widget.values || widget.propValues)
+        });
+        delete widgetInput.propTypes;
+        delete widgetInput.propValues;
+        return widgetInput;
+      });
+      const ret = await apolloClient.mutate({
+        mutation: UPDATE_POST_WIDGETS,
+        variables: {
+          widgets: newWidgets
+        }
+      });
+      this.setState({ submitting: false });
+      return ret.data.UpdatePostWidgets.widgets;
+    },
     submitNewFn: async widgetData => {
       this.setState({ submitting: true });
       widgetData.type = "CREATE";

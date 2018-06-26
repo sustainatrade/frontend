@@ -14,14 +14,11 @@ import {
 } from "semantic-ui-react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import CreatePostContext from "./../../contexts/CreatePost";
-import PostViewContext from "./../../contexts/PostViewContext";
 import WidgetContext from "./../../contexts/WidgetContext";
-import UploaderContext from "./../../contexts/Uploader";
 import UploadPhoto from "./UploadPhoto";
 import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
-import nanoid from "nanoid";
+import { GlobalConsumer } from "./../../contexts";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -49,13 +46,7 @@ function tagItem(tag) {
 }
 export default class ComposePost extends Component {
   state = {
-    form: {
-      title: "test4",
-      section: "buy",
-      category: "2",
-      description: "test3",
-      tags: ["test"]
-    },
+    form: {},
     formErrors: [],
     tagInput: { key: "_", text: "", value: "" },
     mutKey: Date.now()
@@ -111,7 +102,7 @@ export default class ComposePost extends Component {
             <React.Fragment>
               <Grid doubling stretched columns={1}>
                 {widgets.map((widget, index) => (
-                  <Grid.Column key={nanoid()}>
+                  <Grid.Column key={`post-widget-${index}`}>
                     <PostWidget
                       fromData={widget}
                       fluid
@@ -149,30 +140,26 @@ export default class ComposePost extends Component {
   }
   renderViewPost(post) {
     return (
-      <CreatePostContext.Consumer>
-        {({ closeModal }) => (
-          <PostViewContext.Consumer>
-            {({ viewPostFn }) => (
-              <center>
-                <Button
-                  content="View Post"
-                  icon="eye"
-                  color="green"
-                  onClick={() => {
-                    this.setState({
-                      form: {},
-                      formErrors: [],
-                      mutKey: Date.now()
-                    });
-                    closeModal();
-                    viewPostFn(post._refNo);
-                  }}
-                />
-              </center>
-            )}
-          </PostViewContext.Consumer>
+      <GlobalConsumer>
+        {({ createPost: { closeModal }, postView: { viewPostFn } }) => (
+          <center>
+            <Button
+              content="View Post"
+              icon="eye"
+              color="green"
+              onClick={() => {
+                this.setState({
+                  form: {},
+                  formErrors: [],
+                  mutKey: Date.now()
+                });
+                closeModal();
+                viewPostFn(post._refNo);
+              }}
+            />
+          </center>
         )}
-      </CreatePostContext.Consumer>
+      </GlobalConsumer>
     );
   }
   renderForm() {
@@ -196,197 +183,201 @@ export default class ComposePost extends Component {
             </Message.List>
           </Message>
         )}
-        <CreatePostContext.Consumer>
+        <GlobalConsumer>
           {({
-            photos,
-            modalOpened,
-            widgets,
-            addWidget,
-            editWidget,
-            closeModal,
-            submit
+            createPost: {
+              photos,
+              modalOpened,
+              widgets,
+              addWidget,
+              editWidget,
+              closeModal,
+              submit
+            },
+            uploader: { upload, status, isUploading },
+            widget: { submitWidgetsFn }
           }) => (
-            <UploaderContext.Consumer>
-              {({ upload, status, isUploading }) => (
-                <Form
-                  onSubmit={async () => {
-                    console.log("subbmiting.."); //TRACE
-                    const { form } = this.state;
-                    let submitStatus = {
-                      steps: {
-                        s1: {
-                          description: "Field validation",
-                          loading: true
-                        },
-                        s2: {
-                          description: "Photo Upload"
-                        },
-                        s3: {
-                          description: "Submit details"
-                        },
-                        s4: {
-                          description: "Update specs"
-                        }
-                      }
-                    };
-                    await this.setState({
-                      loading: true,
-                      submitStatus
-                    });
+            <Form
+              onSubmit={async () => {
+                console.log("subbmiting.."); //TRACE
+                const { form } = this.state;
+                let submitStatus = {
+                  steps: {
+                    s1: {
+                      description: "Field validation",
+                      loading: true
+                    },
+                    s2: {
+                      description: "Photo Upload"
+                    },
+                    s3: {
+                      description: "Submit details"
+                    },
+                    s4: {
+                      description: "Update specs"
+                    }
+                  }
+                };
+                await this.setState({
+                  loading: true,
+                  submitStatus
+                });
 
-                    const errs = [];
-                    ["title", "description", "section", "category"].forEach(
-                      f => {
-                        if (!form[f]) {
-                          errs.push(`"${f}" should not be empty`);
-                        }
-                      }
-                    );
-                    if (errs.length > 0) {
-                      this.setState({ formErrors: errs });
-                      return;
-                    }
-                    const path = localStorage.getItem("postPhotoPath");
-                    submitStatus = this.state.submitStatus;
-                    submitStatus.steps.s1.done = true;
-                    submitStatus.steps.s1.loading = false;
-                    submitStatus.steps.s2.loading = true;
-                    await this.setState({ submitStatus });
-                    // const [photoResponse] = await Promise.all([
-                    //   Promise.resolve(["sdfsdf.jps"]),
-                    //   sleep(200)
-                    // ]);
-                    const photoResponse = await upload({
-                      name: UPLOAD_NAME,
-                      path,
-                      files: photos
-                    });
-                    submitStatus = this.state.submitStatus;
-                    submitStatus.steps.s2.done = true;
-                    submitStatus.steps.s2.loading = false;
-                    submitStatus.steps.s3.loading = true;
-                    await this.setState({ submitStatus });
-                    // const [newPost] = await Promise.all([
-                    //   Promise.resolve({
-                    //     _refNo: "POST-0000037"
-                    //   }),
-                    //   sleep(200)
-                    // ]);
-                    const newPost = await submit({
-                      post: Object.assign({}, form, { photos: photoResponse })
-                    });
-                    console.log("newPost");
-                    console.log(newPost);
-                    submitStatus = this.state.submitStatus;
-                    submitStatus.steps.s3.done = true;
-                    submitStatus.steps.s3.loading = false;
-                    submitStatus.steps.s4.loading = true;
-                    await this.setState({ submitStatus });
-                    await this.setState({ loading: false });
-                    submitStatus.steps.s4.done = true;
-                    submitStatus.steps.s4.loading = false;
-                    await this.setState({ submitStatus, post: newPost });
-                  }}
-                >
-                  <Form.Field
-                    control={Input}
-                    label="Title"
-                    placeholder="Title"
-                    required
-                    value={form.title || ""}
-                    onChange={(e, { value }) =>
-                      this.updateForm({ title: value })
-                    }
-                  />
-                  <Form.Group widths="equal">
-                    <Form.Field required>
-                      <label>Section</label>
-                      <Button.Group fluid>
-                        <Button
-                          positive={form.section === "buy"}
-                          type="button"
-                          onClick={() => this.updateForm({ section: "buy" })}
-                        >
-                          Buy
-                        </Button>
-                        <Button.Or />
-                        <Button
-                          positive={form.section === "sell"}
-                          type="button"
-                          onClick={() => this.updateForm({ section: "sell" })}
-                        >
-                          Sell
-                        </Button>
-                      </Button.Group>
-                    </Form.Field>
-                    <Form.Field required>
-                      <label>Category</label>
-                      <Query query={CATEGORY_LIST}>
-                        {({ loading, error, data = {} }) => {
-                          const { CategoryList } = data;
-                          let options = [];
-                          if (CategoryList) {
-                            options = CategoryList.list.map(cat => ({
-                              key: cat.id,
-                              text: cat.name,
-                              value: cat.id
-                            }));
-                          }
-                          return (
-                            <Form.Select
-                              options={options}
-                              placeholder="Select Category"
-                              loading={loading}
-                              onChange={(e, { value }) =>
-                                this.updateForm({ category: value })
-                              }
-                              required
-                            />
-                          );
-                        }}
-                      </Query>
-                    </Form.Field>
-                  </Form.Group>
-                  <Form.Field
-                    control={TextArea}
-                    label="Description"
-                    placeholder="Description"
-                    value={form.description || ""}
-                    onChange={(e, { value }) =>
-                      this.updateForm({ description: value })
-                    }
-                    required
-                  />
-                  <Divider horizontal>Tags</Divider>
-                  {this.renderTags()}
-                  <Divider horizontal>Photos</Divider>
-                  <UploadPhoto />
-                  <Divider horizontal>Specs</Divider>
-                  {this.renderSpecs({ addWidget, widgets, editWidget })}
-                  <Divider />
-                  <div style={{ textAlign: "right" }}>
+                const errs = [];
+                ["title", "description", "section", "category"].forEach(f => {
+                  if (!form[f]) {
+                    errs.push(`"${f}" should not be empty`);
+                  }
+                });
+                if (errs.length > 0) {
+                  this.setState({ formErrors: errs });
+                  return;
+                }
+                const path = localStorage.getItem("postPhotoPath");
+                submitStatus = this.state.submitStatus;
+                submitStatus.steps.s1.done = true;
+                submitStatus.steps.s1.loading = false;
+                submitStatus.steps.s2.loading = true;
+                await this.setState({ submitStatus });
+                const [photoResponse] = await Promise.all([
+                  Promise.resolve(["sdfsdf.jps"]),
+                  sleep(200)
+                ]);
+                // const photoResponse = await upload({
+                //   name: UPLOAD_NAME,
+                //   path,
+                //   files: photos
+                // });
+                submitStatus = this.state.submitStatus;
+                submitStatus.steps.s2.done = true;
+                submitStatus.steps.s2.loading = false;
+                submitStatus.steps.s3.loading = true;
+                await this.setState({ submitStatus });
+                const [newPost] = await Promise.all([
+                  Promise.resolve({
+                    _refNo: "POST-0000033"
+                  }),
+                  sleep(200)
+                ]);
+                // const newPost = await submit({
+                //   post: Object.assign({}, form, { photos: photoResponse })
+                // });
+                console.log("newPost");
+                console.log(newPost);
+                submitStatus = this.state.submitStatus;
+                submitStatus.steps.s3.done = true;
+                submitStatus.steps.s3.loading = false;
+                submitStatus.steps.s4.loading = true;
+                await this.setState({ submitStatus });
+                const taggedWidgets = widgets.map(widget => {
+                  widget.postRefNo = newPost._refNo;
+                  return widget;
+                });
+                await submitWidgetsFn(taggedWidgets);
+                submitStatus.steps.s4.done = true;
+                submitStatus.steps.s4.loading = false;
+                await this.setState({
+                  loading: false,
+                  submitStatus,
+                  post: newPost
+                });
+              }}
+            >
+              <Form.Field
+                control={Input}
+                label="Title"
+                placeholder="Title"
+                required
+                value={form.title || ""}
+                onChange={(e, { value }) => this.updateForm({ title: value })}
+              />
+              <Form.Group widths="equal">
+                <Form.Field required>
+                  <label>Section</label>
+                  <Button.Group fluid>
                     <Button
+                      positive={form.section === "buy"}
                       type="button"
-                      content="Cancel"
-                      icon="x"
-                      loading={loading || isUploading(UPLOAD_NAME)}
-                      disabled={loading || isUploading(UPLOAD_NAME)}
-                      onClick={closeModal}
-                    />
-                    <Button
-                      type="submit"
-                      color="black"
-                      loading={loading || isUploading(UPLOAD_NAME)}
-                      disabled={loading || isUploading(UPLOAD_NAME)}
+                      onClick={() => this.updateForm({ section: "buy" })}
                     >
-                      Submit
+                      Buy
                     </Button>
-                  </div>
-                </Form>
-              )}
-            </UploaderContext.Consumer>
+                    <Button.Or />
+                    <Button
+                      positive={form.section === "sell"}
+                      type="button"
+                      onClick={() => this.updateForm({ section: "sell" })}
+                    >
+                      Sell
+                    </Button>
+                  </Button.Group>
+                </Form.Field>
+                <Form.Field required>
+                  <label>Category</label>
+                  <Query query={CATEGORY_LIST}>
+                    {({ loading, error, data = {} }) => {
+                      const { CategoryList } = data;
+                      let options = [];
+                      if (CategoryList) {
+                        options = CategoryList.list.map(cat => ({
+                          key: cat.id,
+                          text: cat.name,
+                          value: cat.id
+                        }));
+                      }
+                      return (
+                        <Form.Select
+                          options={options}
+                          placeholder="Select Category"
+                          loading={loading}
+                          onChange={(e, { value }) =>
+                            this.updateForm({ category: value })
+                          }
+                          required
+                        />
+                      );
+                    }}
+                  </Query>
+                </Form.Field>
+              </Form.Group>
+              <Form.Field
+                control={TextArea}
+                label="Description"
+                placeholder="Description"
+                value={form.description || ""}
+                onChange={(e, { value }) =>
+                  this.updateForm({ description: value })
+                }
+                required
+              />
+              <Divider horizontal>Tags</Divider>
+              {this.renderTags()}
+              <Divider horizontal>Photos</Divider>
+              <UploadPhoto />
+              <Divider horizontal>Specs</Divider>
+              {this.renderSpecs({ addWidget, widgets, editWidget })}
+              <Divider />
+              <div style={{ textAlign: "right" }}>
+                <Button
+                  type="button"
+                  content="Cancel"
+                  icon="x"
+                  loading={loading || isUploading(UPLOAD_NAME)}
+                  disabled={loading || isUploading(UPLOAD_NAME)}
+                  onClick={closeModal}
+                />
+                <Button
+                  type="submit"
+                  color="black"
+                  loading={loading || isUploading(UPLOAD_NAME)}
+                  disabled={loading || isUploading(UPLOAD_NAME)}
+                >
+                  Submit
+                </Button>
+              </div>
+            </Form>
           )}
-        </CreatePostContext.Consumer>
+        </GlobalConsumer>
       </div>
     );
   }
