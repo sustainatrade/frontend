@@ -10,7 +10,8 @@ import {
   TextArea,
   Dropdown,
   Divider,
-  Header
+  Header,
+  Loader
 } from "semantic-ui-react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
@@ -46,27 +47,15 @@ function tagItem(tag) {
 }
 export default class ComposePost extends Component {
   state = {
-    form: {},
-    formErrors: [],
     tagInput: { key: "_", text: "", value: "" },
     mutKey: Date.now()
   };
 
-  updateForm(newProps) {
-    const { form } = this.state;
-    const newForm = Object.assign({}, form, newProps);
-    // newForm._hash =
-    // console.log('newForm')//TRACE
-    // console.log(newForm)//TRACE
-    this.setState({ form: newForm, formErrors: [] });
-  }
-
-  renderTags() {
-    const { form, tagInput } = this.state;
+  renderTags(form) {
+    const { tagInput } = this.state;
     const tags = form.tags || [];
 
     const stateOptions = tags.map(tag => tagItem(tag)) || [];
-    // if(stateOptions.length>0)
     if (tagInput.value.length > 0) stateOptions.unshift(tagInput);
 
     return (
@@ -104,6 +93,7 @@ export default class ComposePost extends Component {
                 {widgets.map((widget, index) => (
                   <Grid.Column key={`post-widget-${index}`}>
                     <PostWidget
+                      key={widget.key}
                       fromData={widget}
                       fluid
                       onEdit={data => {
@@ -162,45 +152,48 @@ export default class ComposePost extends Component {
       </GlobalConsumer>
     );
   }
-  renderForm() {
-    const { formErrors, form, loading } = this.state;
-    const errsx = [];
-    // if (error) {
-    //   errsx.push(error.graphQLErrors);
-    // }
-    if (formErrors.length > 0) {
-      errsx.push(...formErrors);
-    }
-    return (
-      <div>
-        {errsx.length > 0 && (
-          <Message warning>
-            <Message.Header>New Site Features</Message.Header>
-            <Message.List>
-              {errsx.map((message, i) => (
-                <Message.Item key={i}>{message}</Message.Item>
-              ))}
-            </Message.List>
-          </Message>
-        )}
-        <GlobalConsumer>
-          {({
-            createPost: {
-              photos,
-              modalOpened,
-              widgets,
-              addWidget,
-              editWidget,
-              closeModal,
-              submit
-            },
-            uploader: { upload, status, isUploading },
-            widget: { submitWidgetsFn }
-          }) => (
+  renderForm = () => (
+    <GlobalConsumer>
+      {({
+        createPost: {
+          photos,
+          form,
+          formErrors,
+          loading,
+          updateForm,
+          modalOpened,
+          widgets,
+          addWidget,
+          editWidget,
+          closeModal,
+          submit
+        },
+        uploader: { upload, status, isUploading },
+        widget: { submitWidgetsFn }
+      }) => {
+        const errsx = [];
+        // if (error) {
+        //   errsx.push(error.graphQLErrors);
+        // }
+        if (formErrors.length > 0) {
+          errsx.push(...formErrors);
+        }
+        if (loading) return <Loader active inline="centered" />;
+        return (
+          <React.Fragment>
+            {errsx.length > 0 && (
+              <Message warning>
+                <Message.Header>New Site Features</Message.Header>
+                <Message.List>
+                  {errsx.map((message, i) => (
+                    <Message.Item key={i}>{message}</Message.Item>
+                  ))}
+                </Message.List>
+              </Message>
+            )}
             <Form
               onSubmit={async () => {
                 console.log("subbmiting.."); //TRACE
-                const { form } = this.state;
                 let submitStatus = {
                   steps: {
                     s1: {
@@ -289,7 +282,7 @@ export default class ComposePost extends Component {
                 placeholder="Title"
                 required
                 value={form.title || ""}
-                onChange={(e, { value }) => this.updateForm({ title: value })}
+                onChange={(e, { value }) => updateForm({ title: value })}
               />
               <Form.Group widths="equal">
                 <Form.Field required>
@@ -298,7 +291,7 @@ export default class ComposePost extends Component {
                     <Button
                       positive={form.section === "buy"}
                       type="button"
-                      onClick={() => this.updateForm({ section: "buy" })}
+                      onClick={() => updateForm({ section: "buy" })}
                     >
                       Buy
                     </Button>
@@ -306,7 +299,7 @@ export default class ComposePost extends Component {
                     <Button
                       positive={form.section === "sell"}
                       type="button"
-                      onClick={() => this.updateForm({ section: "sell" })}
+                      onClick={() => updateForm({ section: "sell" })}
                     >
                       Sell
                     </Button>
@@ -330,8 +323,9 @@ export default class ComposePost extends Component {
                           options={options}
                           placeholder="Select Category"
                           loading={loading}
+                          value={form.category}
                           onChange={(e, { value }) =>
-                            this.updateForm({ category: value })
+                            updateForm({ category: value })
                           }
                           required
                         />
@@ -345,13 +339,11 @@ export default class ComposePost extends Component {
                 label="Description"
                 placeholder="Description"
                 value={form.description || ""}
-                onChange={(e, { value }) =>
-                  this.updateForm({ description: value })
-                }
+                onChange={(e, { value }) => updateForm({ description: value })}
                 required
               />
               <Divider horizontal>Tags</Divider>
-              {this.renderTags()}
+              {this.renderTags(form)}
               <Divider horizontal>Photos</Divider>
               <UploadPhoto />
               <Divider horizontal>Specs</Divider>
@@ -376,11 +368,11 @@ export default class ComposePost extends Component {
                 </Button>
               </div>
             </Form>
-          )}
-        </GlobalConsumer>
-      </div>
-    );
-  }
+          </React.Fragment>
+        );
+      }}
+    </GlobalConsumer>
+  );
   render() {
     return (
       <Segment basic>
