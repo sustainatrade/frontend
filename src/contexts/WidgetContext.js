@@ -54,6 +54,7 @@ class Provider extends React.Component {
         });
         delete widgetInput.propTypes;
         delete widgetInput.propValues;
+        delete widgetInput.key;
         return widgetInput;
       });
       const ret = await apolloClient.mutate({

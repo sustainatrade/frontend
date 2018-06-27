@@ -10,7 +10,8 @@ import {
 import PostViewContext from "./../../contexts/PostViewContext";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
-// import { CommentsCount } from 'react-facebook';
+import UserContext from "./../../contexts/UserContext";
+import { GlobalConsumer } from "./../../contexts";
 import moment from "moment";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
@@ -24,56 +25,80 @@ export default class PostItem extends Component {
     const followerColor = post.section === "sell" ? "green" : "orange";
 
     return (
-      <React.Fragment>
-        {isMobile && (
-          <Label as="a" className="actn-lbl" color={followerColor}>
-            <Icon name="bookmark" /> 0
-          </Label>
-        )}
-        {!isMobile && (
-          <Button as="div" labelPosition="right" title="Click to follow">
-            <Button color={followerColor} icon>
-              <Icon name="bookmark" />
-            </Button>
-            <Label color={followerColor} as="a" basic pointing="left">
-              0
-            </Label>
-          </Button>
-        )}
-        <PostViewContext.Consumer>
-          {({ viewPostFn }) => {
-            if (isMobile)
-              return (
-                <Label as="a" className="actn-lbl">
-                  <Icon name="quote left" />
-                  {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
+      <GlobalConsumer>
+        {({
+          createPost: { openModal },
+          user: { user },
+          postView: { viewPostFn }
+        }) => (
+          <React.Fragment>
+            {(() => {
+              const isMyPost = user && post.createdBy === user.id;
+              if (isMyPost) {
+                const mobileProps = {};
+                if (isMobile) {
+                  mobileProps.fluid = true;
+                  mobileProps.content = "Edit Post";
+                  mobileProps.size = "small";
+                }
+                return (
+                  <Button
+                    icon="edit"
+                    basic
+                    title="Edit Post"
+                    {...mobileProps}
+                    onClick={() => {
+                      openModal(post._refNo);
+                    }}
+                  />
+                );
+              } else return <React.Fragment />;
+            })()}
+            {isMobile && (
+              <Label as="a" className="actn-lbl" color={followerColor}>
+                <Icon name="bookmark" /> 0
+              </Label>
+            )}
+            {!isMobile && (
+              <Button as="div" labelPosition="right" title="Click to follow">
+                <Button color={followerColor} icon>
+                  <Icon name="bookmark" />
+                </Button>
+                <Label color={followerColor} as="a" basic pointing="left">
+                  0
                 </Label>
-              );
-            if (!isMobile)
-              return (
-                <Button
-                  as="div"
-                  labelPosition="right"
-                  title="Comments"
-                  onClick={() => viewPostFn(post._refNo)}
-                >
-                  <Button color="black" icon>
-                    <Icon name="quote left" title="Comments" />
-                  </Button>
-                  <Label as="a" basic pointing="left">
-                    0
+              </Button>
+            )}
+            {(() => {
+              if (isMobile)
+                return (
+                  <Label as="a" className="actn-lbl">
+                    <Icon name="quote left" />
                     {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
                   </Label>
-                </Button>
-              );
-          }}
-        </PostViewContext.Consumer>
-        {!isMobile && <Button basic icon="flag" title="Report" />}
-        {/* { isMobile && <Label as='a' className='actn-lbl'>
-                    <Icon name='flag' />
-                </Label>}
-            } */}
-      </React.Fragment>
+                );
+              if (!isMobile)
+                return (
+                  <Button
+                    as="div"
+                    labelPosition="right"
+                    title="Comments"
+                    onClick={() => viewPostFn(post._refNo)}
+                  >
+                    <Button color="black" icon>
+                      <Icon name="quote left" title="Comments" />
+                    </Button>
+                    <Label as="a" basic pointing="left">
+                      0
+                      {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
+                    </Label>
+                  </Button>
+                );
+            })()}
+            {!isMobile && <Button basic icon="flag" title="Report" />}
+          </React.Fragment>
+        )}
+      </GlobalConsumer>
     );
   }
 
