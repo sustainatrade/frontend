@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { manifests } from "./../../components/widgets";
-import { Dropdown, Segment, Message, Button, Divider } from "semantic-ui-react";
+import { Dropdown, Segment, Message, Button } from "semantic-ui-react";
 import PropsEditor from "react-props-editor";
 import WidgetContext from "../../contexts/WidgetContext";
 import ResponsiveContext from "../../contexts/Responsive";

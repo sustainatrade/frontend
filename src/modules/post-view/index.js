@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import {
   Item,
   Grid,
-  Segment,
   Modal,
-  Button,
-  Transition,
   Image,
   Divider,
   Container
@@ -67,23 +64,12 @@ export default class PostView extends Component {
       <Item>
         <UserContext.Consumer>
           {({ user, loading }) => {
-            const isMyPost = user && post.createdBy === user.id;
+            // const isMyPost = user && post.createdBy === user.id;
             return (
               <Item.Content>
                 <WidgetContext.Consumer>
                   {({ showSelectWidget }) => (
-                    <Item.Header style={{ width: "100%" }}>
-                      Specs
-                      {isMyPost && (
-                        <Button
-                          size="tiny"
-                          content={"Add Spec"}
-                          icon={"plus"}
-                          floated="right"
-                          onClick={() => showSelectWidget(true)}
-                        />
-                      )}
-                    </Item.Header>
+                    <Item.Header style={{ width: "100%" }}>Specs</Item.Header>
                   )}
                 </WidgetContext.Consumer>
                 <Item.Meta>{widgets.length || 0} Specs</Item.Meta>
@@ -93,12 +79,7 @@ export default class PostView extends Component {
                       <Grid doubling stretched columns={isMobile ? 1 : 2}>
                         {widgets.map(wId => (
                           <Grid.Column key={wId}>
-                            <PostWidget
-                              key={wId}
-                              fromRefNo={wId}
-                              fluid
-                              editable={isMyPost}
-                            />
+                            <PostWidget key={wId} fromRefNo={wId} fluid />
                           </Grid.Column>
                         ))}
                       </Grid>

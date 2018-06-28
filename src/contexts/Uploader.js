@@ -50,7 +50,7 @@ class Provider extends React.Component {
       console.log("options"); //TRACE
       console.log(options); //TRACE
 
-      if (!files) return;
+      if (!files || files.length === 0) return;
 
       let done = 0;
 
@@ -69,21 +69,30 @@ class Provider extends React.Component {
       for (let i = 0; i < files.length; i++) {
         try {
           const file = files[i];
-          let formData = new FormData();
-          let originFile = file.originFileObj || file;
-          formData.append("file", originFile);
-          for (const key in metadata) {
-            formData.append(key, metadata[key]);
+          let data;
+          // skip if uploaded
+          if (file.status === "done") {
+            data = {
+              status: "SUCCESS",
+              data: [file]
+            };
+          } else {
+            let formData = new FormData();
+            let originFile = file.originFileObj || file;
+            formData.append("file", originFile);
+            for (const key in metadata) {
+              formData.append(key, metadata[key]);
+            }
+
+            const response = await axios({
+              method: "post", //CHANGE TO POST
+              url: storageHost + path,
+              data: formData
+            });
+            data = response.data;
+            await sleep(250);
           }
 
-          const { data } = await axios({
-            method: "post", //CHANGE TO POST
-            url: storageHost + path,
-            data: formData
-          });
-          await sleep(250);
-          console.log("data"); //TRACE
-          console.log(data); //TRACE
           if (data.status === "SUCCESS") {
             ++done;
             const finished = done === files.length;
@@ -123,13 +132,14 @@ class Provider extends React.Component {
         }
       }
 
-      const theStatus = this.state.status[name];
+      const theStatus = this.state.status[name] || [];
       theStatus.forEach(fileObj => {
         if (fileObj.error) throw fileObj.error;
       });
       return compact(
         theStatus.map(pObj => {
           if (pObj.data) return pObj.data.name;
+          return null;
         })
       );
     }

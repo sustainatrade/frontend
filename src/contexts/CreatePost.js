@@ -1,11 +1,14 @@
 import React from "react";
 import set from "lodash/set";
+import get from "lodash/get";
+import pullAt from "lodash/pullAt";
 import * as gql from "./../gql-schemas";
 import apolloClient from "./../lib/apollo";
 import nanoid from "nanoid";
 
 const Context = React.createContext();
-
+const PHOTO_PATH = localStorage.getItem("postPhotoPath");
+const STORAGE = localStorage.getItem("storage");
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -19,7 +22,7 @@ class Provider extends React.Component {
       loading: false,
       form: {},
       formErrors: [],
-      updateForm(newProps) {
+      updateForm: newProps => {
         const { form } = this.state;
         const newForm = Object.assign({}, form, newProps);
         this.setState({ form: newForm, formErrors: [] });
@@ -43,8 +46,17 @@ class Provider extends React.Component {
         });
         await sleep(1000);
         if (ret.data.Post.status === "SUCCESS") {
+          const form = ret.data.Post.post;
+          const widgetIds = ret.data.Post.widgets || [];
           this.setState({
-            form: ret.data.Post.post,
+            form,
+            photos: form.photos.map((p, ii) => ({
+              uid: `-${ii}`,
+              name: p,
+              status: "done",
+              url: `${STORAGE}${PHOTO_PATH}/${p}`
+            })),
+            widgets: widgetIds.map(wId => ({ _refNo: wId })),
             loading: false
           });
         } else {
@@ -58,30 +70,85 @@ class Provider extends React.Component {
         widgetData.key = nanoid();
         this.setState({ widgets: [...this.state.widgets, widgetData] });
       },
-      editWidget: (index, data) => {
+      undeleteWidget: index => {
         const { widgets } = this.state;
+        const oldWidget = get(widgets, index, {});
+        if (!oldWidget._refNo) {
+          this.setState({
+            widgets: pullAt(widgets, [index])
+          });
+        } else
+          this.setState({
+            widgets: set(
+              widgets,
+              index,
+              Object.assign(oldWidget, { __deleted: undefined })
+            )
+          });
+      },
+      deleteWidget: index => {
+        const { widgets } = this.state;
+        const oldWidget = get(widgets, index, {});
         this.setState({
-          widgets: set(widgets, index, Object.assign(data, { key: nanoid() }))
+          widgets: set(
+            widgets,
+            index,
+            Object.assign(oldWidget, { __deleted: true })
+          )
         });
       },
-      editPost: async post => {
+      editWidget: (index, data) => {
+        const { widgets } = this.state;
+        const oldWidget = get(widgets, index, {});
+        this.setState({
+          widgets: set(
+            widgets,
+            index,
+            Object.assign(oldWidget, data, { key: nanoid() })
+          )
+        });
+      },
+      editPost: async ({
+        _refNo,
+        title,
+        section,
+        category,
+        description,
+        photos,
+        tags
+      }) => {
         try {
+          console.log("editting.");
           const ret = await apolloClient.mutate({
             mutation: gql.EDIT_POST,
-            variables: post
+            variables: {
+              post: {
+                _refNo,
+                title,
+                section,
+                category,
+                description,
+                photos,
+                tags
+              }
+            }
           });
-          const { CreatePost } = ret.data;
-          return CreatePost.post;
+          const { EditPost } = ret.data;
+          return EditPost.post;
         } catch (err) {
           console.log("error");
           console.log(err);
         }
       },
       submit: async post => {
+        console.log("submitt"); //TRACE
+        if (post._refNo) return this.state.editPost(post);
         try {
           const ret = await apolloClient.mutate({
             mutation: gql.CREATE_POST,
-            variables: post
+            variables: {
+              post
+            }
           });
           const { CreatePost } = ret.data;
           return CreatePost.post;

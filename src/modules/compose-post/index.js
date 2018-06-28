@@ -21,9 +21,9 @@ import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
 import { GlobalConsumer } from "./../../contexts";
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 const CATEGORY_LIST = gql`
   query {
@@ -51,7 +51,7 @@ export default class ComposePost extends Component {
     mutKey: Date.now()
   };
 
-  renderTags(form) {
+  renderTags({ form, updateForm }) {
     const { tagInput } = this.state;
     const tags = form.tags || [];
 
@@ -67,11 +67,10 @@ export default class ComposePost extends Component {
         selection
         value={tags}
         onChange={(e, { value }) => {
-          const newForm = Object.assign({}, form, { tags: value });
           this.setState({
-            form: newForm,
             tagInput: { key: "_", text: "", value: "" }
           });
+          updateForm({ tags: value });
         }}
         onSearchChange={(e, data) => {
           let tmp = { key: "_", text: "", value: "" };
@@ -83,26 +82,52 @@ export default class ComposePost extends Component {
       />
     );
   }
-  renderSpecs({ addWidget, widgets, editWidget }) {
+  renderSpecs({
+    addWidget,
+    widgets,
+    editWidget,
+    deleteWidget,
+    undeleteWidget
+  }) {
     return (
       <div>
         <WidgetContext.Consumer>
           {({ selectWidgetFn }) => (
             <React.Fragment>
               <Grid doubling stretched columns={1}>
-                {widgets.map((widget, index) => (
-                  <Grid.Column key={`post-widget-${index}`}>
-                    <PostWidget
-                      key={widget.key}
-                      fromData={widget}
-                      fluid
-                      onEdit={data => {
-                        editWidget(index, data);
-                      }}
-                      editable
-                    />
-                  </Grid.Column>
-                ))}
+                {widgets.map((widget, index) => {
+                  const widgetProps = {
+                    key: widget.key,
+                    fluid: true,
+                    editable: true,
+                    onEdit: data => {
+                      editWidget(index, data);
+                    },
+                    onDelete: () => {
+                      deleteWidget(index);
+                    }
+                  };
+                  if (widget._refNo) {
+                    widgetProps.fromRefNo = widget._refNo;
+                  }
+                  widgetProps.data = widget;
+                  if (widget.__deleted)
+                    return (
+                      <Grid.Column key={`post-widget-${index}`}>
+                        <Segment>
+                          <center>
+                            Deleted{` `}
+                            <a onClick={() => undeleteWidget(index)}>Undo</a>
+                          </center>
+                        </Segment>
+                      </Grid.Column>
+                    );
+                  return (
+                    <Grid.Column key={`post-widget-${index}`}>
+                      <PostWidget {...widgetProps} />
+                    </Grid.Column>
+                  );
+                })}
               </Grid>
               <Segment
                 compact
@@ -165,6 +190,8 @@ export default class ComposePost extends Component {
           widgets,
           addWidget,
           editWidget,
+          deleteWidget,
+          undeleteWidget,
           closeModal,
           submit
         },
@@ -172,6 +199,8 @@ export default class ComposePost extends Component {
         widget: { submitWidgetsFn }
       }) => {
         const errsx = [];
+        // console.log("form"); //TRACE
+        // console.log(form); //TRACE
         // if (error) {
         //   errsx.push(error.graphQLErrors);
         // }
@@ -232,29 +261,29 @@ export default class ComposePost extends Component {
                 submitStatus.steps.s1.loading = false;
                 submitStatus.steps.s2.loading = true;
                 await this.setState({ submitStatus });
-                const [photoResponse] = await Promise.all([
-                  Promise.resolve(["sdfsdf.jps"]),
-                  sleep(200)
-                ]);
-                // const photoResponse = await upload({
-                //   name: UPLOAD_NAME,
-                //   path,
-                //   files: photos
-                // });
+                // const [photoResponse] = await Promise.all([
+                //   Promise.resolve(["sdfsdf.jps"]),
+                //   sleep(200)
+                // ]);
+                const photoResponse = await upload({
+                  name: UPLOAD_NAME,
+                  path,
+                  files: photos
+                });
                 submitStatus = this.state.submitStatus;
                 submitStatus.steps.s2.done = true;
                 submitStatus.steps.s2.loading = false;
                 submitStatus.steps.s3.loading = true;
                 await this.setState({ submitStatus });
-                const [newPost] = await Promise.all([
-                  Promise.resolve({
-                    _refNo: "POST-0000033"
-                  }),
-                  sleep(200)
-                ]);
-                // const newPost = await submit({
-                //   post: Object.assign({}, form, { photos: photoResponse })
-                // });
+                // const [newPost] = await Promise.all([
+                //   Promise.resolve({
+                //     _refNo: "POST-0000033"
+                //   }),
+                //   sleep(200)
+                // ]);
+                const newPost = await submit(
+                  Object.assign({}, form, { photos: photoResponse })
+                );
                 console.log("newPost");
                 console.log(newPost);
                 submitStatus = this.state.submitStatus;
@@ -343,11 +372,17 @@ export default class ComposePost extends Component {
                 required
               />
               <Divider horizontal>Tags</Divider>
-              {this.renderTags(form)}
+              {this.renderTags({ form, updateForm })}
               <Divider horizontal>Photos</Divider>
-              <UploadPhoto />
+              <UploadPhoto defaultPhotos={form.photos} />
               <Divider horizontal>Specs</Divider>
-              {this.renderSpecs({ addWidget, widgets, editWidget })}
+              {this.renderSpecs({
+                addWidget,
+                widgets,
+                editWidget,
+                deleteWidget,
+                undeleteWidget
+              })}
               <Divider />
               <div style={{ textAlign: "right" }}>
                 <Button

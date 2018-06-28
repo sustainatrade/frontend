@@ -4,6 +4,7 @@ import apolloClient from "./../lib/apollo";
 import Modal from "antd/lib/modal";
 import WidgetEditor from "./../components/widget-editor/WidgetEditor";
 import nanoid from "nanoid";
+import compact from "lodash/compact";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -47,11 +48,22 @@ class Provider extends React.Component {
     submitWidgetsFn: async widgetArray => {
       this.setState({ submitting: true });
       const newWidgets = widgetArray.map(widget => {
-        widget.type = "CREATE";
+        if (widget.__deleted) {
+          widget.type = "DELETE";
+          widget.types = {};
+          widget.values = {};
+          widget.name = "-";
+          if (!widget._refNo) return null; //Not changed
+        } else if (widget._refNo) {
+          if (widget.types || widget.propTypes) widget.type = "MODIFY";
+          else return null; //Not changed
+        } else widget.type = "CREATE";
+
         const widgetInput = Object.assign({}, widget, {
           types: JSON.stringify(widget.types || widget.propTypes),
           values: JSON.stringify(widget.values || widget.propValues)
         });
+        delete widgetInput.__deleted;
         delete widgetInput.propTypes;
         delete widgetInput.propValues;
         delete widgetInput.key;
@@ -60,7 +72,7 @@ class Provider extends React.Component {
       const ret = await apolloClient.mutate({
         mutation: UPDATE_POST_WIDGETS,
         variables: {
-          widgets: newWidgets
+          widgets: compact(newWidgets)
         }
       });
       this.setState({ submitting: false });

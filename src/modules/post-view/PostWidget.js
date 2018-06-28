@@ -25,15 +25,14 @@ export default class PostWidget extends Component {
   state = {
     showControls: false
   };
-  async stateFromData(data) {
-    this.setState({
-      types: data.propTypes,
-      values: data.propValues,
-      ...data
-    });
+  async stateFromData(data = {}) {
+    const newState = Object.assign({}, data);
+    if (data.propTypes) newState.types = data.propTypes;
+    if (data.propValues) newState.values = data.propValues;
+    this.setState(newState);
   }
   async componentWillMount() {
-    const { fromRefNo, fromData } = this.props;
+    const { fromRefNo, data, onRendered } = this.props;
     if (fromRefNo) {
       const { data } = await apolloClient.query({
         query: POST_WIDGET,
@@ -41,17 +40,18 @@ export default class PostWidget extends Component {
           refNo: fromRefNo
         }
       });
-      this.setState(parseGraphData(data.PostWidget.postWidget));
-    } else if (fromData) {
-      console.log("fromData"); //TRACE
-      console.log(fromData); //TRACE
-      // self.setState({user:data.Me.user,loading:undefined})
-      // const {name,types,values,postRefNo} = fromData
-      await this.stateFromData(fromData);
+      await this.setState(parseGraphData(data.PostWidget.postWidget));
     }
+    console.log("data"); //TRACE
+    console.log(data); //TRACE
+    // self.setState({user:data.Me.user,loading:undefined})
+    // const {name,types,values,postRefNo} = data
+    await this.stateFromData(data);
+    const { showControls, ...renderedState } = this.state;
+    onRendered && onRendered(renderedState);
   }
   render() {
-    const { editable, fromData, onEdit } = this.props;
+    const { editable, onEdit, onDelete } = this.props;
     const { name, values, showControls } = this.state;
 
     if (!name) return <div>loading...</div>;
@@ -99,7 +99,7 @@ export default class PostWidget extends Component {
                   icon
                   title="Edit"
                   onClick={async () => {
-                    const widgetData = await selectWidgetFn(fromData);
+                    const widgetData = await selectWidgetFn(this.state);
                     if (widgetData) onEdit && onEdit(widgetData);
                   }}
                 >
@@ -108,10 +108,12 @@ export default class PostWidget extends Component {
                 <Button
                   type="button"
                   icon
-                  title="Duplicate"
-                  onClick={() => alert("Soon")}
+                  title="Delete"
+                  onClick={() => {
+                    onDelete && onDelete();
+                  }}
                 >
-                  <Icon name="copy outline" />
+                  <Icon name="trash" />
                 </Button>
                 <Button
                   type="button"

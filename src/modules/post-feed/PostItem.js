@@ -10,7 +10,7 @@ import {
 import PostViewContext from "./../../contexts/PostViewContext";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
-import UserContext from "./../../contexts/UserContext";
+import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
 import moment from "moment";
 import UserLabel from "./../user-profile/UserLabel";
@@ -105,8 +105,7 @@ export default class PostItem extends Component {
   render() {
     const { post, isMobile } = this.props;
 
-    let feedPhoto =
-      "https://react.semantic-ui.com/assets/images/wireframe/image.png";
+    let feedPhoto = imagePlaceholder;
     if (post.photos[0]) feedPhoto = `${storage}${path}/${post.photos[0]}`;
 
     return (

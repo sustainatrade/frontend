@@ -19,7 +19,6 @@ import Modal from "antd/lib/modal";
 import ComposePost from "./compose-post";
 import { UserAuth } from "../components";
 import { Menus } from "./../App";
-import nanoid from "nanoid";
 
 export default class Sidebar extends Component {
   state = {};
@@ -129,7 +128,7 @@ export default class Sidebar extends Component {
                 color="green"
                 content={"Create Post"}
                 icon="pencil"
-                onClick={openModal}
+                onClick={() => openModal()}
               />
             </React.Fragment>
           )}
