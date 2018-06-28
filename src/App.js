@@ -24,10 +24,7 @@ import FacebookProvider from "react-facebook";
 import Modal from "antd/lib/modal";
 
 // Service worker
-import {
-  addNewContentAvailableListener,
-  fireNewContentAvaialbleEvent
-} from "./registerServiceWorker";
+import { addNewContentAvailableListener } from "./registerServiceWorker";
 
 const CenterItem = ({ children, as = Menu, ...otherProps }) => (
   <as.Item as="a" {...otherProps}>

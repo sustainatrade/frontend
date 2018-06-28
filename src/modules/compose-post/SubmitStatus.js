@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Timeline from "antd/lib/timeline";
-import { Icon, Divider } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 
 export default class SubmitPanel extends Component {
   render() {

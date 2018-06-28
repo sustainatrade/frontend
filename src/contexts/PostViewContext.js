@@ -26,8 +26,6 @@ class Provider extends React.Component {
           fetchPolicy: "network-only"
         }
       });
-      console.log("ret"); //TRACE
-      console.log(ret); //TRACE
       if (ret.data.Post.status === "SUCCESS") {
         self.setState({
           post: ret.data.Post.post,
