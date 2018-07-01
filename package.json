@@ -14,7 +14,7 @@
     "graphql": "0.13.2",
     "graphql-tag": "2.9.2",
     "immutable": "3.8.2",
-    "lodash": "^4.17.10",
+    "lodash": "4.17.10",
     "moment": "2.22.1",
     "nanoid": "1.0.2",
     "prettyjson": "1.2.1",
