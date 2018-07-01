@@ -16,47 +16,53 @@ import moment from "moment";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import "./PostItem.css";
+import Popover from "antd/lib/popover";
 
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
 export default class PostItem extends Component {
+  state = {};
+
+  renderMoreProps(post, isMobile) {
+    return (
+      <GlobalConsumer>
+        {({ createPost: { openModal }, user: { user } }) => {
+          const isMyPost = user && post.createdBy === user.id;
+          return (
+            <List divided relaxed>
+              {isMyPost && (
+                <List.Item
+                  as="a"
+                  onClick={() => {
+                    openModal(post._refNo);
+                  }}
+                >
+                  <List.Icon name="edit" size="large" verticalAlign="middle" />
+                  <List.Content>Edit Post</List.Content>
+                </List.Item>
+              )}
+              <List.Item>
+                <List.Icon name="flag" size="large" verticalAlign="middle" />
+                <List.Content>Report</List.Content>
+              </List.Item>
+            </List>
+          );
+        }}
+      </GlobalConsumer>
+    );
+  }
+
   renderActions(post, isMobile) {
     const followerColor = post.section === "sell" ? "green" : "orange";
 
     return (
       <GlobalConsumer>
-        {({
-          createPost: { openModal },
-          user: { user },
-          postView: { viewPostFn }
-        }) => (
+        {({ postView: { viewPostFn } }) => (
           <React.Fragment>
-            {(() => {
-              const isMyPost = user && post.createdBy === user.id;
-              if (isMyPost) {
-                const mobileProps = {};
-                if (isMobile) {
-                  mobileProps.fluid = true;
-                  mobileProps.content = "Edit Post";
-                  mobileProps.size = "small";
-                }
-                return (
-                  <Button
-                    icon="edit"
-                    basic
-                    title="Edit Post"
-                    {...mobileProps}
-                    onClick={() => {
-                      openModal(post._refNo);
-                    }}
-                  />
-                );
-              } else return <React.Fragment />;
-            })()}
             {isMobile && (
               <Label as="a" className="actn-lbl" color={followerColor}>
-                <Icon name="bookmark" /> 0
+                <Icon name="bookmark" /> 0 Followers
               </Label>
             )}
             {!isMobile && (
@@ -74,6 +80,7 @@ export default class PostItem extends Component {
                 return (
                   <Label as="a" className="actn-lbl">
                     <Icon name="quote left" />
+                    0 Comments
                     {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
                   </Label>
                 );
@@ -95,19 +102,93 @@ export default class PostItem extends Component {
                   </Button>
                 );
             })()}
-            {!isMobile && <Button basic icon="flag" title="Report" />}
+            {(() => {
+              const poProps = {
+                placement: "bottomRight"
+              };
+              if (isMobile) {
+                poProps.placement = "rightBottom";
+              }
+              return (
+                <Popover
+                  content={
+                    <div onClick={() => this.setState({ showMore: false })}>
+                      {this.renderMoreProps(post)}
+                    </div>
+                  }
+                  trigger="click"
+                  visible={this.state.showMore}
+                  onVisibleChange={showMore => this.setState({ showMore })}
+                  {...poProps}
+                >
+                  {isMobile ? (
+                    <Label basic as="a" className="actn-lbl">
+                      <center>
+                        <Icon name="ellipsis horizontal" />
+                      </center>
+                    </Label>
+                  ) : (
+                    <Button basic icon="ellipsis horizontal" title="More" />
+                  )}
+                </Popover>
+              );
+            })()}
           </React.Fragment>
         )}
       </GlobalConsumer>
     );
   }
 
-  render() {
+  renderImage() {
     const { post, isMobile } = this.props;
 
     let feedPhoto = imagePlaceholder;
     if (post.photos[0]) feedPhoto = `${storage}${path}/${post.photos[0]}`;
+    return (
+      <PostViewContext.Consumer>
+        {({ viewPostFn, loading }) => (
+          <React.Fragment>
+            {isMobile && (
+              <div className="image">
+                <MsImage
+                  as={Item.Image}
+                  src={feedPhoto}
+                  height={125}
+                  width={125}
+                  loading={loading}
+                  block
+                  style={{
+                    cursor: "pointer",
+                    minHeight: 125
+                  }}
+                  onClick={() => viewPostFn(post._refNo)}
+                />
+                {this.renderActions(post, true)}
+              </div>
+            )}
+            {!isMobile && (
+              <MsImage
+                as={Item.Image}
+                src={feedPhoto}
+                height={200}
+                width={200}
+                loading={loading}
+                block
+                style={{
+                  cursor: "pointer",
+                  minHeight: 200
+                }}
+                onClick={() => viewPostFn(post._refNo)}
+              />
+            )}
+          </React.Fragment>
+        )}
+      </PostViewContext.Consumer>
+    );
+  }
 
+  render() {
+    const { post, isMobile } = this.props;
     return (
       <Item className="post">
         <PostFeedContext.Consumer>
@@ -115,21 +196,7 @@ export default class PostItem extends Component {
             <PostViewContext.Consumer>
               {({ viewPostFn, loading }) => (
                 <React.Fragment>
-                  <MsImage
-                    as={Item.Image}
-                    src={feedPhoto}
-                    height={isMobile ? 125 : 200}
-                    width={isMobile ? 125 : 200}
-                    loading={loading}
-                    block
-                    style={{
-                      cursor: "pointer",
-                      minHeight: isMobile ? 125 : 200
-                    }}
-                    onClick={() => viewPostFn(post._refNo)}
-                  >
-                    {isMobile && this.renderActions(post, "tiny")}
-                  </MsImage>
+                  {this.renderImage()}
                   <Item.Content>
                     {!isMobile && (
                       <div style={{ float: "right" }}>

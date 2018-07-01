@@ -20,8 +20,10 @@ import "antd/lib/modal/style/css";
 import "antd/lib/notification/style/css";
 import "antd/lib/slider/style/css";
 import "antd/lib/timeline/style/css";
+import "antd/lib/popover/style/css";
 import FacebookProvider from "react-facebook";
 import Modal from "antd/lib/modal";
+import Globals from "./modules/globals";
 
 // Service worker
 import { addNewContentAvailableListener } from "./registerServiceWorker";
@@ -167,6 +169,7 @@ class Root extends React.Component {
             />
           </Header>
         </Dimmer>
+        <Globals />
       </RootContextProvider>
     );
   }

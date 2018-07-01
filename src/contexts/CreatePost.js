@@ -32,8 +32,15 @@ class Provider extends React.Component {
       },
       openModal: async refNo => {
         let loading = refNo ? true : false;
-
-        this.setState({ modalOpened: true, key: nanoid(), loading });
+        console.log("openeing modall creat"); //TRACE
+        this.setState({
+          modalOpened: true,
+          form: {},
+          photos: [],
+          widgets: [],
+          key: nanoid(),
+          loading
+        });
         if (!refNo) {
           return;
         }

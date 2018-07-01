@@ -101,6 +101,7 @@ class Provider extends React.Component {
 
   render() {
     const { children } = this.props;
+    //TODO: move Modal to globals
     return (
       <Context.Provider value={this.state}>
         {children}

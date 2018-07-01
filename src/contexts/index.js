@@ -28,7 +28,9 @@ const contexts = {
 function compose(elArr = []) {
   let currEl = elArr.shift();
   while (elArr.length > 0) {
-    currEl = React.createElement(elArr.shift(), {}, currEl);
+    const nextEl = elArr.shift();
+    const { key } = nextEl;
+    currEl = React.createElement(nextEl, { key }, currEl);
   }
   return currEl;
 }
@@ -37,9 +39,10 @@ const consumerMapping = {};
 const providerList = [];
 
 Object.keys(contexts).forEach(key => {
-  const { Consumer } = contexts[key];
+  const { Consumer, Provider } = contexts[key];
   consumerMapping[key] = <Consumer />;
-  providerList.push(contexts[key].Provider);
+  Provider.key = key;
+  providerList.push(Provider);
 });
 
 const GlobalConsumer = adopt(consumerMapping);

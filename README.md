@@ -11,6 +11,7 @@ The main technologies used are:
 - [React](http://facebook.github.io/react/)
 - [GraphQL](http://graphql.org)
 - [Semantic-ui-react](https://react.semantic-ui.com)
+- [Ant-design](http://ant.design/)
 
 ## Linting and Testing
 

@@ -15,8 +15,6 @@ import CategoryContext from "./../contexts/CategoryContext";
 import PostFeedContext from "./../contexts/PostFeedContext";
 import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
-import Modal from "antd/lib/modal";
-import ComposePost from "./compose-post";
 import { UserAuth } from "../components";
 import { Menus } from "./../App";
 
@@ -119,9 +117,6 @@ export default class Sidebar extends Component {
         <CreatePostContext.Consumer>
           {({ key, modalOpened, closeModal, openModal }) => (
             <React.Fragment>
-              <Modal visible={modalOpened} onCancel={closeModal} footer={null}>
-                <ComposePost key={key} />
-              </Modal>
               <Button
                 disabled={modalOpened}
                 fluid
