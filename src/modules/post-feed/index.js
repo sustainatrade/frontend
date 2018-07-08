@@ -148,7 +148,12 @@ export default class PostFeed extends Component {
                 <Searches />
                 <Divider />
                 <PostFeedContext.Consumer>
-                  {({ unreadPosts, clearUnreadFn, loadMoreFn }) => {
+                  {({
+                    unreadPosts,
+                    clearUnreadFn,
+                    loadingFollowedPostsFn,
+                    loadMoreFn
+                  }) => {
                     return (
                       <React.Fragment>
                         <Menu secondary pointing>
@@ -158,7 +163,12 @@ export default class PostFeed extends Component {
                             unreadPosts.length,
                             clearUnreadFn
                           )}
-                          {this.createTabMenu("following", "bookmark")}
+                          {this.createTabMenu(
+                            "following",
+                            "bookmark",
+                            undefined,
+                            loadingFollowedPostsFn
+                          )}
                         </Menu>
                         <Visibility
                           fireOnMount

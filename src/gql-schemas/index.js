@@ -1,5 +1,7 @@
 import gql from "graphql-tag";
 
+export * from "./FollowPost";
+
 export const CREATE_POST = gql`
   mutation($post: CreatePostInput) {
     CreatePost(input: $post) {

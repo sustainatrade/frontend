@@ -12,14 +12,85 @@ import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
+import { Mutation } from "react-apollo";
 import moment from "moment";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
+import { FOLLOW_POST } from "./../../gql-schemas";
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
+import get from "lodash/get";
 
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
+
+class FollowButton extends Component {
+  state = {};
+  render() {
+    const { post, isMobile } = this.props;
+    return (
+      <Mutation mutation={FOLLOW_POST}>
+        {(followPost, { data, error }) => {
+          let followerColor = "black";
+          let title = "Click to follow";
+          let followers = post.followerCount;
+          const { newFollowing } = this.state;
+          let following = post.isFollowing;
+          if (data) {
+            following = newFollowing;
+            if (post.isFollowing) {
+              if (!following) followers--;
+            } else if (following) followers++;
+          }
+
+          if (following) {
+            title = "Unfollow";
+            followerColor = post.section === "sell" ? "green" : "orange";
+          }
+          const onClickHandler = async () => {
+            // const { toggles } = this.state;
+            followPost({
+              variables: {
+                postRefNo: post._refNo,
+                revoke: following
+              }
+            });
+            this.setState({ newFollowing: !following });
+          };
+          return (
+            <React.Fragment>
+              {isMobile && (
+                <Label
+                  as="a"
+                  className="actn-lbl"
+                  color={followerColor}
+                  onClick={onClickHandler}
+                >
+                  <Icon name="bookmark" /> {followers} Followers
+                </Label>
+              )}
+              {!isMobile && (
+                <Button
+                  as="div"
+                  labelPosition="right"
+                  title={title}
+                  onClick={onClickHandler}
+                >
+                  <Button color={followerColor} icon>
+                    <Icon name="bookmark" />
+                  </Button>
+                  <Label color={followerColor} as="a" basic pointing="left">
+                    {followers}
+                  </Label>
+                </Button>
+              )}
+            </React.Fragment>
+          );
+        }}
+      </Mutation>
+    );
+  }
+}
 
 export default class PostItem extends Component {
   state = {};
@@ -52,29 +123,12 @@ export default class PostItem extends Component {
       </GlobalConsumer>
     );
   }
-
   renderActions(post, isMobile) {
-    const followerColor = post.section === "sell" ? "green" : "orange";
-
     return (
       <GlobalConsumer>
         {({ postView: { viewPostFn } }) => (
           <React.Fragment>
-            {isMobile && (
-              <Label as="a" className="actn-lbl" color={followerColor}>
-                <Icon name="bookmark" /> 0 Followers
-              </Label>
-            )}
-            {!isMobile && (
-              <Button as="div" labelPosition="right" title="Click to follow">
-                <Button color={followerColor} icon>
-                  <Icon name="bookmark" />
-                </Button>
-                <Label color={followerColor} as="a" basic pointing="left">
-                  0
-                </Label>
-              </Button>
-            )}
+            <FollowButton post={post} isMobile={isMobile} />
             {(() => {
               if (isMobile)
                 return (
