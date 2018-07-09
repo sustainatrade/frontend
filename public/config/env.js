@@ -1,5 +1,5 @@
-localStorage.setItem('graphql', 'http://localhost:1560/graphql');
-localStorage.setItem('graphql-ws', ' ws://localhost:2999/subscriptions');
+localStorage.setItem('graphql', 'https://graph.sustainatrade.com/graphql');
 localStorage.setItem('token', 'dsfwwqewqqeq');
-localStorage.setItem('storage', 'http://localhost:14006');
+localStorage.setItem('graphql-ws', 'wss://graphws.sustainatrade.com/subscriptions');
+localStorage.setItem('storage', 'https://storage.sustainatrade.com');
 localStorage.setItem('postPhotoPath', '/file/eco-trade-assets');

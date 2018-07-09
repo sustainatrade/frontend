@@ -19,7 +19,6 @@ import { MsImage } from "./../../components";
 import { FOLLOW_POST } from "./../../gql-schemas";
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
-import get from "lodash/get";
 
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
@@ -30,12 +29,17 @@ class FollowButton extends Component {
     const { post, isMobile } = this.props;
     return (
       <Mutation mutation={FOLLOW_POST}>
-        {(followPost, { data, error }) => {
+        {(followPost, { data, loading, error }) => {
           let followerColor = "black";
           let title = "Click to follow";
           let followers = post.followerCount;
           const { newFollowing } = this.state;
           let following = post.isFollowing;
+          const iconProps = { name: "bookmark" };
+          if (loading) {
+            iconProps.name = "spinner";
+            iconProps.loading = true;
+          }
           if (data) {
             following = newFollowing;
             if (post.isFollowing) {
@@ -66,7 +70,7 @@ class FollowButton extends Component {
                   color={followerColor}
                   onClick={onClickHandler}
                 >
-                  <Icon name="bookmark" /> {followers} Followers
+                  <Icon {...iconProps} /> {followers} Followers
                 </Label>
               )}
               {!isMobile && (
@@ -77,7 +81,7 @@ class FollowButton extends Component {
                   onClick={onClickHandler}
                 >
                   <Button color={followerColor} icon>
-                    <Icon name="bookmark" />
+                    <Icon {...iconProps} />
                   </Button>
                   <Label color={followerColor} as="a" basic pointing="left">
                     {followers}

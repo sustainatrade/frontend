@@ -15,6 +15,8 @@ import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 // import Cookie from 'tough-cookie'
 import LoginContext from "./LoginContext";
+import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
+import { TYPES } from "./../../errors";
 
 const GET_ME = gql`
   query {
@@ -81,6 +83,19 @@ export default class UserAuth extends React.Component {
       }
     }
   };
+
+  loginErrorListener = () => {
+    this.setState({ openLogin: true });
+  };
+  componentWillMount() {
+    emitter.addOnce(TYPES.NOT_LOGGED_IN.eventName, this.loginErrorListener);
+  }
+  componentWillUnmount() {
+    emitter.removeListener(
+      TYPES.NOT_LOGGED_IN.eventName,
+      this.loginErrorListener
+    );
+  }
 
   async authWithFacebook() {
     const result = await app.auth().signInWithPopup(facebookProvider);
@@ -210,37 +225,43 @@ export default class UserAuth extends React.Component {
       {({ authDetail, doLogout }) => {
         if (authDetail) return;
         return (
-          <Modal
-            trigger={
-              <Button icon labelPosition="left" color="green">
-                <Icon name="user" />
-                LOGIN
-              </Button>
-            }
-            basic
-            size="small"
-          >
-            <Header as="h3" icon>
-              <Icon name="user" color="green" />
-              LOG IN
-            </Header>
-            <Modal.Content>
-              <center>
-                <div style={{ maxWidth: 300 }}>
-                  <p>
-                    Start selling your item now. User your social accounts to
-                    login
-                  </p>
-                  <Button
-                    color="facebook"
-                    fluid
-                    onClick={async () => {
-                      await this.authWithFacebook();
-                    }}
-                  >
-                    <Icon name="facebook" /> Log In with Facebook
-                  </Button>
-                  {/* <Divider/>
+          <React.Fragment>
+            <Button
+              icon
+              labelPosition="left"
+              color="green"
+              onClick={() => this.setState({ openLogin: true })}
+            >
+              <Icon name="user" />
+              LOGIN
+            </Button>
+            <Modal
+              open={this.state.openLogin}
+              basic
+              size="small"
+              onClose={() => this.setState({ openLogin: false })}
+            >
+              <Header as="h3" icon>
+                <Icon name="user" color="green" />
+                LOG IN
+              </Header>
+              <Modal.Content>
+                <center>
+                  <div style={{ maxWidth: 300 }}>
+                    <p>
+                      Start selling your item now. User your social accounts to
+                      login
+                    </p>
+                    <Button
+                      color="facebook"
+                      fluid
+                      onClick={async () => {
+                        await this.authWithFacebook();
+                      }}
+                    >
+                      <Icon name="facebook" /> Log In with Facebook
+                    </Button>
+                    {/* <Divider/>
                                 <Button color='google plus'
                                     fluid
                                     onClick={async ()=>{
@@ -249,10 +270,11 @@ export default class UserAuth extends React.Component {
                                 >
                                 <Icon name='google' /> Log In with Google
                                 </Button> */}
-                </div>
-              </center>
-            </Modal.Content>
-          </Modal>
+                  </div>
+                </center>
+              </Modal.Content>
+            </Modal>
+          </React.Fragment>
         );
       }}
     </LoginContext.Consumer>
