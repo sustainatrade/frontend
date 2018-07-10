@@ -102,7 +102,11 @@ export default class PostItem extends Component {
   renderMoreProps(post, isMobile) {
     return (
       <GlobalConsumer>
-        {({ createPost: { openModal }, user: { user } }) => {
+        {({
+          createPost: { openModal },
+          user: { user },
+          postView: { reportPostFn }
+        }) => {
           const isMyPost = user && post.createdBy === user.id;
           return (
             <List divided relaxed>
@@ -117,7 +121,12 @@ export default class PostItem extends Component {
                   <List.Content>Edit Post</List.Content>
                 </List.Item>
               )}
-              <List.Item>
+              <List.Item
+                as="a"
+                onClick={() => {
+                  reportPostFn(post._refNo);
+                }}
+              >
                 <List.Icon name="flag" size="large" verticalAlign="middle" />
                 <List.Content>Report</List.Content>
               </List.Item>
