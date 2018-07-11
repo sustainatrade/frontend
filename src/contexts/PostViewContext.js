@@ -1,6 +1,6 @@
 import React from "react";
-import * as gql from "./../gql-schemas";
-import apolloClient from "./../lib/apollo";
+import * as gql from "../gql-schemas";
+import apolloClient from "../lib/apollo";
 import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
 
@@ -15,7 +15,6 @@ class ReportPost extends React.Component {
     OTHERS: "Others:"
   };
   handleChange = (_, data) => {
-    console.log("a,b"); //TRACE
     if (data.checked) {
       const { reportPost = {} } = this.state;
       this.setState({ reportPost: { ...reportPost, type: data.value } });
@@ -23,10 +22,23 @@ class ReportPost extends React.Component {
   };
   render() {
     const { postRefNo, ...modalProps } = this.props;
-    const { reportPost = {} } = this.state;
+    const { reportPost = {}, detail } = this.state;
     const { OTHERS, ...typeOptions } = this.types;
     return (
-      <Modal {...modalProps} title={`Report Post ${postRefNo}`} okText="Submit">
+      <Modal
+        {...modalProps}
+        title={`Report Post ${postRefNo}`}
+        okText="Submit"
+        onOk={() => {
+          apolloClient.mutate({
+            mutation: gql.REPORT_POST,
+            variables: {
+              postRefNo,
+              detail
+            }
+          });
+        }}
+      >
         <Form>
           <Form.Group>
             <label>Problem:</label>
@@ -46,7 +58,10 @@ class ReportPost extends React.Component {
               onChange={this.handleChange}
             />
           </Form.Group>
-          <Form.TextArea placeholder="Tell us what's wrong" />
+          <Form.TextArea
+            placeholder="Tell us what's wrong"
+            onChange={(_, data) => this.setState({ detail: data.value })}
+          />
         </Form>
       </Modal>
     );
