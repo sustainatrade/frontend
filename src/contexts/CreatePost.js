@@ -9,9 +9,7 @@ import nanoid from "nanoid";
 const Context = React.createContext();
 const PHOTO_PATH = localStorage.getItem("postPhotoPath");
 const STORAGE = localStorage.getItem("storage");
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+
 class Provider extends React.Component {
   constructor(props) {
     super(props);
@@ -51,7 +49,6 @@ class Provider extends React.Component {
             fetchPolicy: "network-only"
           }
         });
-        await sleep(1000);
         if (ret.data.Post.status === "SUCCESS") {
           const form = ret.data.Post.post;
           const widgetIds = ret.data.Post.widgets || [];

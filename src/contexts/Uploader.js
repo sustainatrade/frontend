@@ -7,9 +7,6 @@ import compact from "lodash/compact";
 const Context = React.createContext({});
 
 const storageHost = localStorage.getItem("storage");
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 class Provider extends React.Component {
   // state = {};
 
@@ -90,7 +87,6 @@ class Provider extends React.Component {
               data: formData
             });
             data = response.data;
-            await sleep(250);
           }
 
           if (data.status === "SUCCESS") {

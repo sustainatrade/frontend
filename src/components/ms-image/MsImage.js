@@ -16,21 +16,18 @@ const PlaceHolder = props => (
   </ContentLoader>
 );
 
-function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 export default class MsImage extends Component {
   state = {
     loaded: false
   };
   async componentWillMount() {
-    const { src, width, height, delay = 0 } = this.props;
+    const { src, width, height } = this.props;
     let newSrc;
     if (src.startsWith("data:image")) {
       newSrc = src;
     } else {
       newSrc = src + `?width=${width}&height=${height}`;
-      await Promise.all([axios(newSrc), timeout(delay)]);
+      await axios(newSrc);
     }
     this.setState({ loaded: true, src: newSrc });
   }

@@ -21,10 +21,6 @@ import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
 import { GlobalConsumer } from "./../../contexts";
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 const CATEGORY_LIST = gql`
   query {
     CategoryList {
