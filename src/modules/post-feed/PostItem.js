@@ -19,7 +19,6 @@ import { MsImage } from "./../../components";
 import { FOLLOW_POST } from "./../../gql-schemas";
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
-
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
