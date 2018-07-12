@@ -3,6 +3,7 @@ import * as gql from "../gql-schemas";
 import apolloClient from "../lib/apollo";
 import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
+import Notification from "antd/lib/notification";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -21,7 +22,7 @@ class ReportPost extends React.Component {
     }
   };
   render() {
-    const { postRefNo, ...modalProps } = this.props;
+    const { postRefNo, onCompleted, ...modalProps } = this.props;
     const { reportPost = {}, detail } = this.state;
     const { OTHERS, ...typeOptions } = this.types;
     return (
@@ -37,6 +38,10 @@ class ReportPost extends React.Component {
               detail
             }
           });
+          Notification.info({
+            message: "Report has been submitted!"
+          });
+          onCompleted && onCompleted();
         }}
       >
         <Form>
@@ -119,6 +124,7 @@ class Provider extends React.Component {
           postRefNo={reportPostRefNo}
           visible={!!reportPostRefNo}
           onCancel={() => this.setState({ reportPostRefNo: undefined })}
+          onCompleted={() => this.setState({ reportPostRefNo: undefined })}
         />
       </Context.Provider>
     );
