@@ -102,23 +102,20 @@ class Provider extends React.Component {
         return;
       }
       this.setState({ loadingMore: true });
-      const [{ data }] = await Promise.all([
-        apolloClient.query({
-          query: POST_LIST,
-          variables: {
-            input: {
-              category: filters.category,
-              section: filters.section,
-              search: JSON.stringify(searches),
-              skip,
-              limit,
-              isFollowing,
-              requestTimeStamp: postListTimeStamp
-            }
+      const { data } = await apolloClient.query({
+        query: POST_LIST,
+        variables: {
+          input: {
+            category: filters.category,
+            section: filters.section,
+            search: JSON.stringify(searches),
+            skip,
+            limit,
+            isFollowing,
+            requestTimeStamp: postListTimeStamp
           }
-        }),
-        (() => new Promise(resolve => setTimeout(resolve, 3000)))()
-      ]);
+        }
+      });
 
       const { PostList } = data;
       // const stateUpdates = {}
