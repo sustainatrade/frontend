@@ -69,7 +69,7 @@ class FollowButton extends Component {
                   color={followerColor}
                   onClick={onClickHandler}
                 >
-                  <Icon {...iconProps} /> {followers} Followers
+                  <Icon {...iconProps} /> {followers}
                 </Label>
               )}
               {!isMobile && (
@@ -146,7 +146,7 @@ export default class PostItem extends Component {
                 return (
                   <Label as="a" className="actn-lbl">
                     <Icon name="quote left" />
-                    0 Comments
+                    0
                     {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
                   </Label>
                 );
@@ -210,6 +210,13 @@ export default class PostItem extends Component {
 
     let feedPhoto = imagePlaceholder;
     if (post.photos[0]) feedPhoto = `${storage}${path}/${post.photos[0]}`;
+    const msImageProps = {
+      as: Item.Image,
+      src: feedPhoto,
+      height: 75,
+      width: 75,
+      block: true
+    };
     return (
       <PostViewContext.Consumer>
         {({ viewPostFn, loading }) => (
@@ -217,12 +224,8 @@ export default class PostItem extends Component {
             {isMobile && (
               <div className="image">
                 <MsImage
-                  as={Item.Image}
-                  src={feedPhoto}
-                  height={125}
-                  width={125}
+                  {...msImageProps}
                   loading={loading}
-                  block
                   onClick={() => viewPostFn(post._refNo)}
                 />
                 {this.renderActions(post, true)}
@@ -230,15 +233,11 @@ export default class PostItem extends Component {
             )}
             {!isMobile && (
               <MsImage
-                as={Item.Image}
-                src={feedPhoto}
-                height={75}
-                width={75}
-                loading={loading}
-                block
                 style={{
                   width: 75
                 }}
+                {...msImageProps}
+                loading={loading}
                 onClick={() => viewPostFn(post._refNo)}
               />
             )}

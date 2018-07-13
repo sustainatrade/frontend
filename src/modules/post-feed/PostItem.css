@@ -17,7 +17,8 @@
 
 .post .image {
     cursor: "pointer";
-    min-height: 75;
+    min-height: 75px;
+    max-width: 75px;
 }
 
 .post .actn-lbl div {
