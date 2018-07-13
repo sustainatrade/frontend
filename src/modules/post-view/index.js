@@ -8,9 +8,9 @@ import {
   Container
 } from "semantic-ui-react";
 import apolloClient from "./../../lib/apollo";
-import PostViewContext from "./../../contexts/PostViewContext";
 import WidgetContext from "./../../contexts/WidgetContext";
 import ResponsiveContext from "./../../contexts/Responsive";
+import { GlobalConsumer } from "./../../contexts";
 import UserContext from "./../../contexts/UserContext";
 import gql from "graphql-tag";
 import PostItem from "./../post-feed/PostItem";
@@ -95,11 +95,13 @@ export default class PostView extends Component {
   }
 
   render() {
-    const { categories } = this.state;
-
     return (
-      <PostViewContext.Consumer>
-        {({ post, widgets }) => {
+      <GlobalConsumer>
+        {({
+          postView: { post, widgets },
+          responsive: { isMobile },
+          category: { categories }
+        }) => {
           if (!(post && categories)) return <div>Loading</div>;
 
           const renderGallery = () => {
@@ -139,33 +141,26 @@ export default class PostView extends Component {
           };
 
           return (
-            <ResponsiveContext.Consumer>
-              {({ isMobile }) => (
-                <Grid doubling columns={2} style={{ margin: 0 }}>
-                  <Grid.Column
-                    width={10}
-                    style={{ padding: 0, paddingBottom: 10 }}
-                  >
-                    <Item.Group divided>
-                      <PostItem post={post} categories={categories} />
-                      {renderGallery()}
-                      {this.renderWidgets(post, widgets)}
-                    </Item.Group>
-                  </Grid.Column>
-                  <Grid.Column
-                    width={6}
-                    style={{ padding: 0, paddingLeft: isMobile ? 0 : 10 }}
-                  >
-                    {this.renderComments(post)}
-                    <Divider horizontal> More Posts</Divider>
-                    <Container textAlign="center">No other posts.</Container>
-                  </Grid.Column>
-                </Grid>
-              )}
-            </ResponsiveContext.Consumer>
+            <Grid doubling columns={2} style={{ margin: 0 }}>
+              <Grid.Column width={10} style={{ padding: 0, paddingBottom: 10 }}>
+                <Item.Group divided>
+                  <PostItem post={post} categories={categories} />
+                  {renderGallery()}
+                  {this.renderWidgets(post, widgets)}
+                </Item.Group>
+              </Grid.Column>
+              <Grid.Column
+                width={6}
+                style={{ padding: 0, paddingLeft: isMobile ? 0 : 10 }}
+              >
+                {this.renderComments(post)}
+                <Divider horizontal> More Posts</Divider>
+                <Container textAlign="center">No other posts.</Container>
+              </Grid.Column>
+            </Grid>
           );
         }}
-      </PostViewContext.Consumer>
+      </GlobalConsumer>
     );
   }
 }

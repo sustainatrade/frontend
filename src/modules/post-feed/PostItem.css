@@ -1,6 +1,23 @@
+.post {
+    padding-bottom: 10px !important;
+}
 .post .actn-lbl {
     width: 100%;
     margin: 5px 5px 0px 0px;
+}
+.post .meta {
+    margin: 0 !important
+}
+.post .extra {
+    margin: 0 !important
+}
+.post .content {
+    padding-left: 10px !important
+}
+
+.post .image {
+    cursor: "pointer";
+    min-height: 75;
 }
 
 .post .actn-lbl div {

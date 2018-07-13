@@ -1,6 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import apolloClient from "./../lib/apollo";
+import lscache from "lscache";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -26,19 +27,23 @@ class Provider extends React.Component {
   async loadCategories() {
     const self = this;
     self.setState({ loading: true });
-    const { data } = await apolloClient.query({
-      query: CATEGORY_LIST
-    });
-    const { CategoryList } = data;
-    let catMap, iconMap;
-    if (CategoryList) {
-      catMap = {};
-      iconMap = {};
-      CategoryList.list.forEach(cat => {
-        catMap[cat.id] = cat.name;
-        iconMap[cat.id] = cat.icon;
+    let CategoryList = lscache.get("sat-categories");
+
+    if (!CategoryList) {
+      const { data } = await apolloClient.query({
+        query: CATEGORY_LIST
       });
+      CategoryList = data.CategoryList;
+      lscache.set("sat-categories", CategoryList);
     }
+
+    let catMap = {};
+    let iconMap = {};
+    CategoryList.list.forEach(cat => {
+      catMap[cat.id] = cat.name;
+      iconMap[cat.id] = cat.icon;
+    });
+
     self.setState({ categories: catMap, icons: iconMap, loading: undefined });
   }
   async componentWillMount() {

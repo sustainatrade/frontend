@@ -223,10 +223,6 @@ export default class PostItem extends Component {
                   width={125}
                   loading={loading}
                   block
-                  style={{
-                    cursor: "pointer",
-                    minHeight: 125
-                  }}
                   onClick={() => viewPostFn(post._refNo)}
                 />
                 {this.renderActions(post, true)}
@@ -236,13 +232,12 @@ export default class PostItem extends Component {
               <MsImage
                 as={Item.Image}
                 src={feedPhoto}
-                height={200}
-                width={200}
+                height={75}
+                width={75}
                 loading={loading}
                 block
                 style={{
-                  cursor: "pointer",
-                  minHeight: 200
+                  width: 75
                 }}
                 onClick={() => viewPostFn(post._refNo)}
               />
@@ -254,7 +249,7 @@ export default class PostItem extends Component {
   }
 
   render() {
-    const { post, isMobile } = this.props;
+    const { post, isMobile, basic } = this.props;
     return (
       <Item className="post">
         <PostFeedContext.Consumer>
@@ -273,7 +268,7 @@ export default class PostItem extends Component {
                       {post.title}
                     </Item.Header>
                     <Item.Meta>
-                      <List>
+                      <List horizontal={!isMobile}>
                         <List.Item>
                           <List.Icon name="user" />
                           <List.Content>
@@ -287,40 +282,37 @@ export default class PostItem extends Component {
                           </List.Content>
                         </List.Item>
                       </List>
-                      <div>
-                        <Label
-                          color={post.section === "sell" ? "green" : "orange"}
-                        >
-                          <Icon name="weixin" />
-                          <Label.Detail>
-                            {post.section.toUpperCase()}
-                          </Label.Detail>
-                        </Label>
-                        <CategoryContext.Consumer>
-                          {({ icons, categories }) => (
-                            <Label color={"black"}>
-                              <Icon name={icons[post.category]} />
-                              <Label.Detail>
-                                {categories[post.category]}
-                              </Label.Detail>
-                            </Label>
-                          )}
-                        </CategoryContext.Consumer>
-                      </div>
                     </Item.Meta>
-                    <Item.Description>{post.description}</Item.Description>
+                    {!basic && (
+                      <Item.Description>{post.description}</Item.Description>
+                    )}
                     <Item.Extra>
-                      <div>
-                        {post.tags.map(tag => (
-                          <Label
-                            key={tag}
-                            size="small"
-                            onClick={() => setSearchesFn({ PostTag: tag })}
-                            style={{ cursor: "pointer" }}
-                            content={tag}
-                          />
-                        ))}
-                      </div>
+                      <Label
+                        color={post.section === "sell" ? "green" : "orange"}
+                      >
+                        <Icon name="weixin" />
+                        <Label.Detail>
+                          {post.section.toUpperCase()}
+                        </Label.Detail>
+                      </Label>
+                      <CategoryContext.Consumer>
+                        {({ icons, categories }) => (
+                          <Label color={"black"}>
+                            <Icon name={icons[post.category]} />
+                            <Label.Detail>
+                              {categories[post.category]}
+                            </Label.Detail>
+                          </Label>
+                        )}
+                      </CategoryContext.Consumer>
+                      {post.tags.map(tag => (
+                        <Label
+                          key={tag}
+                          onClick={() => setSearchesFn({ PostTag: tag })}
+                          style={{ cursor: "pointer" }}
+                          content={tag}
+                        />
+                      ))}
                     </Item.Extra>
                   </Item.Content>
                 </React.Fragment>
