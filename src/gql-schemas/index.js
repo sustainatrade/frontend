@@ -42,15 +42,17 @@ export const GET_POST = gql`
       widgets
       post {
         id
-        _refNo
-        createdBy
-        createdDate
         title
         section
         category
         description
         photos
         tags
+        _refNo
+        createdBy
+        createdDate
+        followerCount
+        isFollowing
       }
     }
   }

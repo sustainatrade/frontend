@@ -22,22 +22,22 @@ import CategoryContext from "./../../contexts/CategoryContext";
 import ResponsiveContext from "./../../contexts/Responsive";
 import Modal from "antd/lib/modal";
 
-const PlaceHolder = props => (
+const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
-    height={170}
-    width={700}
+    height={50}
+    width={isMobile ? 130 : 700}
     speed={2}
     primaryColor="#f3f3f3"
     secondaryColor="#ecebeb"
     {...props}
   >
-    <rect x="120" y="5" rx="4" ry="4" width="189.54" height="15" />
-    <rect x="120" y="23" rx="3" ry="3" width="102" height="10" />
-    <rect x="120" y="40" rx="3" ry="3" width="461.82" height="10" />
-    <rect x="120" y="55" rx="3" ry="3" width="461.82" height="10" />
-    <rect x="120" y="75" rx="2" ry="2" width="115" height="18" />
-    <rect x="240" y="75" rx="2" ry="2" width="115" height="18" />
-    <rect x="0" y="5" rx="0" ry="0" width="105" height="100" />
+    <rect x="60" y="5" rx="4" ry="4" width="189.54" height="15" />
+    <rect x="60" y="23" rx="3" ry="3" width="60" height="10" />
+    <rect x="60" y="40" rx="3" ry="3" width="60.82" height="10" />
+    <rect x="60" y="55" rx="3" ry="3" width="60.82" height="10" />
+    <rect x="60" y="75" rx="2" ry="2" width="60" height="18" />
+    <rect x="240" y="75" rx="2" ry="2" width="60" height="18" />
+    <rect x="0" y="5" rx="0" ry="0" width="50" height="50" />
   </ContentLoader>
 );
 
@@ -70,10 +70,12 @@ export default class PostFeed extends Component {
                         key={post._refNo}
                         post={post}
                         categories={categories}
+                        basic
                       />
                     );
                   })}
-                  {loadingMore && !noMore && <PlaceHolder />}
+                  {loadingMore &&
+                    !noMore && <PlaceHolder isMobile={isMobile} />}
                   {noMore && (
                     <Button
                       fluid

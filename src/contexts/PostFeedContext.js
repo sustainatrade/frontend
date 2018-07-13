@@ -133,7 +133,7 @@ class Provider extends React.Component {
         this.setState({ loadingMore: false, noMore: true });
       }
     },
-    limit: 5,
+    limit: 10,
     skip: 0,
     noMore: false,
     loadingMore: false
