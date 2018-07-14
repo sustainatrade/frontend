@@ -24,7 +24,7 @@ import "antd/lib/popover/style/css";
 import FacebookProvider from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";
-
+import logo from "./sat.png";
 // Service worker
 import { addNewContentAvailableListener } from "./registerServiceWorker";
 
@@ -38,7 +38,7 @@ export const Menus = ({ mobile }) => {
   return (
     <React.Fragment>
       <CenterItem href="/">
-        <img height="25" alt="" src="https://react.semantic-ui.com/logo.png" />
+        <img height="25" alt="" src={logo} />
       </CenterItem>
       <CenterItem href={staticDomain + "/about"}>About</CenterItem>
       <CenterItem href={staticDomain + "/blog"}>Blog</CenterItem>
