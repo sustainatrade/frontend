@@ -82,6 +82,7 @@ class Provider extends React.Component {
       // const { limit } =
       await this.setState({
         unreadPosts: [],
+        searches: {},
         isFollowing: false,
         postListTimeStamp: new Date().toISOString()
       });
@@ -91,12 +92,14 @@ class Provider extends React.Component {
       const { searches } = this.state;
       await this.setState({
         searches: { ...searches, createdBy: userRefNo },
+        isFollowing: false,
         postListTimeStamp: new Date().toISOString()
       });
       await this.state.loadMoreFn(0);
     },
     loadingFollowedPostsFn: async () => {
       await this.setState({
+        searches: {},
         isFollowing: true,
         postListTimeStamp: new Date().toISOString()
       });

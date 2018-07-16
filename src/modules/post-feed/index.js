@@ -170,7 +170,7 @@ export default class PostFeed extends Component {
               <React.Fragment>
                 <PropHandler
                   prop={user}
-                  handler={user => loadPostCountFn(user.id)}
+                  handler={user => user && loadPostCountFn(user.id)}
                 />
                 <Searches />
                 <Divider />
