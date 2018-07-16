@@ -29,7 +29,7 @@ class FollowButton extends Component {
     return (
       <Mutation mutation={FOLLOW_POST}>
         {(followPost, { data, loading, error }) => {
-          let followerColor = "black";
+          let followerColor;
           let title = "Click to follow";
           let followers = post.followerCount;
           const { newFollowing } = this.state;
@@ -158,7 +158,7 @@ export default class PostItem extends Component {
                     title="Comments"
                     onClick={() => viewPostFn(post._refNo)}
                   >
-                    <Button color="black" icon>
+                    <Button icon>
                       <Icon name="quote left" title="Comments" />
                     </Button>
                     <Label as="a" basic pointing="left">
@@ -263,17 +263,42 @@ export default class PostItem extends Component {
                         {this.renderActions(post)}
                       </div>
                     )}
-                    <Item.Header as="a" onClick={() => viewPostFn(post._refNo)}>
-                      {post.title}
+                    <Item.Header
+                      className="title"
+                      as="a"
+                      onClick={() => viewPostFn(post._refNo)}
+                    >
+                      <Label
+                        color={post.section === "sell" ? "green" : "orange"}
+                        basic
+                        size="small"
+                      >
+                        {post.section.toUpperCase()}
+                      </Label>
+                      <span>{post.title}</span>
                     </Item.Header>
-                    <Item.Meta>
+                    <Item.Meta
+                      className={isMobile ? "mobile-meta" : "desktop-meta"}
+                    >
                       <List horizontal={!isMobile}>
-                        <List.Item>
-                          <List.Icon name="user" />
-                          <List.Content>
-                            <UserLabel refNo={post.createdBy} />
-                          </List.Content>
-                        </List.Item>
+                        {!basic && (
+                          <List.Item>
+                            <List.Icon name="user" />
+                            <List.Content>
+                              <UserLabel refNo={post.createdBy} />
+                            </List.Content>
+                          </List.Item>
+                        )}
+                        <CategoryContext.Consumer>
+                          {({ icons, categories }) => (
+                            <List.Item>
+                              <List.Icon name={icons[post.category]} />
+                              <List.Content>
+                                {categories[post.category]}
+                              </List.Content>
+                            </List.Item>
+                          )}
+                        </CategoryContext.Consumer>
                         <List.Item>
                           <List.Icon name="clock" />
                           <List.Content>
@@ -286,24 +311,14 @@ export default class PostItem extends Component {
                       <Item.Description>{post.description}</Item.Description>
                     )}
                     <Item.Extra>
-                      <Label
+                      {/* <Label
                         color={post.section === "sell" ? "green" : "orange"}
                       >
                         <Icon name="weixin" />
                         <Label.Detail>
                           {post.section.toUpperCase()}
                         </Label.Detail>
-                      </Label>
-                      <CategoryContext.Consumer>
-                        {({ icons, categories }) => (
-                          <Label color={"black"}>
-                            <Icon name={icons[post.category]} />
-                            <Label.Detail>
-                              {categories[post.category]}
-                            </Label.Detail>
-                          </Label>
-                        )}
-                      </CategoryContext.Consumer>
+                      </Label> */}
                       {post.tags.map(tag => (
                         <Label
                           key={tag}

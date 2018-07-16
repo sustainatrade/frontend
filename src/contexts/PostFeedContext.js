@@ -1,5 +1,6 @@
 import React from "react";
 import gql from "graphql-tag";
+import get from "lodash/get";
 import apolloClient from "./../lib/apollo";
 
 const Context = React.createContext();
@@ -44,14 +45,53 @@ class Provider extends React.Component {
   state = {
     filters: {},
     searches: {},
+    postCount: {},
     unreadPosts: [],
     list: [],
     postListTimeStamp: new Date().toISOString(),
+    loadPostCountFn: async userRefNo => {
+      const [myPostCount, followerCount] = await Promise.all([
+        apolloClient.query({
+          query: gql`
+            query($search: String!) {
+              PostCount(input: { search: $search, skip: 0, limit: 0 }) {
+                status
+                count
+              }
+            }
+          `,
+          variables: { search: JSON.stringify({ createdBy: userRefNo }) }
+        }),
+        apolloClient.query({
+          query: gql`
+            query {
+              PostCount(input: { isFollowing: true, skip: 0, limit: 0 }) {
+                status
+                count
+              }
+            }
+          `,
+          variables: { search: JSON.stringify({ createdBy: userRefNo }) }
+        })
+      ]);
+      const myPosts = get(myPostCount, "data.PostCount.count");
+      const followed = get(followerCount, "data.PostCount.count");
+      this.setState({ postCount: { followed, myPosts } });
+    },
     clearUnreadFn: async () => {
       // const { limit } =
       await this.setState({
         unreadPosts: [],
-        isFollowing: false
+        isFollowing: false,
+        postListTimeStamp: new Date().toISOString()
+      });
+      await this.state.loadMoreFn(0);
+    },
+    loadUserPostsFn: async userRefNo => {
+      const { searches } = this.state;
+      await this.setState({
+        searches: { ...searches, createdBy: userRefNo },
+        postListTimeStamp: new Date().toISOString()
       });
       await this.state.loadMoreFn(0);
     },
@@ -101,6 +141,8 @@ class Provider extends React.Component {
         console.log("waiting for previous loadingMore to finish");
         return;
       }
+      console.log("searches"); //TRACE
+      console.log(searches); //TRACE
       this.setState({ loadingMore: true });
       const { data } = await apolloClient.query({
         query: POST_LIST,
@@ -148,7 +190,7 @@ class Provider extends React.Component {
       })
       .subscribe({
         next({ data }) {
-          console.log("seting state: ");
+          console.log("setting state: ");
           if (!data) return;
           console.log(data.PostCreated.post);
           const { unreadPosts } = self.state;

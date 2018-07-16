@@ -3,7 +3,6 @@ import {
   Segment,
   Button,
   List,
-  Accordion,
   Transition,
   Menu,
   Form,
@@ -111,7 +110,6 @@ export default class Sidebar extends Component {
   );
 
   renderAccount = () => {
-    const activeIndex = this.props.accountActiveIndex;
     return (
       <div>
         <CreatePostContext.Consumer>
@@ -128,28 +126,6 @@ export default class Sidebar extends Component {
             </React.Fragment>
           )}
         </CreatePostContext.Consumer>
-        <Accordion as={Menu} vertical fluid size="small">
-          <Menu.Item>
-            <Accordion.Title
-              active={activeIndex === 0}
-              content="Posts"
-              index={0}
-              onClick={this.handleClick}
-            />
-            <Accordion.Content
-              active={activeIndex === 0}
-              content={<this.renderAccountOpts />}
-            />
-          </Menu.Item>
-          <Menu.Item>
-            <Accordion.Title
-              active={activeIndex === 1}
-              content="Followed"
-              index={1}
-            />
-            <Accordion.Content active={activeIndex === 1} />
-          </Menu.Item>
-        </Accordion>
       </div>
     );
   };

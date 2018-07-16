@@ -18,9 +18,10 @@ import Searches from "./Searches";
 import Post from "./../post-view";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import PostViewContext from "./../../contexts/PostViewContext";
-import CategoryContext from "./../../contexts/CategoryContext";
 import ResponsiveContext from "./../../contexts/Responsive";
+import { GlobalConsumer } from "./../../contexts";
 import Modal from "antd/lib/modal";
+import PropHandler from "../../components/prophandler/PropHandler";
 
 const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -120,8 +121,9 @@ export default class PostFeed extends Component {
     );
   }
 
-  createTabMenu = (name, icon, count, onClickFn) => (
+  createTabMenu = ({ name, icon, count, countColor, onClickFn }) => (
     <Menu.Item
+      fitted
       name={name}
       active={this.state.activeMenu === name}
       onClick={() => {
@@ -134,7 +136,13 @@ export default class PostFeed extends Component {
     >
       <Icon name={icon} />
       {startCase(name)}
-      {count > 0 && <Label color="yellow" content={`${count}`} />}
+      {count > 0 && (
+        <Label
+          size="mini"
+          color={countColor || "yellow"}
+          content={`${count}`}
+        />
+      )}
     </Menu.Item>
   );
 
@@ -143,54 +151,72 @@ export default class PostFeed extends Component {
       <div>
         <TagList />
         <Divider />
-        <CategoryContext.Consumer>
-          {({ loading, categories }) => {
+        <GlobalConsumer>
+          {({
+            category: { loading, categories },
+            user: { user },
+            responsive: { isMobile },
+            postFeed: {
+              unreadPosts,
+              clearUnreadFn,
+              loadingFollowedPostsFn,
+              loadUserPostsFn,
+              loadMoreFn,
+              loadPostCountFn,
+              postCount
+            }
+          }) => {
             return (
               <React.Fragment>
+                <PropHandler
+                  prop={user}
+                  handler={user => loadPostCountFn(user.id)}
+                />
                 <Searches />
                 <Divider />
-                <PostFeedContext.Consumer>
-                  {({
-                    unreadPosts,
-                    clearUnreadFn,
-                    loadingFollowedPostsFn,
-                    loadMoreFn
-                  }) => {
-                    return (
-                      <React.Fragment>
-                        <Menu secondary pointing>
-                          {this.createTabMenu(
-                            "latest",
-                            "time",
-                            unreadPosts.length,
-                            clearUnreadFn
-                          )}
-                          {this.createTabMenu(
-                            "following",
-                            "bookmark",
-                            undefined,
-                            loadingFollowedPostsFn
-                          )}
-                        </Menu>
-                        <Visibility
-                          fireOnMount
-                          offset={[10, 10]}
-                          onUpdate={(e, { calculations }) => {
-                            if (calculations.bottomVisible) {
-                              loadMoreFn();
-                            }
-                          }}
-                        >
-                          {categories && this.renderFeed(categories)}
-                        </Visibility>
-                      </React.Fragment>
-                    );
+                <Menu
+                  secondary
+                  pointing
+                  {...(isMobile ? { size: "mini" } : {})}
+                >
+                  {this.createTabMenu({
+                    name: "latest",
+                    icon: "time",
+                    count: unreadPosts.length,
+                    onClickFn: clearUnreadFn
+                  })}
+                  {user &&
+                    this.createTabMenu({
+                      name: "following",
+                      icon: "bookmark",
+                      count: postCount.followed,
+                      countColor: "grey",
+                      onClickFn: loadingFollowedPostsFn
+                    })}
+                  {user &&
+                    this.createTabMenu({
+                      name: "my posts",
+                      icon: "pen square",
+                      count: postCount.myPosts,
+                      countColor: "grey",
+                      onClickFn: () => loadUserPostsFn(user.id)
+                    })}
+                </Menu>
+                <Visibility
+                  fireOnMount
+                  offset={[10, 10]}
+                  onUpdate={(e, { calculations }) => {
+                    if (calculations.bottomVisible) {
+                      loadMoreFn();
+                    }
                   }}
-                </PostFeedContext.Consumer>
+                >
+                  {categories && this.renderFeed(categories)}
+                </Visibility>
               </React.Fragment>
             );
           }}
-        </CategoryContext.Consumer>
+        </GlobalConsumer>
         {this.renderPostView()}
       </div>
     );
