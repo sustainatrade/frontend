@@ -7,6 +7,7 @@ import {
   Icon
   // Container
 } from "semantic-ui-react";
+import { HLink } from "./../../lib/history";
 import PostViewContext from "./../../contexts/PostViewContext";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
@@ -14,6 +15,7 @@ import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
 import { Mutation } from "react-apollo";
 import moment from "moment";
+import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import { FOLLOW_POST } from "./../../gql-schemas";
@@ -219,30 +221,33 @@ export default class PostItem extends Component {
     };
     return (
       <PostViewContext.Consumer>
-        {({ viewPostFn, loading }) => (
-          <React.Fragment>
-            {isMobile && (
-              <div className="image">
+        {({ viewPostFn, loading, loadingRefNo }) => {
+          const loadingImg = loadingRefNo === post._refNo && loading;
+          return (
+            <React.Fragment>
+              {isMobile && (
+                <div className="image">
+                  <MsImage
+                    {...msImageProps}
+                    loading={loadingImg}
+                    onClick={() => viewPostFn(post._refNo)}
+                  />
+                  {this.renderActions(post, true)}
+                </div>
+              )}
+              {!isMobile && (
                 <MsImage
+                  style={{
+                    width: 75
+                  }}
                   {...msImageProps}
-                  loading={loading}
+                  loading={loadingImg}
                   onClick={() => viewPostFn(post._refNo)}
                 />
-                {this.renderActions(post, true)}
-              </div>
-            )}
-            {!isMobile && (
-              <MsImage
-                style={{
-                  width: 75
-                }}
-                {...msImageProps}
-                loading={loading}
-                onClick={() => viewPostFn(post._refNo)}
-              />
-            )}
-          </React.Fragment>
-        )}
+              )}
+            </React.Fragment>
+          );
+        }}
       </PostViewContext.Consumer>
     );
   }
@@ -265,8 +270,10 @@ export default class PostItem extends Component {
                     )}
                     <Item.Header
                       className="title"
-                      as="a"
-                      onClick={() => viewPostFn(post._refNo)}
+                      as={HLink}
+                      to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
+                        post._refNo
+                      }`}
                     >
                       <Label
                         color={post.section === "sell" ? "green" : "orange"}

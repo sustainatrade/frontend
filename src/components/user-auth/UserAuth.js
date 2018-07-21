@@ -290,8 +290,6 @@ export default class UserAuth extends React.Component {
             {({ loading, error, data, refetch }) => {
               if (loading) return <div />;
               if (error) return <div />;
-              console.log("data"); //TRACE
-              console.log(data); //TRACE
               let buttonDisplay;
               if (data && data.Me && data.Me.user) {
                 // const { user } = data.Me;

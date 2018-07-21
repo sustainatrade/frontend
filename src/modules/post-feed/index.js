@@ -12,6 +12,7 @@ import {
 // import gql from 'graphql-tag'
 import ContentLoader from "react-content-loader";
 import { startCase } from "lodash";
+import { history } from "./../../lib/history";
 import TagList from "./TagList";
 import PostItem from "./PostItem";
 import Searches from "./Searches";
@@ -21,7 +22,7 @@ import PostViewContext from "./../../contexts/PostViewContext";
 import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import Modal from "antd/lib/modal";
-import PropHandler from "../../components/prophandler/PropHandler";
+import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
 
 const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -111,7 +112,7 @@ export default class PostFeed extends Component {
               }
               footer={null}
               keyboard={false}
-              onCancel={closeFn}
+              onCancel={() => history.goBack()}
             >
               {post && <Post />}
             </Modal>
@@ -168,7 +169,7 @@ export default class PostFeed extends Component {
           }) => {
             return (
               <React.Fragment>
-                <PropHandler
+                <PropChangeHandler
                   prop={user}
                   handler={user => user && loadPostCountFn(user.id)}
                 />

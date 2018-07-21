@@ -1,6 +1,7 @@
 import React from "react";
 import * as gql from "../gql-schemas";
 import apolloClient from "../lib/apollo";
+import { history } from "./../lib/history";
 import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
 import Notification from "antd/lib/notification";
@@ -85,7 +86,7 @@ class Provider extends React.Component {
     viewPostFn: async _refNo => {
       const self = this;
       if (this.state.loading) return;
-      self.setState({ loading: true });
+      self.setState({ loading: true, loadingRefNo: _refNo });
 
       const ret = await apolloClient.query({
         query: gql.GET_POST,
@@ -98,10 +99,11 @@ class Provider extends React.Component {
         self.setState({
           post: ret.data.Post.post,
           widgets: ret.data.Post.widgets,
-          loading: undefined
+          loading: undefined,
+          loadingRefNo: undefined
         });
       } else {
-        self.setState({ loading: undefined });
+        self.setState({ loading: undefined, loadingRefNo: undefined });
       }
     },
     reportPostFn: async refNo => {
@@ -109,9 +111,24 @@ class Provider extends React.Component {
     }
   };
 
+  parseLocation = (location, action) => {
+    const { viewPostFn, closeFn } = this.state;
+    const paths = location.pathname.split("/");
+    const route = paths[1];
+    const postRefNo = paths[3];
+    if (route === "posts" && postRefNo) {
+      viewPostFn(postRefNo);
+    } else {
+      closeFn();
+    }
+  };
   //TESTING
   componentDidMount() {
-    // this.state.viewPostFn('POST-0000016')
+    this.parseLocation(history.location);
+    history.listen((location, action) => {
+      console.log(action, location.pathname, location.state);
+      this.parseLocation(location);
+    });
   }
 
   render() {

@@ -50,8 +50,6 @@ export default class TagList extends Component {
                 ))}
               </div>
             );
-          console.log("data"); //TRACE
-          console.log(data); //TRACE
           return (
             <div>
               <PostFeedContext.Consumer>
