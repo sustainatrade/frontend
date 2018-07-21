@@ -83,9 +83,6 @@ class Root extends React.Component {
 
     return (
       <RootContextProvider>
-        {/* <Button primary content='test' onClick={()=>{
-                    fireNewContentAvaialbleEvent();
-                }}/> */}
         <ResponsiveContext.Consumer>
           {({ isMobile }) => {
             return (

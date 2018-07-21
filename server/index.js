@@ -6,13 +6,22 @@ const fs = require("fs");
 const cacheControl = require("express-cache-controller");
 const routes = require("./routeloaders");
 const compression = require("compression");
-const { siteName } = require("./config");
+const { siteName, postPhotoPath, storageServer } = require("./config");
 
 const STATIC_DIR = process.env.STATIC_DIR || "./../build";
 const INDEX_PATH = path.resolve(__dirname, STATIC_DIR, "index.html");
 const htmlData = fs.readFileSync(INDEX_PATH, "utf8");
 
 app.use(compression());
+
+function getReplacedHtml(metaTags) {
+  let data = htmlData;
+  for (const key in metaTags) {
+    var re = new RegExp("\\$" + key, "g");
+    data = data.replace(re, metaTags[key]);
+  }
+  return data;
+}
 
 function routeHandler(routeKey) {
   const router = routes[routeKey];
@@ -23,11 +32,7 @@ function routeHandler(routeKey) {
 
     const metaTags = await router.fetchMetaTags(route);
     metaTags.OG_SITE_NAME = siteName;
-    let data = htmlData;
-    for (const key in metaTags) {
-      var re = new RegExp("\\$" + key, "g");
-      data = data.replace(re, metaTags[key]);
-    }
+    let data = getReplacedHtml(metaTags);
     response.send(data);
   };
 }
@@ -48,11 +53,23 @@ app.get(
   }
 );
 
+const rootHandler = (request, response) => {
+  const image = "3482c4ee454c07d84ec56238494f15427c842f3e.png";
+  const imageUrl = `${storageServer}${postPhotoPath}/${image}?width=75&height=75`;
+  const metaTags = {
+    OG_TITLE: "sustain@trade",
+    OG_IMAGE: imageUrl,
+    OG_DESCRIPTION: "sustain a,trade",
+    OG_SITE_NAME: siteName
+  };
+  let data = getReplacedHtml(metaTags);
+  response.send(data);
+};
+
+app.get("/", rootHandler);
+
 app.use(express.static(path.resolve(__dirname, STATIC_DIR)));
 
-app.get("*", function(request, response) {
-  const filePath = path.resolve(__dirname, STATIC_DIR, "index.html");
-  response.sendFile(filePath);
-});
+app.get("*", rootHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
