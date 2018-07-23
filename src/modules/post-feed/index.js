@@ -112,7 +112,7 @@ export default class PostFeed extends Component {
               }
               footer={null}
               keyboard={false}
-              onCancel={() => history.goBack()}
+              onCancel={() => history.push("/")}
             >
               {post && <Post />}
             </Modal>
