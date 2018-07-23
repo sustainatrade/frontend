@@ -42,8 +42,6 @@ export default class PostWidget extends Component {
       });
       await this.setState(parseGraphData(data.PostWidget.postWidget));
     }
-    console.log("data"); //TRACE
-    console.log(data); //TRACE
     // self.setState({user:data.Me.user,loading:undefined})
     // const {name,types,values,postRefNo} = data
     await this.stateFromData(data);

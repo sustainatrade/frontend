@@ -8,6 +8,7 @@ import {
   Dropdown,
   Divider,
   Dimmer,
+  Label,
   Header,
   Button,
   Container,
@@ -39,6 +40,8 @@ export const Menus = ({ mobile }) => {
     <React.Fragment>
       <CenterItem href="/">
         <img height="25" alt="" src={logo} />
+        
+        <Label color='red' horizontal size="mini">beta</Label>
       </CenterItem>
       <CenterItem href={staticDomain + "/about"}>About</CenterItem>
       <CenterItem href={staticDomain + "/blog"}>Blog</CenterItem>

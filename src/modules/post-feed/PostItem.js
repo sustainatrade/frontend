@@ -8,6 +8,8 @@ import {
   // Container
 } from "semantic-ui-react";
 import { HLink } from "./../../lib/history";
+import axios from "axios"
+import get from "lodash/get"
 import PostViewContext from "./../../contexts/PostViewContext";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
@@ -98,8 +100,14 @@ class FollowButton extends Component {
 }
 
 export default class PostItem extends Component {
-  state = {};
-
+  state = { commentCount: 0 };
+  async componentDidMount() {
+    // const { post } = this.props;
+    // const req = `https://graph.facebook.com/v2.4/?fields=share{comment_count}&id=https://sustainatrade.com/posts/${post._refNo}`
+    // const commentData = await axios(req);
+    // const commentCount = get(commentData, "data.share.comment_count", 0);
+    // this.setState({ commentCount });
+  }
   renderMoreProps(post, isMobile) {
     return (
       <GlobalConsumer>
@@ -148,8 +156,7 @@ export default class PostItem extends Component {
                 return (
                   <Label as="a" className="actn-lbl">
                     <Icon name="quote left" />
-                    0
-                    {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
+                    {this.state.commentCount}
                   </Label>
                 );
               if (!isMobile)
@@ -164,8 +171,7 @@ export default class PostItem extends Component {
                       <Icon name="quote left" title="Comments" />
                     </Button>
                     <Label as="a" basic pointing="left">
-                      0
-                      {/* <CommentsCount href={`https://sustainatrade.com/posts/${post._refNo}`} /> */}
+                      {this.state.commentCount}
                     </Label>
                   </Button>
                 );
@@ -196,8 +202,8 @@ export default class PostItem extends Component {
                       </center>
                     </Label>
                   ) : (
-                    <Button basic icon="ellipsis horizontal" title="More" />
-                  )}
+                      <Button basic icon="ellipsis horizontal" title="More" />
+                    )}
                 </Popover>
               );
             })()}
@@ -273,7 +279,7 @@ export default class PostItem extends Component {
                       as={HLink}
                       to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
                         post._refNo
-                      }`}
+                        }`}
                     >
                       <Label
                         color={post.section === "sell" ? "green" : "orange"}
