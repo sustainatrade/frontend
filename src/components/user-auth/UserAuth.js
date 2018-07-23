@@ -17,6 +17,7 @@ import gql from "graphql-tag";
 import LoginContext from "./LoginContext";
 import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
 import { TYPES } from "./../../errors";
+import { imageUrlToUri } from './../../lib/image'
 
 const GET_ME = gql`
   query {
@@ -55,6 +56,23 @@ function cookieToStr(str) {
   return cookieList.join("; ");
 }
 
+function getPhoto(provider, authDetail) {
+  if (provider === "facebook.com") {
+    const {
+      additionalUserInfo: { profile }
+    } = authDetail;
+    const photoUrl = profile.picture.data.url;
+    return photoUrl;
+  } else if (provider === "google.com") {
+    const {
+      additionalUserInfo: { profile }
+    } = authDetail;
+    const photoUrl = profile.picture;
+    return photoUrl;
+  }
+}
+
+export const PHOTO_DATA_URI_KEY = "photoDataUri"
 /**
  * General component description in JSDoc format. Markdown is *supported*.
  */
@@ -98,10 +116,14 @@ export default class UserAuth extends React.Component {
   }
 
   async authWithFacebook() {
-    const result = await app.auth().signInWithPopup(facebookProvider);
+    const authDetail = await app.auth().signInWithPopup(facebookProvider);
 
     console.log("authed with facebook");
-    this.setState({ authDetail: result });
+    const { credential } = authDetail;
+    const photoUrl = getPhoto(credential.providerId, authDetail);
+    const dataUri = await imageUrlToUri(photoUrl);
+    localStorage.setItem(PHOTO_DATA_URI_KEY, dataUri);
+    this.setState({ authDetail });
   }
   async authWithGoogle() {
     const result = await app.auth().signInWithPopup(googleProvider);
@@ -113,29 +135,14 @@ export default class UserAuth extends React.Component {
     <LoginContext.Consumer>
       {({ authDetail, doLogin }) => {
         if (!authDetail) return;
-        function getPhoto(provider) {
-          if (provider === "facebook.com") {
-            const {
-              additionalUserInfo: { profile }
-            } = authDetail;
-            const photoUrl = profile.picture.data.url;
-            return photoUrl;
-          } else if (provider === "google.com") {
-            const {
-              additionalUserInfo: { profile }
-            } = authDetail;
-            const photoUrl = profile.picture;
-            return photoUrl;
-          }
-        }
+        
         const { user, credential } = authDetail;
-        const photoUrl = getPhoto(credential.providerId);
-        localStorage.setItem("photoUrl", photoUrl);
+        const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
         return (
           <Modal open={true} size="mini">
             <Header as="h3" image>
               <center>
-                <Image src={photoUrl} size="tiny" circular />
+                <Image src={photoDataUri} size="tiny" circular />
                 {user.displayName}
               </center>
             </Header>
@@ -186,10 +193,10 @@ export default class UserAuth extends React.Component {
         }
 
         const user = data.Me.user;
-        const photoUrl = localStorage.getItem("photoUrl");
+        const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
         const trigger = (
           <span>
-            <Image avatar style={{ width: 23, height: 23 }} src={photoUrl} />{" "}
+            <Image avatar style={{ width: 23, height: 23 }} src={photoDataUri} />{" "}
             {user.displayName}
           </span>
         );
@@ -215,11 +222,7 @@ export default class UserAuth extends React.Component {
       }}
     </LoginContext.Consumer>
   );
-  // <Button
-  //     content='Log Out'
-  //     loading={ loading }
-  //     onClick={ logout }
-  // />
+
   renderLogin = (data, refetch) => (
     <LoginContext.Consumer>
       {({ authDetail, doLogout }) => {
