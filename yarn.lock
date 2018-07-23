@@ -119,14 +119,13 @@
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.8.tgz#38a936b60b898a1ad0f3719543ff1a1031f60f8b"
 
-"@reach/router@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.0.7.tgz#2a6b313e4fe8a5b8a83234a9297694a97232b96f"
+"@reach/router@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.1.1.tgz#24a5b20f1cc9e55e2cbcdc454fb82c94db479a81"
   dependencies:
     create-react-context "^0.2.1"
     invariant "^2.2.3"
     prop-types "^15.6.1"
-    query-string "4.2.2"
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
 
@@ -6224,13 +6223,6 @@ qs@6.5.1:
 qs@~6.5.1:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
-
-query-string@4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.2.2.tgz#888a6fcb6f76070ba39f2f3025c87099defa1645"
-  dependencies:
-    object-assign "^4.1.0"
-    strict-uri-encode "^1.0.0"
 
 query-string@^4.1.0:
   version "4.3.4"
