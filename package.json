@@ -20,7 +20,7 @@
     "lodash": "^4.17.10",
     "lscache": "^1.2.0",
     "moment": "2.22.1",
-    "nanoid": "1.0.2",
+    "nanoid": "1.1.0",
     "prettyjson": "1.2.1",
     "react": "16.3.2",
     "react-adopt": "0.6.0",
