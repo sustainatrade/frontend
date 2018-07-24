@@ -101,6 +101,12 @@ class FollowButton extends Component {
   }
 }
 
+function getShareUrl(post) {
+  return `https://sustainatrade.com/posts/${kebabCase(
+    post.title.substring(0, 30)
+  )}/${post._refNo}`;
+}
+
 export default class PostItem extends Component {
   state = { commentCount: 0 };
 
@@ -127,7 +133,7 @@ export default class PostItem extends Component {
                 </List.Item>
               )}
               <List.Item>
-                <Share href={`https://sustainatrade.com/posts/${post._refNo}`}>
+                <Share href={getShareUrl(post)}>
                   <div>
                     <Icon name="facebook f" size="large" />
                     {"     "}Share
@@ -181,8 +187,8 @@ export default class PostItem extends Component {
                 );
             })()}
             {!isMobile && (
-              <Share href={`https://sustainatrade.com/posts/${post._refNo}`}>
-                <Button icon color="facebook">
+              <Share href={getShareUrl(post)}>
+                <Button icon color="facebook" title={getShareUrl(post)}>
                   <Icon name="facebook f" title="Comments" />
                 </Button>
               </Share>
