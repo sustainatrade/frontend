@@ -4,12 +4,13 @@ import {
   Item,
   Button,
   List,
+  Segment,
   Icon
   // Container
 } from "semantic-ui-react";
 import { HLink } from "./../../lib/history";
-import axios from "axios"
-import get from "lodash/get"
+import axios from "axios";
+import get from "lodash/get";
 import PostViewContext from "./../../contexts/PostViewContext";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
@@ -17,6 +18,7 @@ import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
 import { Mutation } from "react-apollo";
 import moment from "moment";
+import { Share } from "react-facebook";
 import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
@@ -101,13 +103,7 @@ class FollowButton extends Component {
 
 export default class PostItem extends Component {
   state = { commentCount: 0 };
-  async componentDidMount() {
-    // const { post } = this.props;
-    // const req = `https://graph.facebook.com/v2.4/?fields=share{comment_count}&id=https://sustainatrade.com/posts/${post._refNo}`
-    // const commentData = await axios(req);
-    // const commentCount = get(commentData, "data.share.comment_count", 0);
-    // this.setState({ commentCount });
-  }
+
   renderMoreProps(post, isMobile) {
     return (
       <GlobalConsumer>
@@ -130,6 +126,14 @@ export default class PostItem extends Component {
                   <List.Content>Edit Post</List.Content>
                 </List.Item>
               )}
+              <List.Item>
+                <Share href={`https://sustainatrade.com/posts/${post._refNo}`}>
+                  <div>
+                    <Icon name="facebook f" size="large" />
+                    {"     "}Share
+                  </div>
+                </Share>
+              </List.Item>
               <List.Item
                 as="a"
                 onClick={() => {
@@ -176,6 +180,13 @@ export default class PostItem extends Component {
                   </Button>
                 );
             })()}
+            {!isMobile && (
+              <Share href={`https://sustainatrade.com/posts/${post._refNo}`}>
+                <Button icon color="facebook">
+                  <Icon name="facebook f" title="Comments" />
+                </Button>
+              </Share>
+            )}
             {(() => {
               const poProps = {
                 placement: "bottomRight"
@@ -202,8 +213,8 @@ export default class PostItem extends Component {
                       </center>
                     </Label>
                   ) : (
-                      <Button basic icon="ellipsis horizontal" title="More" />
-                    )}
+                    <Button basic icon="ellipsis horizontal" title="More" />
+                  )}
                 </Popover>
               );
             })()}
@@ -279,7 +290,7 @@ export default class PostItem extends Component {
                       as={HLink}
                       to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
                         post._refNo
-                        }`}
+                      }`}
                     >
                       <Label
                         color={post.section === "sell" ? "green" : "orange"}
