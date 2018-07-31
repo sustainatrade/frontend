@@ -4,7 +4,6 @@ import {
   Item,
   Button,
   List,
-  Segment,
   Icon
   // Container
 } from "semantic-ui-react";
@@ -16,92 +15,20 @@ import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
-import { Mutation } from "react-apollo";
 import moment from "moment";
 import { Share } from "react-facebook";
 import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
-import { FOLLOW_POST } from "./../../gql-schemas";
+import FollowButton from "./FollowButton";
+import MoreProps from "./MoreProps";
+
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
-class FollowButton extends Component {
-  state = {};
-  render() {
-    const { post, isMobile } = this.props;
-    return (
-      <Mutation mutation={FOLLOW_POST}>
-        {(followPost, { data, loading, error }) => {
-          let followerColor;
-          let title = "Click to follow";
-          let followers = post.followerCount;
-          const { newFollowing } = this.state;
-          let following = post.isFollowing;
-          const iconProps = { name: "bookmark" };
-          if (loading) {
-            iconProps.name = "spinner";
-            iconProps.loading = true;
-          }
-          if (data) {
-            following = newFollowing;
-            if (post.isFollowing) {
-              if (!following) followers--;
-            } else if (following) followers++;
-          }
-
-          if (following) {
-            title = "Unfollow";
-            followerColor = post.section === "sell" ? "green" : "orange";
-          }
-          const onClickHandler = async () => {
-            // const { toggles } = this.state;
-            followPost({
-              variables: {
-                postRefNo: post._refNo,
-                revoke: following
-              }
-            });
-            this.setState({ newFollowing: !following });
-          };
-          return (
-            <React.Fragment>
-              {isMobile && (
-                <Label
-                  as="a"
-                  className="actn-lbl"
-                  color={followerColor}
-                  onClick={onClickHandler}
-                >
-                  <Icon {...iconProps} /> {followers}
-                </Label>
-              )}
-              {!isMobile && (
-                <Button
-                  as="div"
-                  labelPosition="right"
-                  title={title}
-                  onClick={onClickHandler}
-                >
-                  <Button color={followerColor} icon>
-                    <Icon {...iconProps} />
-                  </Button>
-                  <Label color={followerColor} as="a" basic pointing="left">
-                    {followers}
-                  </Label>
-                </Button>
-              )}
-            </React.Fragment>
-          );
-        }}
-      </Mutation>
-    );
-  }
-}
-
-function getShareUrl(post) {
+export function getShareUrl(post) {
   return `https://sustainatrade.com/posts/${kebabCase(
     post.title.substring(0, 30)
   )}/${post._refNo}`;
@@ -110,51 +37,6 @@ function getShareUrl(post) {
 export default class PostItem extends Component {
   state = { commentCount: 0 };
 
-  renderMoreProps(post, isMobile) {
-    return (
-      <GlobalConsumer>
-        {({
-          createPost: { openModal },
-          user: { user },
-          postView: { reportPostFn }
-        }) => {
-          const isMyPost = user && post.createdBy === user.id;
-          return (
-            <List divided relaxed>
-              {isMyPost && (
-                <List.Item
-                  as="a"
-                  onClick={() => {
-                    openModal(post._refNo);
-                  }}
-                >
-                  <List.Icon name="edit" size="large" verticalAlign="middle" />
-                  <List.Content>Edit Post</List.Content>
-                </List.Item>
-              )}
-              <List.Item>
-                <Share href={getShareUrl(post)}>
-                  <div>
-                    <Icon name="facebook f" size="large" />
-                    {"     "}Share
-                  </div>
-                </Share>
-              </List.Item>
-              <List.Item
-                as="a"
-                onClick={() => {
-                  reportPostFn(post._refNo);
-                }}
-              >
-                <List.Icon name="flag" size="large" verticalAlign="middle" />
-                <List.Content>Report</List.Content>
-              </List.Item>
-            </List>
-          );
-        }}
-      </GlobalConsumer>
-    );
-  }
   renderActions(post, isMobile) {
     return (
       <GlobalConsumer>
@@ -203,8 +85,11 @@ export default class PostItem extends Component {
               return (
                 <Popover
                   content={
-                    <div onClick={() => this.setState({ showMore: false })}>
-                      {this.renderMoreProps(post)}
+                    <div
+                      style={{ width: 200 }}
+                      onClick={() => this.setState({ showMore: false })}
+                    >
+                      <MoreProps post={post} isMobile={isMobile} />
                     </div>
                   }
                   trigger="click"
