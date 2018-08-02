@@ -13,7 +13,7 @@ function sleep(ms) {
 export default class MoreProps extends Component {
   state = {};
   async componentWillMount() {
-    const { isAdmin = true } = this.props;
+    const { isAdmin = true, post } = this.props;
     const options = [];
     this.setState({
       options: [
@@ -29,7 +29,7 @@ export default class MoreProps extends Component {
       options.push(
         <List.Item key="hide-post">
           <List.Content>
-            <HidePostModal.default />
+            <HidePostModal.default post={post} />
           </List.Content>
         </List.Item>
       );

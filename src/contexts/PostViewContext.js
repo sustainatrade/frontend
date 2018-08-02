@@ -108,6 +108,20 @@ class Provider extends React.Component {
     },
     reportPostFn: async refNo => {
       this.setState({ reportPostRefNo: refNo });
+    },
+    removePostFn: async (refNo, reason) => {
+      const data = await apolloClient.mutate({
+        mutation: gql.REMOVE_POST,
+        variables: {
+          postRefNo: refNo,
+          detail: "deleted"
+        }
+      });
+      console.log("data"); //TRACE
+      console.log(data); //TRACE
+      Notification.info({
+        message: "Post has been removed!"
+      });
     }
   };
 
