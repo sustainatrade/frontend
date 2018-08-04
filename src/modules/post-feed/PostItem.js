@@ -89,7 +89,7 @@ export default class PostItem extends Component {
                       style={{ width: 200 }}
                       onClick={() => this.setState({ showMore: false })}
                     >
-                      <MoreProps post={post} isMobile={isMobile} />
+                      <MoreProps {...this.props} />
                     </div>
                   }
                   trigger="click"
@@ -161,72 +161,84 @@ export default class PostItem extends Component {
   }
 
   render() {
-    const { post, isMobile, basic } = this.props;
+    const { post, isMobile, isRemoved, basic } = this.props;
+
+    if (!post) {
+      return <React.Fragment />;
+    }
+
     return (
-      <Item className="post">
-        <PostFeedContext.Consumer>
-          {({ setSearchesFn }) => (
-            <PostViewContext.Consumer>
-              {({ viewPostFn, loading }) => (
-                <React.Fragment>
-                  {this.renderImage()}
-                  <Item.Content>
-                    {!isMobile && (
-                      <div style={{ float: "right" }}>
-                        {this.renderActions(post)}
-                      </div>
+      <GlobalConsumer>
+        {({
+          postFeed: { setSearchesFn },
+          postView: { viewPostFn, loading },
+          user: { user }
+        }) => {
+          return (
+            <Item className="post">
+              {this.renderImage()}
+              <Item.Content>
+                {!isMobile && (
+                  <div style={{ float: "right" }}>
+                    {this.renderActions(post)}
+                  </div>
+                )}
+                <Item.Header
+                  className="title"
+                  as={HLink}
+                  to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
+                    post._refNo
+                  }`}
+                >
+                  <Label
+                    color={post.section === "sell" ? "green" : "orange"}
+                    basic
+                    size="small"
+                  >
+                    {post.section.toUpperCase()}
+                  </Label>
+                  {isRemoved && (
+                    <Label color="red" size="small">
+                      REMOVED
+                    </Label>
+                  )}
+                  <span>{post.title}</span>
+                </Item.Header>
+                <Item.Meta
+                  className={isMobile ? "mobile-meta" : "desktop-meta"}
+                >
+                  <List horizontal={!isMobile}>
+                    {!basic && (
+                      <List.Item>
+                        <List.Icon name="user" />
+                        <List.Content>
+                          <UserLabel refNo={post.createdBy} />
+                        </List.Content>
+                      </List.Item>
                     )}
-                    <Item.Header
-                      className="title"
-                      as={HLink}
-                      to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
-                        post._refNo
-                      }`}
-                    >
-                      <Label
-                        color={post.section === "sell" ? "green" : "orange"}
-                        basic
-                        size="small"
-                      >
-                        {post.section.toUpperCase()}
-                      </Label>
-                      <span>{post.title}</span>
-                    </Item.Header>
-                    <Item.Meta
-                      className={isMobile ? "mobile-meta" : "desktop-meta"}
-                    >
-                      <List horizontal={!isMobile}>
-                        {!basic && (
-                          <List.Item>
-                            <List.Icon name="user" />
-                            <List.Content>
-                              <UserLabel refNo={post.createdBy} />
-                            </List.Content>
-                          </List.Item>
-                        )}
-                        <CategoryContext.Consumer>
-                          {({ icons, categories }) => (
-                            <List.Item>
-                              <List.Icon name={icons[post.category]} />
-                              <List.Content>
-                                {categories[post.category]}
-                              </List.Content>
-                            </List.Item>
-                          )}
-                        </CategoryContext.Consumer>
+                    <CategoryContext.Consumer>
+                      {({ icons, categories }) => (
                         <List.Item>
-                          <List.Icon name="clock" />
+                          <List.Icon name={icons[post.category]} />
                           <List.Content>
-                            {moment(new Date(post.createdDate)).fromNow()}
+                            {categories[post.category]}
                           </List.Content>
                         </List.Item>
-                      </List>
-                    </Item.Meta>
-                    {!basic && (
-                      <Item.Description>{post.description}</Item.Description>
-                    )}
-                    <Item.Extra>
-                      {/* <Label
+                      )}
+                    </CategoryContext.Consumer>
+                    <List.Item>
+                      <List.Icon name="clock" />
+                      <List.Content>
+                        {moment(new Date(post.createdDate)).fromNow()}
+                      </List.Content>
+                    </List.Item>
+                  </List>
+                </Item.Meta>
+                {!basic && (
+                  <Item.Description>{post.description}</Item.Description>
+                )}
+                <Item.Extra>
+                  {/* <Label
                         color={post.section === "sell" ? "green" : "orange"}
                       >
                         <Icon name="weixin" />
@@ -234,22 +246,20 @@ export default class PostItem extends Component {
                           {post.section.toUpperCase()}
                         </Label.Detail>
                       </Label> */}
-                      {post.tags.map(tag => (
-                        <Label
-                          key={tag}
-                          onClick={() => setSearchesFn({ PostTag: tag })}
-                          style={{ cursor: "pointer" }}
-                          content={tag}
-                        />
-                      ))}
-                    </Item.Extra>
-                  </Item.Content>
-                </React.Fragment>
-              )}
-            </PostViewContext.Consumer>
-          )}
-        </PostFeedContext.Consumer>
-      </Item>
+                  {post.tags.map(tag => (
+                    <Label
+                      key={tag}
+                      onClick={() => setSearchesFn({ PostTag: tag })}
+                      style={{ cursor: "pointer" }}
+                      content={tag}
+                    />
+                  ))}
+                </Item.Extra>
+              </Item.Content>
+            </Item>
+          );
+        }}
+      </GlobalConsumer>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "antd/lib/modal";
 import { Label, Icon, Divider } from "semantic-ui-react";
-import PostViewContext from "./../../../contexts/PostViewContext";
+import { GlobalConsumer } from "./../../../contexts";
 
 export default class HidePostModal extends Component {
   state = {};
@@ -9,8 +9,8 @@ export default class HidePostModal extends Component {
     const { opened } = this.state;
     const { post } = this.props;
     return (
-      <PostViewContext.Consumer>
-        {({ removePostFn }) => {
+      <GlobalConsumer>
+        {({ postView: { removePostFn }, postFeed: { loadMoreFn } }) => {
           return (
             <React.Fragment>
               <a onClick={() => this.setState({ opened: true })}>
@@ -25,7 +25,8 @@ export default class HidePostModal extends Component {
                 onCancel={() => this.setState({ opened: false })}
                 onOk={async () => {
                   await removePostFn(post._refNo);
-                  this.setState({ opened: false });
+                  await this.setState({ opened: false });
+                  loadMoreFn(0);
                 }}
                 okText="Remove"
                 okType="danger"
@@ -44,7 +45,7 @@ export default class HidePostModal extends Component {
             </React.Fragment>
           );
         }}
-      </PostViewContext.Consumer>
+      </GlobalConsumer>
     );
   }
 }

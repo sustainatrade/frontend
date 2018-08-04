@@ -13,7 +13,7 @@ function sleep(ms) {
 export default class MoreProps extends Component {
   state = {};
   async componentWillMount() {
-    const { isAdmin = true, post } = this.props;
+    const { isAdmin = true, post, isRemoved } = this.props;
     const options = [];
     this.setState({
       options: [
@@ -23,16 +23,18 @@ export default class MoreProps extends Component {
       ]
     });
     if (isAdmin) {
-      const [HidePostModal] = await Promise.all([
-        import("./../../admin/components/hide-post-modal/HidePostModal")
-      ]);
-      options.push(
-        <List.Item key="hide-post">
-          <List.Content>
-            <HidePostModal.default post={post} />
-          </List.Content>
-        </List.Item>
-      );
+      if (!isRemoved) {
+        const [HidePostModal] = await Promise.all([
+          import("./../../admin/components/hide-post-modal/HidePostModal")
+        ]);
+        options.push(
+          <List.Item key="hide-post">
+            <List.Content>
+              <HidePostModal.default post={post} />
+            </List.Content>
+          </List.Item>
+        );
+      }
     }
     this.setState({ options });
   }

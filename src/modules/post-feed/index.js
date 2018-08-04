@@ -66,13 +66,18 @@ export default class PostFeed extends Component {
               return (
                 <Item.Group divided unstackable={isMobile}>
                   {list.map(post => {
+                    let postObj = post;
+                    if (post.isRemoved) {
+                      postObj = post.post;
+                    }
                     return (
                       <PostItem
                         isMobile={isMobile}
                         key={post._refNo}
-                        post={post}
+                        post={postObj}
                         categories={categories}
                         basic
+                        isRemoved={post.isRemoved}
                       />
                     );
                   })}
