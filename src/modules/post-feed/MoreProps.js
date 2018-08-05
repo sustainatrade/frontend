@@ -13,7 +13,7 @@ function sleep(ms) {
 export default class MoreProps extends Component {
   state = {};
   async componentWillMount() {
-    const { isAdmin = true, post, isRemoved } = this.props;
+    const { isAdmin = false, post, isRemoved } = this.props;
     const options = [];
     this.setState({
       options: [

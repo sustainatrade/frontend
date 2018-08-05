@@ -28,6 +28,14 @@ import Globals from "./modules/globals";
 import logo from "./sat.png";
 // Service worker
 import { addNewContentAvailableListener } from "./registerServiceWorker";
+import { Link } from "@reach/router";
+
+import PropTypes from "prop-types";
+
+Dropdown.Item.propTypes = {
+  ...Dropdown.Item.propTypes,
+  as: PropTypes.any
+};
 
 const CenterItem = ({ children, as = Menu, ...otherProps }) => (
   <as.Item as="a" {...otherProps}>
@@ -40,9 +48,28 @@ export const Menus = ({ mobile }) => {
     <React.Fragment>
       <CenterItem href="/">
         <img height="25" alt="" src={logo} />
-        
-        <Label color='red' horizontal size="mini">beta</Label>
+
+        <Label color="red" horizontal size="mini">
+          beta
+        </Label>
       </CenterItem>
+      <Dropdown
+        item
+        openOnFocus
+        text="Discover"
+        simple
+        style={{ fontWeight: "bold" }}
+        icon="map marker alternate"
+      >
+        <Dropdown.Menu>
+          <Dropdown.Item as={Link} to="/">
+            <Icon name="cubes" />Items
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/u">
+            <Icon name="users" /> Traders
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       <CenterItem href={staticDomain + "/about"}>About</CenterItem>
       <CenterItem href={staticDomain + "/blog"}>Blog</CenterItem>
       <CenterItem href={staticDomain + "/send-feedback"}>

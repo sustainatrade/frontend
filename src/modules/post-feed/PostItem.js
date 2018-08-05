@@ -40,7 +40,7 @@ export default class PostItem extends Component {
   renderActions(post, isMobile) {
     return (
       <GlobalConsumer>
-        {({ postView: { viewPostFn } }) => (
+        {({ postView: { viewPostFn }, user: { isAdmin } }) => (
           <React.Fragment>
             <FollowButton post={post} isMobile={isMobile} />
             {(() => {
@@ -89,7 +89,7 @@ export default class PostItem extends Component {
                       style={{ width: 200 }}
                       onClick={() => this.setState({ showMore: false })}
                     >
-                      <MoreProps {...this.props} />
+                      <MoreProps {...this.props} isAdmin={isAdmin} />
                     </div>
                   }
                   trigger="click"

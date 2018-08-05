@@ -4,40 +4,65 @@ import apolloClient from "./../lib/apollo";
 
 const Context = React.createContext();
 const { Consumer } = Context;
-
-const GET_ME = gql`
-  query {
-    Me {
-      status
+const USER_DETAIL_FRAGMENT = `
+  fragment UserDetail on MeOutput {
+    status
       user {
         id
         displayName
+        roles
       }
+      roles {
+        code
+        name
+        isAdmin
+      }
+  }
+`;
+const GET_ME = gql`
+  ${USER_DETAIL_FRAGMENT}
+  query {
+    Me {
+      ...UserDetail
     }
   }
 `;
 
 const ME_LOGIN = gql`
+  ${USER_DETAIL_FRAGMENT}
   subscription($device: String) {
     MeLoggedIn(device: $device) {
-      status
-      user {
-        id
-        displayName
-      }
+      ...UserDetail
     }
   }
 `;
 
 class Provider extends React.Component {
   state = {};
+  updateUser(user, roles) {
+    let isAdmin = false;
+    if (roles)
+      roles.forEach(role => {
+        if (role.isAdmin) {
+          isAdmin = true;
+        }
+      });
+    this.setState({
+      user,
+      roles,
+      isAdmin
+    });
+  }
   async componentWillMount() {
     const self = this;
     self.setState({ loading: true });
     const { data } = await apolloClient.query({
       query: GET_ME
     });
-    self.setState({ user: data.Me.user, loading: undefined });
+    self.updateUser(data.Me.user, data.Me.roles);
+    self.setState({
+      loading: undefined
+    });
 
     apolloClient
       .subscribe({
@@ -50,7 +75,7 @@ class Provider extends React.Component {
           console.log(data); //TRACE
           if (!data) return;
           console.log(data.MeLoggedIn.user);
-          self.setState({ user: data.MeLoggedIn.user });
+          self.updateUser(data.MeLoggedIn.user, data.MeLoggedIn.roles);
         }
       });
   }
