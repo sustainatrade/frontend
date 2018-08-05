@@ -17,7 +17,7 @@ import gql from "graphql-tag";
 import LoginContext from "./LoginContext";
 import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
 import { TYPES } from "./../../errors";
-import { imageUrlToUri } from './../../lib/image'
+import { imageUrlToUri } from "./../../lib/image";
 
 const GET_ME = gql`
   query {
@@ -26,6 +26,7 @@ const GET_ME = gql`
       user {
         id
         displayName
+        roles
       }
     }
   }
@@ -72,7 +73,7 @@ function getPhoto(provider, authDetail) {
   }
 }
 
-export const PHOTO_DATA_URI_KEY = "photoDataUri"
+export const PHOTO_DATA_URI_KEY = "photoDataUri";
 /**
  * General component description in JSDoc format. Markdown is *supported*.
  */
@@ -135,7 +136,7 @@ export default class UserAuth extends React.Component {
     <LoginContext.Consumer>
       {({ authDetail, doLogin }) => {
         if (!authDetail) return;
-        
+
         const { user, credential } = authDetail;
         const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
         return (
@@ -196,7 +197,11 @@ export default class UserAuth extends React.Component {
         const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
         const trigger = (
           <span>
-            <Image avatar style={{ width: 23, height: 23 }} src={photoDataUri} />{" "}
+            <Image
+              avatar
+              style={{ width: 23, height: 23 }}
+              src={photoDataUri}
+            />{" "}
             {user.displayName}
           </span>
         );

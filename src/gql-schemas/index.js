@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 
 export * from "./FollowPost";
 export * from "./ReportPost";
+export * from "./RemovePost";
 
 export const CREATE_POST = gql`
   mutation($post: CreatePostInput) {

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Segment } from "semantic-ui-react";
 import Sidebar from "./Sidebar";
 import PostFeed from "./post-feed";
+import UserList from "./user-list";
 import ResponsiveContext from "./../contexts/Responsive";
+import { Router } from "@reach/router";
 
 export default class EcoContent extends Component {
   state = { visible: false };
@@ -32,7 +34,6 @@ export default class EcoContent extends Component {
         }
         style1.paddingTop = 55;
         style1.paddingRight = 5;
-
         return (
           <div style={style1}>
             {showSidebar && (
@@ -48,7 +49,10 @@ export default class EcoContent extends Component {
                 </Segment>
               </div>
             )}
-            <PostFeed />
+            <Router>
+              <UserList path="u/*" />
+              <PostFeed default />
+            </Router>
           </div>
         );
       }}

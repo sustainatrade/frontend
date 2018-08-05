@@ -5,7 +5,6 @@ import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import { ApolloProvider } from "react-apollo";
 import apolloClient from "./lib/apollo";
-import { Router } from "@reach/router";
 
 ReactDOM.render(
   <ApolloProvider client={apolloClient}>
@@ -14,9 +13,7 @@ ReactDOM.render(
         <meta charSet="utf-8" />
         <title>Sustain@trade</title>
       </Helmet>
-      <Router>
-        <App path="/*" />
-      </Router>
+      <App />
     </React.Fragment>
   </ApolloProvider>,
   document.getElementById("root")

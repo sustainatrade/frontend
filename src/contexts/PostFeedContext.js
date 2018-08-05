@@ -20,22 +20,32 @@ const POST_CREATED = gql`
 `;
 
 const POST_LIST = gql`
+  fragment PostFragment on Post {
+    title
+    section
+    category
+    description
+    photos
+    tags
+    createdBy
+    createdDate
+    followerCount
+    isFollowing
+  }
   query($input: PostListInput) {
     PostList(input: $input) {
       status
       list {
         id
-        title
-        section
-        category
-        description
-        photos
-        tags
         _refNo
-        createdBy
-        createdDate
-        followerCount
-        isFollowing
+        __typename
+        ...PostFragment
+        ... on RemovedPost {
+          isRemoved
+          post {
+            ...PostFragment
+          }
+        }
       }
     }
   }
@@ -135,7 +145,8 @@ class Provider extends React.Component {
         this.setState({
           list: [],
           loadingMore: false,
-          noMore: false
+          noMore: false,
+          postListTimeStamp: new Date().toISOString()
         });
       }
 
@@ -161,7 +172,8 @@ class Provider extends React.Component {
           }
         }
       });
-
+      console.log("data"); //TRACE
+      console.log(data); //TRACE
       const { PostList } = data;
       // const stateUpdates = {}
       if (PostList.status === "SUCCESS") {
