@@ -103,7 +103,7 @@ class Root extends React.Component {
   };
   componentWillMount() {
     addNewContentAvailableListener("app", () => {
-      console.log("new update storage");
+      console.log("new update available");
       this.setState({ showReloader: true });
     });
   }

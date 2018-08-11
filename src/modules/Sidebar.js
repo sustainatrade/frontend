@@ -5,7 +5,6 @@ import {
   List,
   Transition,
   Menu,
-  Form,
   Icon,
   Divider
 } from "semantic-ui-react";
@@ -159,8 +158,9 @@ export default class Sidebar extends Component {
                       </Segment>
                     </List.Item>
                   )}
+
                   <List.Item>
-                    <Router>
+                    <Router primary={false}>
                       <UserOptions path="u/*" />
                       <Filters default />
                     </Router>
