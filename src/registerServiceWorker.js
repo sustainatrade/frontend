@@ -58,7 +58,6 @@ export default function register() {
       // Stash the event so it can be triggered later.
       deferredPrompt = e;
       console.log("deferredPrompt"); //TRACE
-      alert("deferredPrompt");
       console.log(deferredPrompt); //TRACE
     });
   }
