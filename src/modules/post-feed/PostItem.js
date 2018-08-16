@@ -37,21 +37,21 @@ export function getShareUrl(post) {
 export default class PostItem extends Component {
   state = { commentCount: 0 };
 
-  renderActions(post, isMobile) {
+  renderActions(post, isCompact) {
     return (
       <GlobalConsumer>
         {({ postView: { viewPostFn }, user: { isAdmin } }) => (
           <React.Fragment>
-            <FollowButton post={post} isMobile={isMobile} />
+            <FollowButton post={post} isCompact={isCompact} />
             {(() => {
-              if (isMobile)
+              if (isCompact)
                 return (
                   <Label as="a" className="actn-lbl">
                     <Icon name="quote left" />
                     {this.state.commentCount}
                   </Label>
                 );
-              if (!isMobile)
+              if (!isCompact)
                 return (
                   <Button
                     as="div"
@@ -68,18 +68,19 @@ export default class PostItem extends Component {
                   </Button>
                 );
             })()}
-            {!isMobile && (
-              <Share href={getShareUrl(post)}>
-                <Button icon color="facebook" title={getShareUrl(post)}>
-                  <Icon name="facebook f" title="Comments" />
-                </Button>
-              </Share>
-            )}
+            {!isCompact &&
+              this.props.detailed && (
+                <Share href={getShareUrl(post)}>
+                  <Button icon color="facebook" title={getShareUrl(post)}>
+                    <Icon name="facebook f" title="Comments" />
+                  </Button>
+                </Share>
+              )}
             {(() => {
               const poProps = {
                 placement: "bottomRight"
               };
-              if (isMobile) {
+              if (isCompact) {
                 poProps.placement = "rightBottom";
               }
               return (
@@ -97,7 +98,7 @@ export default class PostItem extends Component {
                   onVisibleChange={showMore => this.setState({ showMore })}
                   {...poProps}
                 >
-                  {isMobile ? (
+                  {isCompact ? (
                     <Label basic as="a" className="actn-lbl">
                       <center>
                         <Icon name="ellipsis horizontal" />
@@ -116,7 +117,7 @@ export default class PostItem extends Component {
   }
 
   renderImage() {
-    const { post, isMobile } = this.props;
+    const { post, isCompact } = this.props;
 
     let feedPhoto = imagePlaceholder;
     if (post.photos[0]) feedPhoto = `${storage}${path}/${post.photos[0]}`;
@@ -133,7 +134,7 @@ export default class PostItem extends Component {
           const loadingImg = loadingRefNo === post._refNo && loading;
           return (
             <React.Fragment>
-              {isMobile && (
+              {isCompact && (
                 <div className="image">
                   <MsImage
                     {...msImageProps}
@@ -143,7 +144,7 @@ export default class PostItem extends Component {
                   {this.renderActions(post, true)}
                 </div>
               )}
-              {!isMobile && (
+              {!isCompact && (
                 <MsImage
                   style={{
                     width: 75
@@ -161,7 +162,7 @@ export default class PostItem extends Component {
   }
 
   render() {
-    const { post, isMobile, isRemoved, basic } = this.props;
+    const { post, isCompact, isRemoved, basic, detailed } = this.props;
 
     if (!post) {
       return <React.Fragment />;
@@ -172,17 +173,19 @@ export default class PostItem extends Component {
         {({
           postFeed: { setSearchesFn },
           postView: { viewPostFn, loading },
+          responsive: { isMobile },
           user: { user }
         }) => {
           return (
             <Item className="post">
               {this.renderImage()}
               <Item.Content>
-                {!isMobile && (
-                  <div style={{ float: "right" }}>
-                    {this.renderActions(post)}
-                  </div>
-                )}
+                {!isCompact &&
+                  !detailed && (
+                    <div style={{ float: "right" }}>
+                      {this.renderActions(post)}
+                    </div>
+                  )}
                 <Item.Header
                   className="title"
                   as={HLink}
@@ -205,9 +208,11 @@ export default class PostItem extends Component {
                   <span>{post.title}</span>
                 </Item.Header>
                 <Item.Meta
-                  className={isMobile ? "mobile-meta" : "desktop-meta"}
+                  className={
+                    isCompact || isMobile ? "mobile-meta" : "desktop-meta"
+                  }
                 >
-                  <List horizontal={!isMobile}>
+                  <List horizontal={!(isCompact || isMobile)}>
                     {!basic && (
                       <List.Item>
                         <List.Icon name="user" />
@@ -254,6 +259,7 @@ export default class PostItem extends Component {
                       content={tag}
                     />
                   ))}
+                  {detailed && <div>{this.renderActions(post)}</div>}
                 </Item.Extra>
               </Item.Content>
             </Item>

@@ -1,0 +1,5 @@
+.wrapper {
+  border: none !important;
+  border-radius: unset !important;
+  overflow-y: auto;
+}

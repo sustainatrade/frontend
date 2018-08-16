@@ -6,7 +6,7 @@ import { Label, Button, Icon } from "semantic-ui-react";
 export default class FollowButton extends Component {
   state = {};
   render() {
-    const { post, isMobile } = this.props;
+    const { post, isCompact } = this.props;
     return (
       <Mutation mutation={FOLLOW_POST}>
         {(followPost, { data, loading, error }) => {
@@ -43,7 +43,7 @@ export default class FollowButton extends Component {
           };
           return (
             <React.Fragment>
-              {isMobile && (
+              {isCompact && (
                 <Label
                   as="a"
                   className="actn-lbl"
@@ -53,7 +53,7 @@ export default class FollowButton extends Component {
                   <Icon {...iconProps} /> {followers}
                 </Label>
               )}
-              {!isMobile && (
+              {!isCompact && (
                 <Button
                   as="div"
                   labelPosition="right"

@@ -23,6 +23,7 @@ import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import Modal from "antd/lib/modal";
 import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
+import ContentWrapper from "./../../components/content-wrapper/ContentWrapper";
 
 const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -72,7 +73,7 @@ export default class PostFeed extends Component {
                     }
                     return (
                       <PostItem
-                        isMobile={isMobile}
+                        isCompact={isMobile}
                         key={post._refNo}
                         post={postObj}
                         categories={categories}
@@ -107,20 +108,23 @@ export default class PostFeed extends Component {
       <PostViewContext.Consumer>
         {({ post, closeFn }) => {
           return (
-            <Modal
-              width="1024px"
-              visible={post !== undefined}
-              title={
-                <div>
-                  <Icon name="sticky note" />Post View
-                </div>
-              }
-              footer={null}
-              keyboard={false}
-              onCancel={() => history.push("/")}
-            >
+            <ContentWrapper open={post !== undefined}>
               {post && <Post />}
-            </Modal>
+            </ContentWrapper>
+            // <Modal
+            //   width="1024px"
+            //   visible={post !== undefined}
+            //   title={
+            //     <div>
+            //       <Icon name="sticky note" />Post View
+            //     </div>
+            //   }
+            //   footer={null}
+            //   keyboard={false}
+            //   onCancel={() => history.push("/")}
+            // >
+            //   {post && <Post />}
+            // </Modal>
           );
         }}
       </PostViewContext.Consumer>

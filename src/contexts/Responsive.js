@@ -1,38 +1,30 @@
-import React from 'react'
-import {
-    Responsive
-} from 'semantic-ui-react'
+import React from "react";
+import { Responsive } from "semantic-ui-react";
 
-const Context =  React.createContext({});
-
+const Context = React.createContext({});
 
 class Provider extends React.Component {
-    
-    state = {};
-    
-    handleOnUpdate = (e, { width }) => {
-        const { isMobile } = this.state;
-        const newIsMobile = width<780;
-        if(isMobile!==newIsMobile)
-            this.setState({ isMobile:newIsMobile })
-    }
-    
-    render() {
-        return (
-            <Context.Provider value={this.state}>
-                <Responsive
-                    fireOnMount
-                    onUpdate={this.handleOnUpdate}
-                >
-                    {this.props.children}   
-                </Responsive>
-                
-            </Context.Provider>
-        )
-    }
+  state = {};
+
+  handleOnUpdate = (e, { width }) => {
+    const { isMobile } = this.state;
+    const newIsMobile = width < 780;
+    if (isMobile !== newIsMobile)
+      this.setState({ isMobile: newIsMobile, width });
+  };
+
+  render() {
+    return (
+      <Context.Provider value={this.state}>
+        <Responsive fireOnMount onUpdate={this.handleOnUpdate}>
+          {this.props.children}
+        </Responsive>
+      </Context.Provider>
+    );
+  }
 }
 
 export default {
-    Provider,
-    Consumer:Context.Consumer
-} 
+  Provider,
+  Consumer: Context.Consumer
+};

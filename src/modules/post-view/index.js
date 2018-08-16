@@ -4,6 +4,7 @@ import {
   Grid,
   Modal,
   Image,
+  Header,
   Divider,
   Container
 } from "semantic-ui-react";
@@ -144,7 +145,7 @@ export default class PostView extends Component {
             <Grid doubling columns={2} style={{ margin: 0 }}>
               <Grid.Column width={10} style={{ padding: 0, paddingBottom: 10 }}>
                 <Item.Group divided>
-                  <PostItem post={post} categories={categories} />
+                  <PostItem post={post} categories={categories} detailed />
                   {renderGallery()}
                   {this.renderWidgets(post, widgets)}
                 </Item.Group>
