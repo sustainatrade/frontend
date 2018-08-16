@@ -46,6 +46,6 @@
     "async-shelljs": "0.1.2",
     "cross-env": "5.2.0",
     "eslint-plugin-prettier": "2.6.1",
-    "prettier": "1.14.0"
+    "prettier": "1.14.2"
   }
 }
