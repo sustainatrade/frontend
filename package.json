@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@reach/router": "1.1.1",
-    "antd": "3.7.3",
+    "antd": "3.8.1",
     "apollo-cache-inmemory": "1.2.6",
     "apollo-client": "2.3.7",
     "apollo-link-error": "1.1.0",
