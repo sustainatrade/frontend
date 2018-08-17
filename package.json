@@ -4,8 +4,8 @@
   "dependencies": {
     "@reach/router": "1.1.1",
     "antd": "3.8.1",
-    "apollo-cache-inmemory": "1.2.7",
-    "apollo-client": "2.3.8",
+    "apollo-cache-inmemory": "1.2.8",
+    "apollo-client": "2.4.0",
     "apollo-link-error": "1.1.0",
     "apollo-link-http": "1.5.4",
     "apollo-link-ws": "1.0.8",
