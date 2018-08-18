@@ -1,0 +1,9 @@
+.filter-menu {
+  border-radius: 0px;
+  position: fixed;
+  top: 50px;
+  right: 0px;
+  height: 50px;
+  z-index: 899;
+  background-color: white;
+}

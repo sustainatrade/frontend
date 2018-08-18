@@ -6,11 +6,13 @@ import {
   Transition,
   Menu,
   Icon,
+  Header,
   Divider
 } from "semantic-ui-react";
 import UserContext from "./../contexts/UserContext";
 import CategoryContext from "./../contexts/CategoryContext";
 import PostFeedContext from "./../contexts/PostFeedContext";
+import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
 import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
 import { UserAuth } from "../components";
@@ -67,7 +69,8 @@ const Filters = () => {
                           setFiltersFn({ category: undefined });
                         }}
                       >
-                        All<Icon name="grid layout" />
+                        All
+                        <Icon name="grid layout" />
                       </Menu.Item>
                       {catMap &&
                         Object.keys(catMap).map(catKey => (
@@ -96,6 +99,53 @@ const Filters = () => {
 };
 
 const UserOptions = () => <React.Fragment />;
+
+const PostViewMode = ({
+  icon,
+  viewMode,
+  postViewContext: { postViewMode, setPostViewMode }
+}) => {
+  return (
+    <Button
+      icon
+      active={postViewMode === viewMode}
+      title={viewMode}
+      onClick={() => setPostViewMode(viewMode)}
+    >
+      <Icon name={icon} />
+    </Button>
+  );
+};
+
+const PostView = () => (
+  <PostViewContext.Consumer>
+    {postViewContext => (
+      <Segment size="mini">
+        <Header floated="left" style={{ marginTop: 10, color: "grey" }}>
+          Post View
+        </Header>
+        <Button.Group floated="right">
+          <PostViewMode
+            icon="align justify"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.compact}
+          />
+          <PostViewMode
+            icon="table"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.card}
+          />
+          <PostViewMode
+            icon="th"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.tiled}
+          />
+        </Button.Group>
+        <Divider hidden fitted clearing />
+      </Segment>
+    )}
+  </PostViewContext.Consumer>
+);
 
 export default class Sidebar extends Component {
   state = {};
@@ -143,13 +193,15 @@ export default class Sidebar extends Component {
                   )}
                   {user ? (
                     <List.Item>
-                      <Divider horizontal>Account</Divider>
-                      <Segment>{self.renderAccount()}</Segment>
+                      <Divider hidden fitted style={{ marginTop: 5 }} />
+                      <Segment color="green" style={{ margin: 0 }}>
+                        {self.renderAccount()}
+                      </Segment>
                     </List.Item>
                   ) : (
                     <List.Item>
-                      <Divider horizontal>Login</Divider>
-                      <Segment raised key="login-key" style={{ margin: 0 }}>
+                      <Divider hidden fitted style={{ marginTop: 5 }} />
+                      <Segment key="login-key" style={{ margin: 0 }}>
                         <center>
                           Start creating your own post by logging in
                           <Divider />
@@ -158,7 +210,9 @@ export default class Sidebar extends Component {
                       </Segment>
                     </List.Item>
                   )}
-
+                  <List.Item>
+                    <PostView />
+                  </List.Item>
                   <List.Item>
                     <Router primary={false}>
                       <UserOptions path="u/*" />
