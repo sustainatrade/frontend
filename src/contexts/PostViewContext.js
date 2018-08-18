@@ -5,9 +5,16 @@ import { history } from "./../lib/history";
 import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
 import Notification from "antd/lib/notification";
+import ls from "lscache";
 
 const Context = React.createContext();
 const { Consumer } = Context;
+
+export const VIEW_MODES = {
+  compact: `compact`,
+  card: `card`,
+  tiled: `tiled`
+};
 
 class ReportPost extends React.Component {
   state = {};
@@ -16,6 +23,7 @@ class ReportPost extends React.Component {
     SPAM: "Spam",
     OTHERS: "Others:"
   };
+
   handleChange = (_, data) => {
     if (data.checked) {
       const { reportPost = {} } = this.state;
@@ -76,6 +84,11 @@ class ReportPost extends React.Component {
 
 class Provider extends React.Component {
   state = {
+    postViewMode: ls.get("post-view-mode"),
+    setPostViewMode: postViewMode => {
+      ls.set("post-view-mode", postViewMode);
+      this.setState({ postViewMode });
+    },
     closeFn: () => {
       this.setState({ post: undefined });
     },
@@ -141,6 +154,10 @@ class Provider extends React.Component {
       console.log(action, location.pathname, location.state);
       this.parseLocation(location);
     });
+    const { postViewMode, setPostViewMode } = this.state;
+    if (!postViewMode) {
+      setPostViewMode(VIEW_MODES.compact);
+    }
   }
 
   render() {

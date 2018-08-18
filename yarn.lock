@@ -5006,7 +5006,7 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-lscache@1.2.0:
+lscache@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/lscache/-/lscache-1.2.0.tgz#06b0828fa7735c206457ba0933d658ba358d5ecb"
 

@@ -6,11 +6,13 @@ import {
   Transition,
   Menu,
   Icon,
+  Header,
   Divider
 } from "semantic-ui-react";
 import UserContext from "./../contexts/UserContext";
 import CategoryContext from "./../contexts/CategoryContext";
 import PostFeedContext from "./../contexts/PostFeedContext";
+import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
 import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
 import { UserAuth } from "../components";
@@ -67,7 +69,8 @@ const Filters = () => {
                           setFiltersFn({ category: undefined });
                         }}
                       >
-                        All<Icon name="grid layout" />
+                        All
+                        <Icon name="grid layout" />
                       </Menu.Item>
                       {catMap &&
                         Object.keys(catMap).map(catKey => (
@@ -96,6 +99,42 @@ const Filters = () => {
 };
 
 const UserOptions = () => <React.Fragment />;
+
+const PostView = () => (
+  <PostViewContext>
+    {({ postViewMode, setPostViewMode }) => (
+      <Segment size="mini">
+        <Header floated="left" style={{ marginTop: 10 }}>
+          Post View
+        </Header>
+        <Button.Group floated="right">
+          <Button
+            icon
+            active={postViewMode === VIEW_MODES.compact}
+            title={VIEW_MODES.compact}
+          >
+            <Icon name="align justify" />
+          </Button>
+          <Button
+            icon
+            active={postViewMode === VIEW_MODES.card}
+            title={VIEW_MODES.card}
+          >
+            <Icon name="table" />
+          </Button>
+          <Button
+            icon
+            active={postViewMode === VIEW_MODES.tiled}
+            title={VIEW_MODES.tiled}
+          >
+            <Icon name="th" />
+          </Button>
+        </Button.Group>
+        <Divider hidden fitted clearing />)
+      </Segment>
+    )}
+  </PostViewContext>
+);
 
 export default class Sidebar extends Component {
   state = {};
@@ -148,8 +187,8 @@ export default class Sidebar extends Component {
                     </List.Item>
                   ) : (
                     <List.Item>
-                      <Divider horizontal>Login</Divider>
-                      <Segment raised key="login-key" style={{ margin: 0 }}>
+                      <Divider hidden fitted style={{ marginTop: 5 }} />
+                      <Segment key="login-key" style={{ margin: 0 }}>
                         <center>
                           Start creating your own post by logging in
                           <Divider />
@@ -158,7 +197,9 @@ export default class Sidebar extends Component {
                       </Segment>
                     </List.Item>
                   )}
-
+                  <List.Item>
+                    <PostView />
+                  </List.Item>
                   <List.Item>
                     <Router primary={false}>
                       <UserOptions path="u/*" />

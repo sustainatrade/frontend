@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Segment } from "semantic-ui-react";
 import Sidebar from "./Sidebar";
 import PostFeed from "./post-feed";
+import Home from "./home";
 import UserList from "./user-list";
 import ResponsiveContext from "./../contexts/Responsive";
 import { Router } from "@reach/router";
@@ -51,7 +52,8 @@ export default class EcoContent extends Component {
             )}
             <Router>
               <UserList path="u/*" />
-              <PostFeed default />
+              <PostFeed path="p/*" />
+              <Home default />
             </Router>
           </div>
         );
