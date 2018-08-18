@@ -2,6 +2,7 @@ import React from "react";
 import gql from "graphql-tag";
 import get from "lodash/get";
 import apolloClient from "./../lib/apollo";
+import postFragment from "./../gql-schemas/PostFragment";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -20,18 +21,7 @@ const POST_CREATED = gql`
 `;
 
 const POST_LIST = gql`
-  fragment PostFragment on Post {
-    title
-    section
-    category
-    description
-    photos
-    tags
-    createdBy
-    createdDate
-    followerCount
-    isFollowing
-  }
+  ${postFragment}
   query($input: PostListInput) {
     PostList(input: $input) {
       status
@@ -128,6 +118,20 @@ class Provider extends React.Component {
         filters: Object.assign({}, oldFilters, newFilters)
       });
       await this.state.loadMoreFn(0);
+    },
+    fetchNewSectionPosts: async section => {
+      const { data } = await apolloClient.query({
+        query: POST_LIST,
+        variables: {
+          input: {
+            section,
+            skip: 0,
+            limit: 10
+          }
+        }
+      });
+      console.log("data"); //TRACE
+      console.log(data); //TRACE
     },
     loadMoreFn: async forceSkip => {
       const {

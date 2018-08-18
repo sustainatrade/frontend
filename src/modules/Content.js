@@ -4,15 +4,17 @@ import Sidebar from "./Sidebar";
 import PostFeed from "./post-feed";
 import Home from "./home";
 import UserList from "./user-list";
-import ResponsiveContext from "./../contexts/Responsive";
+import { GlobalConsumer } from "./../contexts";
 import { Router } from "@reach/router";
+import ContentWrapper from "./../components/content-wrapper/ContentWrapper";
+import Post from "./post-view";
 
 export default class EcoContent extends Component {
   state = { visible: false };
 
   render = () => (
-    <ResponsiveContext.Consumer>
-      {({ isMobile }) => {
+    <GlobalConsumer>
+      {({ responsive: { isMobile }, postView: { post, closeFn } }) => {
         const { showSidebarScroll } = this.state;
         const { showSidebar } = this.props;
         const style1 = {},
@@ -23,7 +25,7 @@ export default class EcoContent extends Component {
             bottom: "0",
             width: 250,
             zIndex: 901,
-            backgroundColor: "#e2e2e2",
+            backgroundColor: "#f3f4f5",
             overflowY: showSidebarScroll ? "scroll" : "hidden"
           },
           style3 = { paddingRight: 5, width: 240 };
@@ -52,12 +54,15 @@ export default class EcoContent extends Component {
             )}
             <Router>
               <UserList path="u/*" />
-              <PostFeed path="p/*" />
+              <PostFeed path="p" />
               <Home default />
             </Router>
+            <ContentWrapper open={post !== undefined}>
+              {post && <Post />}
+            </ContentWrapper>
           </div>
         );
       }}
-    </ResponsiveContext.Consumer>
+    </GlobalConsumer>
   );
 }

@@ -22,6 +22,7 @@ import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import FollowButton from "./FollowButton";
 import MoreProps from "./MoreProps";
+import { VIEW_MODES } from "./../../contexts/PostViewContext";
 
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
@@ -130,17 +131,22 @@ export default class PostItem extends Component {
     };
     return (
       <PostViewContext.Consumer>
-        {({ viewPostFn, loading, loadingRefNo }) => {
+        {({ viewPostFn, loading, postViewMode, loadingRefNo }) => {
           const loadingImg = loadingRefNo === post._refNo && loading;
+          if (postViewMode === VIEW_MODES.compact && !isCompact) {
+            return <React.Fragment />;
+          }
           return (
             <React.Fragment>
               {isCompact && (
                 <div className="image">
-                  <MsImage
-                    {...msImageProps}
-                    loading={loadingImg}
-                    onClick={() => viewPostFn(post._refNo)}
-                  />
+                  {postViewMode !== VIEW_MODES.compact && (
+                    <MsImage
+                      {...msImageProps}
+                      loading={loadingImg}
+                      onClick={() => viewPostFn(post._refNo)}
+                    />
+                  )}
                   {this.renderActions(post, true)}
                 </div>
               )}
@@ -172,7 +178,7 @@ export default class PostItem extends Component {
       <GlobalConsumer>
         {({
           postFeed: { setSearchesFn },
-          postView: { viewPostFn, loading },
+          postView: { viewPostFn, postViewMode, loading },
           responsive: { isMobile },
           user: { user }
         }) => {

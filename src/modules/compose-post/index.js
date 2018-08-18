@@ -20,6 +20,7 @@ import UploadPhoto from "./UploadPhoto";
 import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
 import { GlobalConsumer } from "./../../contexts";
+import { sections } from "./../../config";
 
 const CATEGORY_LIST = gql`
   query {
@@ -112,7 +113,8 @@ export default class ComposePost extends Component {
                       <Grid.Column key={`post-widget-${index}`}>
                         <Segment>
                           <center>
-                            Deleted{` `}
+                            Deleted
+                            {` `}
                             <a onClick={() => undeleteWidget(index)}>Undo</a>
                           </center>
                         </Segment>
@@ -313,21 +315,22 @@ export default class ComposePost extends Component {
                 <Form.Field required>
                   <label>Section</label>
                   <Button.Group fluid>
-                    <Button
-                      positive={form.section === "buy"}
-                      type="button"
-                      onClick={() => updateForm({ section: "buy" })}
-                    >
-                      Buy
-                    </Button>
-                    <Button.Or />
-                    <Button
-                      positive={form.section === "sell"}
-                      type="button"
-                      onClick={() => updateForm({ section: "sell" })}
-                    >
-                      Sell
-                    </Button>
+                    {sections.map((section, ii) => (
+                      <React.Fragment key={section.key}>
+                        {ii > 0 && <Button.Or />}
+                        <Button
+                          color={
+                            form.section === section.key
+                              ? section.color
+                              : undefined
+                          }
+                          type="button"
+                          onClick={() => updateForm({ section: section.key })}
+                        >
+                          {section.displayName}
+                        </Button>
+                      </React.Fragment>
+                    ))}
                   </Button.Group>
                 </Form.Field>
                 <Form.Field required>

@@ -100,40 +100,51 @@ const Filters = () => {
 
 const UserOptions = () => <React.Fragment />;
 
+const PostViewMode = ({
+  icon,
+  viewMode,
+  postViewContext: { postViewMode, setPostViewMode }
+}) => {
+  return (
+    <Button
+      icon
+      active={postViewMode === viewMode}
+      title={viewMode}
+      onClick={() => setPostViewMode(viewMode)}
+    >
+      <Icon name={icon} />
+    </Button>
+  );
+};
+
 const PostView = () => (
-  <PostViewContext>
-    {({ postViewMode, setPostViewMode }) => (
+  <PostViewContext.Consumer>
+    {postViewContext => (
       <Segment size="mini">
-        <Header floated="left" style={{ marginTop: 10 }}>
+        <Header floated="left" style={{ marginTop: 10, color: "grey" }}>
           Post View
         </Header>
         <Button.Group floated="right">
-          <Button
-            icon
-            active={postViewMode === VIEW_MODES.compact}
-            title={VIEW_MODES.compact}
-          >
-            <Icon name="align justify" />
-          </Button>
-          <Button
-            icon
-            active={postViewMode === VIEW_MODES.card}
-            title={VIEW_MODES.card}
-          >
-            <Icon name="table" />
-          </Button>
-          <Button
-            icon
-            active={postViewMode === VIEW_MODES.tiled}
-            title={VIEW_MODES.tiled}
-          >
-            <Icon name="th" />
-          </Button>
+          <PostViewMode
+            icon="align justify"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.compact}
+          />
+          <PostViewMode
+            icon="table"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.card}
+          />
+          <PostViewMode
+            icon="th"
+            postViewContext={postViewContext}
+            viewMode={VIEW_MODES.tiled}
+          />
         </Button.Group>
-        <Divider hidden fitted clearing />)
+        <Divider hidden fitted clearing />
       </Segment>
     )}
-  </PostViewContext>
+  </PostViewContext.Consumer>
 );
 
 export default class Sidebar extends Component {
@@ -182,8 +193,10 @@ export default class Sidebar extends Component {
                   )}
                   {user ? (
                     <List.Item>
-                      <Divider horizontal>Account</Divider>
-                      <Segment>{self.renderAccount()}</Segment>
+                      <Divider hidden fitted style={{ marginTop: 5 }} />
+                      <Segment color="green" style={{ margin: 0 }}>
+                        {self.renderAccount()}
+                      </Segment>
                     </List.Item>
                   ) : (
                     <List.Item>

@@ -63,7 +63,8 @@ export const Menus = ({ mobile }) => {
       >
         <Dropdown.Menu>
           <Dropdown.Item as={Link} to="/">
-            <Icon name="cubes" />Items
+            <Icon name="cubes" />
+            Items
           </Dropdown.Item>
           <Dropdown.Item as={Link} to="/u">
             <Icon name="users" /> Traders
@@ -118,16 +119,15 @@ class Root extends React.Component {
             return (
               <React.Fragment>
                 <Menu
-                  inverted
                   style={{
                     borderRadius: 0,
-                    backgroundColor: "#14331b",
                     position: "fixed",
                     top: 0,
                     left: 0,
                     right: 0,
                     height: "50px",
-                    zIndex: 902
+                    zIndex: 901,
+                    backgroundColor: "white"
                   }}
                 >
                   {!isMobile && (

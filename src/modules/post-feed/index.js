@@ -13,9 +13,8 @@ import {
 import ContentLoader from "react-content-loader";
 import { startCase } from "lodash";
 import { history } from "./../../lib/history";
-import TagList from "./TagList";
 import PostItem from "./PostItem";
-import Searches from "./Searches";
+import Filters from "./Filters";
 import Post from "./../post-view";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import PostViewContext from "./../../contexts/PostViewContext";
@@ -44,123 +43,97 @@ const PlaceHolder = ({ isMobile, ...props }) => (
   </ContentLoader>
 );
 
+const TabMenu = ({ self, name, icon, count, countColor, onClickFn }) => (
+  <Menu.Item
+    fitted
+    name={name}
+    active={self.state.activeMenu === name}
+    onClick={() => {
+      self.setState({
+        activeMenu: name,
+        fetchTimeStamp: Date.now()
+      });
+      onClickFn && onClickFn();
+    }}
+  >
+    <Icon name={icon} />
+    {startCase(name)}
+    {count > 0 && (
+      <Label size="mini" color={countColor || "yellow"} content={`${count}`} />
+    )}
+  </Menu.Item>
+);
+
+const Feed = ({ categories }) => {
+  return (
+    <ResponsiveContext.Consumer>
+      {({ isMobile }) => (
+        <PostFeedContext.Consumer>
+          {({
+            setFiltersFn,
+            filters,
+            skip,
+            limit,
+            loadMoreFn,
+            list,
+            loadingMore,
+            noMore
+          }) => {
+            return (
+              <Item.Group divided unstackable={isMobile}>
+                {list.map(post => {
+                  let postObj = post;
+                  if (post.isRemoved) {
+                    postObj = post.post;
+                  }
+                  return (
+                    <PostItem
+                      isCompact={isMobile}
+                      key={post._refNo}
+                      post={postObj}
+                      categories={categories}
+                      basic
+                      isRemoved={post.isRemoved}
+                    />
+                  );
+                })}
+                {loadingMore && !noMore && <PlaceHolder isMobile={isMobile} />}
+                {noMore ? (
+                  <Button
+                    fluid
+                    basic
+                    color="green"
+                    content="Ooops. No more post here!!"
+                  />
+                ) : loadingMore ? (
+                  <React.Fragment />
+                ) : (
+                  <Button
+                    content="Show More"
+                    basic
+                    fluid
+                    onClick={() => loadMoreFn()}
+                  />
+                )}
+                <Divider key="more-trigger" />
+              </Item.Group>
+            );
+          }}
+        </PostFeedContext.Consumer>
+      )}
+    </ResponsiveContext.Consumer>
+  );
+};
+
 export default class PostFeed extends Component {
   state = {
     activeMenu: "latest",
     fetchTimeStamp: Date.now()
   };
 
-  renderFeed(categories) {
-    return (
-      <ResponsiveContext.Consumer>
-        {({ isMobile }) => (
-          <PostFeedContext.Consumer>
-            {({
-              setFiltersFn,
-              filters,
-              skip,
-              limit,
-              list,
-              loadingMore,
-              noMore
-            }) => {
-              return (
-                <Item.Group divided unstackable={isMobile}>
-                  {list.map(post => {
-                    let postObj = post;
-                    if (post.isRemoved) {
-                      postObj = post.post;
-                    }
-                    return (
-                      <PostItem
-                        isCompact={isMobile}
-                        key={post._refNo}
-                        post={postObj}
-                        categories={categories}
-                        basic
-                        isRemoved={post.isRemoved}
-                      />
-                    );
-                  })}
-                  {loadingMore &&
-                    !noMore && <PlaceHolder isMobile={isMobile} />}
-                  {noMore && (
-                    <Button
-                      fluid
-                      basic
-                      color="green"
-                      content="Ooops. No more post here!!"
-                    />
-                  )}
-                  <Divider key="more-trigger" />
-                </Item.Group>
-              );
-            }}
-          </PostFeedContext.Consumer>
-        )}
-      </ResponsiveContext.Consumer>
-    );
-  }
-
-  renderPostView() {
-    //TODO: move this to globals
-    return (
-      <PostViewContext.Consumer>
-        {({ post, closeFn }) => {
-          return (
-            <ContentWrapper open={post !== undefined}>
-              {post && <Post />}
-            </ContentWrapper>
-            // <Modal
-            //   width="1024px"
-            //   visible={post !== undefined}
-            //   title={
-            //     <div>
-            //       <Icon name="sticky note" />Post View
-            //     </div>
-            //   }
-            //   footer={null}
-            //   keyboard={false}
-            //   onCancel={() => history.push("/")}
-            // >
-            //   {post && <Post />}
-            // </Modal>
-          );
-        }}
-      </PostViewContext.Consumer>
-    );
-  }
-
-  createTabMenu = ({ name, icon, count, countColor, onClickFn }) => (
-    <Menu.Item
-      fitted
-      name={name}
-      active={this.state.activeMenu === name}
-      onClick={() => {
-        this.setState({
-          activeMenu: name,
-          fetchTimeStamp: Date.now()
-        });
-        onClickFn && onClickFn();
-      }}
-    >
-      <Icon name={icon} />
-      {startCase(name)}
-      {count > 0 && (
-        <Label
-          size="mini"
-          color={countColor || "yellow"}
-          content={`${count}`}
-        />
-      )}
-    </Menu.Item>
-  );
-
   render() {
     return (
       <div>
-        <TagList />
-        <Divider />
         <GlobalConsumer>
           {({
             category: { loading, categories },
@@ -182,38 +155,50 @@ export default class PostFeed extends Component {
                   prop={user}
                   handler={user => user && loadPostCountFn(user.id)}
                 />
-                <Searches />
+                <Filters isMobile={isMobile} />
                 <Divider />
                 <Menu
                   secondary
                   pointing
                   {...(isMobile ? { size: "mini" } : {})}
                 >
-                  {this.createTabMenu({
-                    name: "latest",
-                    icon: "time",
-                    count: unreadPosts.length,
-                    onClickFn: clearUnreadFn
-                  })}
-                  {user &&
-                    this.createTabMenu({
-                      name: "following",
-                      icon: "bookmark",
-                      count: postCount.followed,
-                      countColor: "grey",
-                      onClickFn: loadingFollowedPostsFn
-                    })}
-                  {user &&
-                    this.createTabMenu({
-                      name: "my posts",
-                      icon: "pen square",
-                      count: postCount.myPosts,
-                      countColor: "grey",
-                      onClickFn: () => loadUserPostsFn(user.id)
-                    })}
+                  <TabMenu
+                    {...{
+                      self: this,
+                      name: "latest",
+                      icon: "time",
+                      count: unreadPosts.length,
+                      onClickFn: clearUnreadFn
+                    }}
+                  />
+                  {user && (
+                    <TabMenu
+                      {...{
+                        self: this,
+                        name: "following",
+                        icon: "bookmark",
+                        count: postCount.followed,
+                        countColor: "grey",
+                        onClickFn: loadingFollowedPostsFn
+                      }}
+                    />
+                  )}
+                  {user && (
+                    <TabMenu
+                      {...{
+                        self: this,
+                        name: "my posts",
+                        icon: "pen square",
+                        count: postCount.myPosts,
+                        countColor: "grey",
+                        onClickFn: () => loadUserPostsFn(user.id)
+                      }}
+                    />
+                  )}
                 </Menu>
                 <Visibility
                   fireOnMount
+                  continuous
                   offset={[10, 10]}
                   onUpdate={(e, { calculations }) => {
                     if (calculations.bottomVisible) {
@@ -221,13 +206,12 @@ export default class PostFeed extends Component {
                     }
                   }}
                 >
-                  {categories && this.renderFeed(categories)}
+                  {categories && <Feed categories={categories} />}
                 </Visibility>
               </React.Fragment>
             );
           }}
         </GlobalConsumer>
-        {this.renderPostView()}
       </div>
     );
   }
