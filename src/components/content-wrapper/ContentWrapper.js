@@ -7,10 +7,10 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks
 } from "body-scroll-lock";
-import nanoid from "nanoid";
+import generate from "nanoid/generate";
 
 export default class ContentWrapper extends React.Component {
-  domId = nanoid();
+  domId = "wrap-" + generate("1234567890abcdef", 10);
   targetElement = null;
 
   componentWillMount() {}

@@ -126,7 +126,7 @@ class Root extends React.Component {
                     left: 0,
                     right: 0,
                     height: "50px",
-                    zIndex: 901,
+                    zIndex: 902,
                     backgroundColor: "white"
                   }}
                 >

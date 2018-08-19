@@ -156,7 +156,7 @@ export default class PostFeed extends Component {
                   handler={user => user && loadPostCountFn(user.id)}
                 />
                 <Filters isMobile={isMobile} />
-                <Divider />
+                <Divider style={{ marginTop: 35 }} />
                 <Menu
                   secondary
                   pointing
