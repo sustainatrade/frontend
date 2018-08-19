@@ -1,24 +1,32 @@
 import React from "react";
-import { Portal, Segment, Dimmer } from "semantic-ui-react";
+import { Portal, Segment } from "semantic-ui-react";
 import ResponsiveContext from "./../../contexts/Responsive";
 import "./wrapper.css";
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks
+} from "body-scroll-lock";
 
 export default class ContentWrapper extends React.Component {
-  state = { active: false };
+  targetElement = null;
+
+  componentDidMount() {
+    this.targetElement = document.querySelector(".wrapper");
+  }
+  componentWillUnmount() {
+    clearAllBodyScrollLocks();
+  }
   onMount() {
-    this.setState({ active: true });
+    disableBodyScroll(this.targetElement);
   }
   onUnmount() {
-    this.setState({ active: false });
+    enableBodyScroll(this.targetElement);
   }
   render() {
     const { children, onMount, onUnmount, ...rest } = this.props;
-    const { active } = this.state;
     return (
       <React.Fragment>
-        <Dimmer active={active} page style={{ zIndex: 898 }}>
-          Halt!
-        </Dimmer>
         <Portal
           {...rest}
           onMount={e => {
