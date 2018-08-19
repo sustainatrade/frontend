@@ -7,24 +7,29 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks
 } from "body-scroll-lock";
+import nanoid from "nanoid";
 
 export default class ContentWrapper extends React.Component {
+  domId = nanoid();
   targetElement = null;
 
-  componentDidMount() {
-    this.targetElement = document.querySelector(".wrapper");
-  }
+  componentWillMount() {}
   componentWillUnmount() {
     clearAllBodyScrollLocks();
   }
   onMount() {
+    const { domId } = this;
+    this.targetElement = document.querySelector("#" + domId);
     disableBodyScroll(this.targetElement);
   }
   onUnmount() {
+    const { domId } = this;
+    this.targetElement = document.querySelector("#" + domId);
     enableBodyScroll(this.targetElement);
   }
   render() {
     const { children, onMount, onUnmount, ...rest } = this.props;
+    const { domId } = this;
     return (
       <React.Fragment>
         <Portal
@@ -41,12 +46,13 @@ export default class ContentWrapper extends React.Component {
           <ResponsiveContext.Consumer>
             {({ isMobile }) => (
               <Segment
+                id={domId}
                 className="wrapper"
                 style={{
                   left: isMobile ? "0" : "250px",
                   margin: 0,
                   width: isMobile ? "100%" : "calc(100% - 250px)",
-                  height: "calc(100% - 150px)",
+                  height: "calc(100% - 50px)",
                   position: "fixed",
                   top: "50px",
                   zIndex: 900
