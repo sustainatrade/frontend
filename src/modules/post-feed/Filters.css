@@ -3,6 +3,7 @@
   position: fixed;
   top: 50px;
   right: 0px;
+  left: 0px;
   height: 55px;
   z-index: 899;
   background-color: rgb(243, 244, 245);
@@ -23,12 +24,15 @@
   padding: 5px 0px;
 }
 
-.filter-scroller > * {
-  display: block !important;
+.filter-desktop > * {
+  display: inline-block;
+  margin-right: 5px !important;
+  margin-bottom: 5px !important;
 }
 
-.filter-scroller > .buttons {
-  margin: 5px;
+.filter-scroller > * {
+  display: block !important;
+  margin: 5px 2px;
 }
 
 .filter-scroller::-webkit-scrollbar-track {

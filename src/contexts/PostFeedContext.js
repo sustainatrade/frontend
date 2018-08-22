@@ -44,11 +44,19 @@ const POST_LIST = gql`
 class Provider extends React.Component {
   state = {
     filters: {},
+    filterOpened: false,
+    filterActiveIndex: null,
     searches: {},
     postCount: {},
     unreadPosts: [],
     list: [],
     postListTimeStamp: new Date().toISOString(),
+    setFilterActiveIndex: idx => {
+      this.setState({ filterActiveIndex: idx });
+    },
+    showFilterDrawer: shown => {
+      this.setState({ filterOpened: shown });
+    },
     loadPostCountFn: async userRefNo => {
       const [myPostCount, followerCount] = await Promise.all([
         apolloClient.query({
