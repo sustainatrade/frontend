@@ -59,8 +59,8 @@ const FilterContent = () => (
 const FilterWrapper = props => (
   <PostFeedContext.Consumer>
     {({ filterActiveIndex, setFilterActiveIndex }) => {
-      const { children, index } = props;
-      const active = filterActiveIndex === index;
+      const { children, defaultActive, index } = props;
+      const active = defaultActive || filterActiveIndex === index;
       return (
         <React.Fragment>
           <Accordion.Title
@@ -68,7 +68,7 @@ const FilterWrapper = props => (
             index={index}
             onClick={e => setFilterActiveIndex(active ? null : index)}
           >
-            <Icon name="dropdown" />
+            {!defaultActive && <Icon name="dropdown" />}
             What is a dog?{" "}
             <Button
               size="mini"
@@ -122,7 +122,9 @@ export default class Filters extends React.Component {
               }}
             >
               <Accordion fluid>
-                <FilterWrapper index={0}>hi</FilterWrapper>
+                <FilterWrapper index={0} defaultActive>
+                  <Button>hfahsdfhdf</Button>
+                </FilterWrapper>
                 <Divider />
                 <FilterWrapper index={1}>hi2</FilterWrapper>
               </Accordion>
