@@ -3,6 +3,7 @@
   position: fixed;
   top: 50px;
   right: 0px;
+  left: 0px;
   height: 55px;
   z-index: 899;
   background-color: rgb(243, 244, 245);
@@ -16,19 +17,23 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   display: -webkit-box;
   display: -moz-box;
-  overflow-x: scroll;
+  overflow-x: visible;
   -webkit-overflow-scrolling: touch;
   overflow-y: hidden;
   height: 64px;
   padding: 5px 0px;
 }
 
-.filter-scroller > * {
-  display: block !important;
+.filter-desktop > * {
+  display: inline-block;
+  margin-right: 5px !important;
+  margin-bottom: 5px !important;
 }
 
-.filter-scroller > .buttons {
-  margin: 5px;
+.filter-scroller > * {
+  display: block !important;
+  height: 30px;
+  margin: 5px 2px;
 }
 
 .filter-scroller::-webkit-scrollbar-track {
@@ -43,4 +48,16 @@
 
 .filter-scroller::-webkit-scrollbar-thumb {
   background-color: #000000;
+}
+
+.mobile-add-filter {
+  position: fixed;
+  right: 0px;
+  height: 45px;
+  width: 45px;
+}
+
+.mobile-add-filter-filler {
+  width: 50px;
+  height: 30px;
 }

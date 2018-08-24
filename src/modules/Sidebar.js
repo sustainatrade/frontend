@@ -216,7 +216,6 @@ export default class Sidebar extends Component {
                   <List.Item>
                     <Router primary={false}>
                       <UserOptions path="u/*" />
-                      <Filters default />
                     </Router>
                   </List.Item>
                 </Transition.Group>

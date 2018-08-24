@@ -16,6 +16,7 @@ import {
 } from "semantic-ui-react";
 
 // Antd component styles here
+import "antd/lib/drawer/style/css";
 import "antd/lib/upload/style/css";
 import "antd/lib/modal/style/css";
 import "antd/lib/notification/style/css";
