@@ -18,6 +18,7 @@ import ResponsiveContext from "./../contexts/Responsive";
 import { UserAuth } from "../components";
 import { Menus } from "./../App";
 import { Router } from "@reach/router";
+import TagList from "./home/TagList";
 
 const Filters = () => {
   return (
@@ -117,7 +118,7 @@ const PostViewMode = ({
   );
 };
 
-const PostView = () => (
+const PostViewModes = () => (
   <PostViewContext.Consumer>
     {postViewContext => (
       <Segment size="mini">
@@ -211,12 +212,17 @@ export default class Sidebar extends Component {
                     </List.Item>
                   )}
                   <List.Item>
-                    <PostView />
+                    <PostViewModes />
                   </List.Item>
                   <List.Item>
                     <Router primary={false}>
                       <UserOptions path="u/*" />
                     </Router>
+                  </List.Item>
+                  <List.Item>
+                    <Segment>
+                      <TagList />
+                    </Segment>
                   </List.Item>
                 </Transition.Group>
               );

@@ -41,7 +41,6 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <TagList />
         <Query query={SECTIONS_QUERY}>
           {({ loading, error, data }) => {
             return (
