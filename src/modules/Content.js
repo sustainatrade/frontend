@@ -6,7 +6,9 @@ import Home from "./home";
 import UserList from "./user-list";
 import { GlobalConsumer } from "./../contexts";
 import { Router } from "@reach/router";
-import ContentWrapper from "./../components/content-wrapper/ContentWrapper";
+import ContentWrapper, {
+  WrapperContext
+} from "./../components/content-wrapper/ContentWrapper";
 import Post from "./post-view";
 
 export default class EcoContent extends Component {
@@ -15,7 +17,7 @@ export default class EcoContent extends Component {
   render = () => (
     <GlobalConsumer>
       {({ responsive: { isMobile }, postView: { post, closeFn } }) => {
-        const { showSidebarScroll } = this.state;
+        const { showSidebarScroll, wrapperActive } = this.state;
         const { showSidebar } = this.props;
         const style1 = {},
           style2 = {
@@ -37,30 +39,44 @@ export default class EcoContent extends Component {
         }
         style1.paddingTop = 55;
         style1.paddingRight = 5;
+        if (wrapperActive) {
+          style1.visibility = "collapse";
+        }
         return (
-          <div style={style1}>
-            {showSidebar && (
-              <div
-                style={style2}
-                onMouseEnter={() => this.setState({ showSidebarScroll: true })}
-                onMouseLeave={() =>
-                  this.setState({ showSidebarScroll: undefined })
-                }
-              >
-                <Segment basic style={style3}>
-                  <Sidebar />
-                </Segment>
-              </div>
-            )}
-            <Router>
-              <UserList path="u/*" />
-              <PostFeed path="p" />
-              <Home default />
-            </Router>
-            <ContentWrapper open={post !== undefined}>
-              {post && <Post />}
-            </ContentWrapper>
-          </div>
+          <WrapperContext.Provider
+            value={{
+              active: wrapperActive,
+              setActive: flag => {
+                this.setState({ wrapperActive: flag });
+              }
+            }}
+          >
+            <div style={style1}>
+              {showSidebar && (
+                <div
+                  style={style2}
+                  onMouseEnter={() =>
+                    this.setState({ showSidebarScroll: true })
+                  }
+                  onMouseLeave={() =>
+                    this.setState({ showSidebarScroll: undefined })
+                  }
+                >
+                  <Segment basic style={style3}>
+                    <Sidebar />
+                  </Segment>
+                </div>
+              )}
+              <Router>
+                <UserList path="u/*" />
+                <PostFeed path="p" />
+                <Home default />
+              </Router>
+              <ContentWrapper open={post !== undefined}>
+                {post && <Post />}
+              </ContentWrapper>
+            </div>
+          </WrapperContext.Provider>
         );
       }}
     </GlobalConsumer>

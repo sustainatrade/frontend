@@ -8,6 +8,7 @@ import {
   clearAllBodyScrollLocks
 } from "body-scroll-lock";
 import generate from "nanoid/generate";
+export const WrapperContext = React.createContext();
 
 export default class ContentWrapper extends React.Component {
   domId = "wrap-" + generate("1234567890abcdef", 10);
@@ -31,39 +32,45 @@ export default class ContentWrapper extends React.Component {
     const { children, onMount, onUnmount, ...rest } = this.props;
     const { domId } = this;
     return (
-      <React.Fragment>
-        <Portal
-          {...rest}
-          onMount={e => {
-            this.onMount(e);
-            onMount && onMount(e);
-          }}
-          onUnmount={e => {
-            this.onUnmount(e);
-            onUnmount && onUnmount(e);
-          }}
-        >
-          <ResponsiveContext.Consumer>
-            {({ isMobile }) => (
-              <Segment
-                id={domId}
-                className="wrapper"
-                style={{
-                  left: isMobile ? "0" : "250px",
-                  margin: 0,
-                  width: isMobile ? "100%" : "calc(100% - 250px)",
-                  height: "calc(100% - 50px)",
-                  position: "fixed",
-                  top: "50px",
-                  zIndex: 900
-                }}
-              >
-                {children}
-              </Segment>
-            )}
-          </ResponsiveContext.Consumer>
-        </Portal>
-      </React.Fragment>
+      <WrapperContext.Consumer>
+        {({ active, setActive }) => (
+          <React.Fragment>
+            <Portal
+              {...rest}
+              onMount={e => {
+                this.onMount(e);
+                onMount && onMount(e);
+                setActive(true);
+              }}
+              onUnmount={e => {
+                this.onUnmount(e);
+                onUnmount && onUnmount(e);
+                setActive(false);
+              }}
+            >
+              <ResponsiveContext.Consumer>
+                {({ isMobile }) => (
+                  <Segment
+                    id={domId}
+                    className="wrapper"
+                    style={{
+                      left: isMobile ? "0" : "250px",
+                      margin: 0,
+                      width: isMobile ? "100%" : "calc(100% - 250px)",
+                      height: "calc(100% - 50px)",
+                      position: "fixed",
+                      top: "50px",
+                      zIndex: 900
+                    }}
+                  >
+                    {children}
+                  </Segment>
+                )}
+              </ResponsiveContext.Consumer>
+            </Portal>
+          </React.Fragment>
+        )}
+      </WrapperContext.Consumer>
     );
   }
 }
