@@ -4,6 +4,7 @@ import {
   Grid,
   Modal,
   Image,
+  Button,
   Header,
   Divider,
   Container
@@ -32,6 +33,39 @@ const CATEGORY_LIST = gql`
     }
   }
 `;
+class PostComments extends Component {
+  state = {};
+  render() {
+    const { post } = this.props;
+    const { shown } = this.state;
+    return (
+      <GlobalConsumer>
+        {({ responsive: { isMobile } }) => {
+          const comment = (
+            <Comments
+              width="100%"
+              href={`https://sustainatrade.com/posts/${post._refNo}`}
+            />
+          );
+          return (
+            <React.Fragment>
+              {isMobile && <Divider />}
+              {isMobile && !shown ? (
+                <center>
+                  <Button fluid onClick={() => this.setState({ shown: true })}>
+                    Show Comments
+                  </Button>
+                </center>
+              ) : (
+                comment
+              )}
+            </React.Fragment>
+          );
+        }}
+      </GlobalConsumer>
+    );
+  }
+}
 
 export default class PostView extends Component {
   state = {};
@@ -49,15 +83,6 @@ export default class PostView extends Component {
       });
     }
     this.setState({ categories });
-  }
-
-  renderComments(post) {
-    return (
-      <Comments
-        width="100%"
-        href={`https://sustainatrade.com/posts/${post._refNo}`}
-      />
-    );
   }
 
   renderWidgets(post, widgets) {
@@ -154,7 +179,7 @@ export default class PostView extends Component {
                 width={6}
                 style={{ padding: 0, paddingLeft: isMobile ? 0 : 10 }}
               >
-                {this.renderComments(post)}
+                <PostComments post={post} />
                 <Divider horizontal> More Posts</Divider>
                 <Container textAlign="center">No other posts.</Container>
               </Grid.Column>
