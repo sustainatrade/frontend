@@ -1,5 +1,4 @@
 import React from "react";
-import Searches from "./Searches";
 import "./Filters.css";
 import {
   List,
@@ -21,30 +20,33 @@ import { GlobalConsumer } from "./../../contexts";
 const FilterTag = ({ color, text, filterKey }) => (
   <div>
     <PostFeedContext.Consumer>
-      {({ filterOpened, showFilterDrawer, setFiltersFn }) => (
-        <Button
-          as="div"
-          labelPosition="left"
-          onClick={e => {
-            showFilterDrawer(!filterOpened);
-          }}
-        >
-          <Label as="a" basic color={color}>
-            {text.toUpperCase()}
-          </Label>
+      {({ filterOpened, showFilterDrawer, setFiltersFn }) => {
+        if (!filterKey) return <Button as="div" disabled content={text} />;
+        return (
           <Button
-            icon
-            color={color}
+            as="div"
+            labelPosition="left"
             onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              setFiltersFn({ [filterKey]: undefined });
+              showFilterDrawer(!filterOpened);
             }}
           >
-            <Icon name="x" />
+            <Label as="a" basic color={color}>
+              {text.toUpperCase()}
+            </Label>
+            <Button
+              icon
+              color={color}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setFiltersFn({ [filterKey]: undefined });
+              }}
+            >
+              <Icon name="x" />
+            </Button>
           </Button>
-        </Button>
-      )}
+        );
+      }}
     </PostFeedContext.Consumer>
   </div>
 );
@@ -67,7 +69,9 @@ const FilterContent = ({ filterValues }) => (
       }
       return (
         <React.Fragment>
-          <Searches />
+          {Object.keys(filterValues).length === 0 && (
+            <FilterTag text="No filters" />
+          )}
           {section && (
             <FilterTag
               filterKey="section"

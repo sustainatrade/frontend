@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Search, List, Icon, Label } from "semantic-ui-react";
 import gql from "graphql-tag";
-import apolloClient from "./../../lib/apollo";
-import PostFeedContext from "./../../contexts/PostFeedContext";
-import ResponsiveContext from "./../../contexts/Responsive";
+import apolloClient from "./../lib/apollo";
+import PostFeedContext from "./../contexts/PostFeedContext";
+import ResponsiveContext from "./../contexts/Responsive";
 import _ from "lodash";
-import "./Searches.css";
+import "./GlobalSearch.css";
 
 const TAG_LIST = gql`
   query($search: String) {
@@ -41,14 +41,15 @@ export default class SearchToolbar extends Component {
   };
   render() {
     const { isLoading, searchTxt, results } = this.state;
+    const { fluid } = this.props;
     return (
       <ResponsiveContext.Consumer>
         {({ isMobile }) => {
           return (
             <PostFeedContext.Consumer>
               {({ setSearchesFn, searches }) => (
-                <List horizontal>
-                  {searches.User && (
+                <List horizontal style={fluid ? { width: "100%" } : {}}>
+                  {/* {searches.User && (
                     <List.Item style={{ textAlign: "center" }}>
                       <Label size="huge" image color="green">
                         <img
@@ -79,12 +80,13 @@ export default class SearchToolbar extends Component {
                         />
                       </Label>
                     </List.Item>
-                  )}
+                  )} */}
                   <List.Item>
                     <Search
+                      fluid={fluid}
                       className="searcher"
                       loading={isLoading}
-                      placeholder="Search for User, Tag, Etc"
+                      placeholder="Search"
                       onResultSelect={(e, { result }) => {
                         this.setState({ searchTxt: undefined });
                         setSearchesFn({ [result.descriptor]: result.key });

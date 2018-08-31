@@ -44,7 +44,7 @@ export default class Home extends React.Component {
         <Query query={SECTIONS_QUERY}>
           {({ loading, error, data }) => {
             return (
-              <Segment secondary basic style={{ margin: 0 }}>
+              <div style={{ marginTop: 3 }}>
                 {sections.map(section => (
                   <SectionPosts
                     key={section.key}
@@ -52,7 +52,7 @@ export default class Home extends React.Component {
                     posts={get(data, `${section.key}.list`)}
                   />
                 ))}
-              </Segment>
+              </div>
             );
           }}
         </Query>

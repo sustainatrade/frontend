@@ -38,7 +38,7 @@ export default class EcoContent extends Component {
           style2.overflowY = "scroll";
         }
         style1.paddingTop = 55;
-        style1.paddingRight = 5;
+        style1.paddingRight = isMobile ? 0 : 5;
         if (wrapperActive) {
           style1.visibility = "collapse";
         }

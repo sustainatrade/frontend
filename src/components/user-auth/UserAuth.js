@@ -185,16 +185,25 @@ export default class UserAuth extends React.Component {
 
   renderLogout = (data, refetch) => (
     <LoginContext.Consumer>
-      {({ doLogout }) => {
-        function dropDownOptions(logoutClicked) {
-          return [
-            { key: 1, text: "Setting", value: 1 },
-            { key: 2, text: "Log Out", value: 2, onClick: logoutClicked }
-          ];
-        }
-
+      {({ doLogout, compact }) => {
         const user = data.Me.user;
         const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
+        function dropDownOptions(logoutClicked) {
+          const list = [];
+          if (compact) {
+            list.push({ key: 0, text: user.displayName, disabled: true });
+          }
+
+          list.push({ key: 1, text: "Setting", value: 1 });
+          list.push({
+            key: 2,
+            text: "Log Out",
+            value: 2,
+            onClick: logoutClicked
+          });
+
+          return list;
+        }
         const trigger = (
           <span>
             <Image
@@ -202,7 +211,7 @@ export default class UserAuth extends React.Component {
               style={{ width: 23, height: 23 }}
               src={photoDataUri}
             />{" "}
-            {user.displayName}
+            {!compact && user.displayName}
           </span>
         );
         return (
@@ -213,15 +222,17 @@ export default class UserAuth extends React.Component {
               refetch();
             }}
           >
-            {(logout, { loading, error, data }) => (
-              <Dropdown
-                trigger={trigger}
-                options={dropDownOptions(logout)}
-                simple
-                item
-                style={{ padding: 10 }}
-              />
-            )}
+            {(logout, { loading, error, data }) => {
+              return (
+                <Dropdown
+                  trigger={trigger}
+                  options={dropDownOptions(logout)}
+                  simple
+                  item
+                  style={{ padding: 10 }}
+                />
+              );
+            }}
           </Mutation>
         );
       }}
@@ -230,18 +241,20 @@ export default class UserAuth extends React.Component {
 
   renderLogin = (data, refetch) => (
     <LoginContext.Consumer>
-      {({ authDetail, doLogout }) => {
+      {({ authDetail, doLogout, compact }) => {
         if (authDetail) return;
+        const logButtonProps = compact
+          ? {}
+          : { icon: true, labelPosition: "left" };
         return (
           <React.Fragment>
             <Button
-              icon
-              labelPosition="left"
+              {...logButtonProps}
               color="green"
               onClick={() => this.setState({ openLogin: true })}
             >
               <Icon name="user" />
-              LOGIN
+              {!compact && "LOGIN"}
             </Button>
             <Modal
               open={this.state.openLogin}
@@ -290,13 +303,13 @@ export default class UserAuth extends React.Component {
 
   render() {
     const self = this;
+    const { compact } = this.props;
     // const { authDetail } = this.state;
     return (
       <div>
-        <LoginContext.Provider value={this.state}>
+        <LoginContext.Provider value={{ ...this.state, compact }}>
           <Query query={GET_ME} fetchPolicy="network-only">
             {({ loading, error, data, refetch }) => {
-              if (loading) return <div />;
               if (error) return <div />;
               let buttonDisplay;
               if (data && data.Me && data.Me.user) {
@@ -306,9 +319,15 @@ export default class UserAuth extends React.Component {
                 buttonDisplay = self.renderLogin;
               }
               return (
-                <div>
-                  {buttonDisplay(data, refetch)}
-                  {this.renderWelcomeModal(data, refetch)}
+                <div style={{ minWidth: 65 }}>
+                  {loading ? (
+                    ""
+                  ) : (
+                    <React.Fragment>
+                      {buttonDisplay(data, refetch)}
+                      {this.renderWelcomeModal(data, refetch)}
+                    </React.Fragment>
+                  )}
                 </div>
               );
             }}

@@ -3,6 +3,7 @@ import {
   Item,
   Label,
   Menu,
+  Segment,
   Icon,
   Visibility,
   Button,
@@ -80,43 +81,46 @@ const Feed = ({ categories }) => {
             noMore
           }) => {
             return (
-              <Item.Group divided unstackable={isMobile}>
-                {list.map(post => {
-                  let postObj = post;
-                  if (post.isRemoved) {
-                    postObj = post.post;
-                  }
-                  return (
-                    <PostItem
-                      isCompact={isMobile}
-                      key={post._refNo}
-                      post={postObj}
-                      categories={categories}
+              <Segment basic style={{ paddingTop: 0, marginBottom: 20 }}>
+                <Item.Group divided unstackable={isMobile}>
+                  {list.map(post => {
+                    let postObj = post;
+                    if (post.isRemoved) {
+                      postObj = post.post;
+                    }
+                    return (
+                      <PostItem
+                        isCompact={isMobile}
+                        key={post._refNo}
+                        post={postObj}
+                        categories={categories}
+                        basic
+                        isRemoved={post.isRemoved}
+                      />
+                    );
+                  })}
+                  {loadingMore &&
+                    !noMore && <PlaceHolder isMobile={isMobile} />}
+                  {noMore ? (
+                    <Button
+                      fluid
                       basic
-                      isRemoved={post.isRemoved}
+                      color="green"
+                      content="Ooops. No more post here!!"
                     />
-                  );
-                })}
-                {loadingMore && !noMore && <PlaceHolder isMobile={isMobile} />}
-                {noMore ? (
-                  <Button
-                    fluid
-                    basic
-                    color="green"
-                    content="Ooops. No more post here!!"
-                  />
-                ) : loadingMore ? (
-                  <React.Fragment />
-                ) : (
-                  <Button
-                    content="Show More"
-                    basic
-                    fluid
-                    onClick={() => loadMoreFn()}
-                  />
-                )}
-                <Divider key="more-trigger" />
-              </Item.Group>
+                  ) : loadingMore ? (
+                    <React.Fragment />
+                  ) : (
+                    <Button
+                      content="Show More"
+                      basic
+                      fluid
+                      onClick={() => loadMoreFn()}
+                    />
+                  )}
+                  <Divider key="more-trigger" />
+                </Item.Group>
+              </Segment>
             );
           }}
         </PostFeedContext.Consumer>

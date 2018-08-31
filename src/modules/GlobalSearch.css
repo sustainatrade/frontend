@@ -1,0 +1,11 @@
+.searcher {
+  margin: 0px 5px;
+}
+
+.searcher .icon {
+  width: 100%;
+}
+
+.searcher input {
+  height: 36px;
+}

@@ -1,6 +1,7 @@
 import { UserAuth } from "./components";
 import React from "react";
 import EcoContent from "./modules/Content";
+import GlobalSearch from "./modules/GlobalSearch";
 import RootContextProvider from "./contexts";
 import ResponsiveContext from "./contexts/Responsive";
 import {
@@ -148,18 +149,25 @@ class Root extends React.Component {
                       />
                     </Menu.Item>
                   )}
-
-                  <Menu.Menu position="right" style={{ paddingTop: 7 }}>
-                    <UserAuth />
+                  <Menu.Menu
+                    position="right"
+                    style={(() => {
+                      const style = { paddingTop: 5 };
+                      if (isMobile) style.width = "100%";
+                      return style;
+                    })()}
+                  >
+                    <GlobalSearch fluid={isMobile} />
+                    <UserAuth compact={isMobile} />
                   </Menu.Menu>
                 </Menu>
-                <Container fluid>
+                <div>
                   <FacebookProvider appId="512081562521251">
                     <EcoContent
                       showSidebar={isMobile ? showMobileSidebar : true}
                     />
                   </FacebookProvider>
-                </Container>
+                </div>
                 {isMobile && (
                   <Modal
                     visible={showMobileSidebar}
