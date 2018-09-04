@@ -1,5 +1,7 @@
 const postFragment = `
 fragment PostFragment on Post {
+  id
+  _refNo
   title
   section
   category

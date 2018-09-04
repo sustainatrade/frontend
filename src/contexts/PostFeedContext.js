@@ -26,12 +26,11 @@ const POST_LIST = gql`
     PostList(input: $input) {
       status
       list {
-        id
-        _refNo
         __typename
         ...PostFragment
         ... on RemovedPost {
           isRemoved
+          _refNo
           post {
             ...PostFragment
           }

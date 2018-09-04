@@ -5,7 +5,6 @@ import {
   Menu,
   Segment,
   Icon,
-  Visibility,
   Button,
   Divider
 } from "semantic-ui-react";
@@ -24,6 +23,7 @@ import { GlobalConsumer } from "./../../contexts";
 import Modal from "antd/lib/modal";
 import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
 import ContentWrapper from "./../../components/content-wrapper/ContentWrapper";
+import VisibilityButton from "./../../components/visibility-button/VisibilityButton";
 
 const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -111,11 +111,16 @@ const Feed = ({ categories }) => {
                   ) : loadingMore ? (
                     <React.Fragment />
                   ) : (
-                    <Button
+                    <VisibilityButton
                       content="Show More"
                       basic
                       fluid
                       onClick={() => loadMoreFn()}
+                      onUpdate={(e, { calculations }) => {
+                        if (calculations.bottomVisible) {
+                          loadMoreFn();
+                        }
+                      }}
                     />
                   )}
                   <Divider key="more-trigger" />
@@ -199,18 +204,7 @@ export default class PostFeed extends Component {
                     />
                   )}
                 </Menu>
-                <Visibility
-                  fireOnMount
-                  continuous
-                  offset={[10, 10]}
-                  onUpdate={(e, { calculations }) => {
-                    if (calculations.bottomVisible) {
-                      loadMoreFn();
-                    }
-                  }}
-                >
-                  {categories && <Feed categories={categories} />}
-                </Visibility>
+                {categories && <Feed categories={categories} />}
               </React.Fragment>
             );
           }}
