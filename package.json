@@ -35,7 +35,7 @@
     "react-props-editor": "1.0.3",
     "react-scripts": "1.1.5",
     "semantic-ui-react": "0.82.5",
-    "subscriptions-transport-ws": "0.9.14"
+    "subscriptions-transport-ws": "0.9.15"
   },
   "scripts": {
     "start": "react-scripts start",
