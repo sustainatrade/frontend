@@ -16,13 +16,15 @@ import get from "lodash/get";
 
 const USER_LIST = gql`
   query {
-    UserList(input: { skip: 0, limit: 1000 }) {
+    UserList(input: { skip: 0, limit: 10 }) {
       status
       list {
         id
         displayName
-        photoUrl
-        createdBy
+        socialIds {
+          providerId
+          uid
+        }
       }
     }
   }
@@ -46,6 +48,8 @@ export default class UserList extends Component {
         <Divider />
         <Query query={USER_LIST}>
           {({ loading, error, data }) => {
+            console.log("userlistdata"); //TRACE
+            console.log(data); //TRACE
             const users = get(data, "UserList.list", []);
             if (loading) return <Loader inline="centered" />;
             return (

@@ -188,6 +188,8 @@ const SectionFilter = ({ setFiltersFn, filterValues = {} }) => {
   const FLTR_BUYING = filterValues.section === "buy";
   const FLTR_SELLING = filterValues.section === "sell";
   const FLTR_DEFAULT = undefined;
+  console.log("filterValues"); //TRACE
+  console.log(filterValues); //TRACE
   return (
     <Button.Group>
       <Button
@@ -251,6 +253,8 @@ export default class Filters extends React.Component {
         }) => {
           const filterValues =
             tmpFilters === null ? currentFilters : tmpFilters;
+            console.log("currentFilters"); //TRACE
+            console.log(currentFilters); //TRACE
           return (
             <React.Fragment>
               {isMobile && <Divider style={{ marginTop: 35 }} />}
