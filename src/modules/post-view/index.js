@@ -19,6 +19,7 @@ import PostItem from "./../post-feed/PostItem";
 import PostWidget from "./PostWidget";
 import { Comments } from "react-facebook";
 import { MsImage } from "./../../components";
+import { getShareUrl } from "./../post-feed/PostItem";
 
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
@@ -41,12 +42,7 @@ class PostComments extends Component {
     return (
       <GlobalConsumer>
         {({ responsive: { isMobile } }) => {
-          const comment = (
-            <Comments
-              width="100%"
-              href={`https://sustainatrade.com/posts/${post._refNo}`}
-            />
-          );
+          const comment = <Comments width="100%" href={getShareUrl(post)} />;
           return (
             <React.Fragment>
               {isMobile && <Divider />}

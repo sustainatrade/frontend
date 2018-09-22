@@ -4,6 +4,7 @@ import PostItem from "./../post-feed/PostItem";
 import { GlobalConsumer } from "./../../contexts";
 import { HLink } from "./../../lib/history";
 import { Link } from "@reach/router";
+import PostFeedContext from "./../../contexts/PostFeedContext";
 
 const Posts = ({ list }) => {
   return (
@@ -40,9 +41,17 @@ export default class SectionPosts extends React.Component {
       <React.Fragment>
         <Header as="h5" attached="top" color={color}>
           Recent {displayName}
-          <Link style={{ float: "right" }} to={`/p`}>
-            More >>
-          </Link>
+          <PostFeedContext.Consumer>
+            {({ setFiltersFn }) => (
+              <Link
+                style={{ float: "right" }}
+                to={`/p`}
+                onClick={() => setFiltersFn({ section: section.key })}
+              >
+                More >>
+              </Link>
+            )}
+          </PostFeedContext.Consumer>
         </Header>
         <Segment attached color={color}>
           {posts ? <Posts list={posts} /> : <Loader active inline="centered" />}

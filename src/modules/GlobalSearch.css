@@ -8,4 +8,10 @@
 
 .searcher input {
   height: 36px;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.searcher-mobile input {
+  font-size: medium !important;
 }

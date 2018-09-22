@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Search, List, Icon, Label } from "semantic-ui-react";
 import gql from "graphql-tag";
+import classNames from "classnames";
 import apolloClient from "./../lib/apollo";
 import PostFeedContext from "./../contexts/PostFeedContext";
 import ResponsiveContext from "./../contexts/Responsive";
@@ -84,7 +85,10 @@ export default class SearchToolbar extends Component {
                   <List.Item>
                     <Search
                       fluid={fluid}
-                      className="searcher"
+                      className={classNames({
+                        searcher: true,
+                        "searcher-mobile": isMobile
+                      })}
                       loading={isLoading}
                       placeholder="Search"
                       onResultSelect={(e, { result }) => {
