@@ -14,7 +14,7 @@
     "classnames": "2.2.6",
     "eventemitter3": "3.1.0",
     "firebase": "5.5.1",
-    "graphql": "0.13.2",
+    "graphql": "14.0.2",
     "graphql-tag": "2.9.2",
     "history": "4.7.2",
     "immutable": "3.8.2",
