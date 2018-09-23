@@ -8,10 +8,10 @@ import {
   // Container
 } from "semantic-ui-react";
 import { HLink } from "./../../lib/history";
-import axios from "axios";
-import get from "lodash/get";
+// import axios from "axios";
+// import get from "lodash/get";
 import PostViewContext from "./../../contexts/PostViewContext";
-import PostFeedContext from "./../../contexts/PostFeedContext";
+// import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
@@ -240,7 +240,7 @@ export default class PostItem extends Component {
                     <List.Item>
                       <List.Icon name="clock" />
                       <List.Content>
-                        {moment(new Date(post.createdDate)).fromNow()}
+                        {moment(parseInt(post.createdDate, 10)).fromNow()}
                       </List.Content>
                     </List.Item>
                   </List>

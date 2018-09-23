@@ -6,9 +6,9 @@ import { List, Icon, Loader } from "semantic-ui-react";
 import { getShareUrl } from "./PostItem";
 import { Share } from "react-facebook";
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 export default class MoreProps extends Component {
   state = {};

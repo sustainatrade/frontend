@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Search, List, Icon, Label } from "semantic-ui-react";
+import { Search, List } from "semantic-ui-react";
 import gql from "graphql-tag";
 import classNames from "classnames";
 import apolloClient from "./../lib/apollo";

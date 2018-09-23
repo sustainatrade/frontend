@@ -12,23 +12,18 @@ import {
 // import gql from 'graphql-tag'
 import ContentLoader from "react-content-loader";
 import { startCase } from "lodash";
-import { history } from "./../../lib/history";
 import PostItem from "./PostItem";
 import Filters from "./Filters";
-import Post from "./../post-view";
 import PostFeedContext from "./../../contexts/PostFeedContext";
-import PostViewContext from "./../../contexts/PostViewContext";
 import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
-import Modal from "antd/lib/modal";
 import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
-import ContentWrapper from "./../../components/content-wrapper/ContentWrapper";
 import VisibilityButton from "./../../components/visibility-button/VisibilityButton";
 
-const PlaceHolder = ({ isMobile, ...props }) => (
+export const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
     height={50}
-    width={isMobile ? 130 : 700}
+    width={isMobile ? 200 : 700}
     speed={2}
     primaryColor="#f3f3f3"
     secondaryColor="#ecebeb"

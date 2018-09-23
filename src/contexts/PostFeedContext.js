@@ -127,18 +127,16 @@ class Provider extends React.Component {
       await this.state.loadMoreFn(0);
     },
     fetchNewSectionPosts: async section => {
-      const { data } = await apolloClient.query({
-        query: POST_LIST,
-        variables: {
-          input: {
-            section,
-            skip: 0,
-            limit: 10
-          }
-        }
-      });
-      console.log("data"); //TRACE
-      console.log(data); //TRACE
+      // const { data } = await apolloClient.query({
+      //   query: POST_LIST,
+      //   variables: {
+      //     input: {
+      //       section,
+      //       skip: 0,
+      //       limit: 10
+      //     }
+      //   }
+      // });
     },
     loadMoreFn: async forceSkip => {
       const {

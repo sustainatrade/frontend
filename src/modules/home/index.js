@@ -1,6 +1,6 @@
 import React from "react";
-import TagList from "./TagList";
-import { Segment } from "semantic-ui-react";
+// import TagList from "./TagList";
+// import { Segment } from "semantic-ui-react";
 import { sections } from "./../../config";
 import SectionPosts from "./SectionPosts";
 import gql from "graphql-tag";

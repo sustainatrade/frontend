@@ -10,8 +10,8 @@ import {
   Divider
 } from "semantic-ui-react";
 import UserContext from "./../contexts/UserContext";
-import CategoryContext from "./../contexts/CategoryContext";
-import PostFeedContext from "./../contexts/PostFeedContext";
+// import CategoryContext from "./../contexts/CategoryContext";
+// import PostFeedContext from "./../contexts/PostFeedContext";
 import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
 import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
@@ -20,84 +20,84 @@ import { Menus } from "./../App";
 import { Router } from "@reach/router";
 import TagList from "./home/TagList";
 
-const Filters = () => {
-  return (
-    <PostFeedContext.Consumer>
-      {({ setFiltersFn, filters }) => {
-        const FLTR_BUYING = filters.section === "buy";
-        const FLTR_SELLING = filters.section === "sell";
-        const FLTR_DEFAULT = undefined;
-        return (
-          <CategoryContext.Consumer>
-            {({ categories: catMap, icons }) => {
-              return (
-                <List style={{ padding: 0 }}>
-                  <List.Item key="flt-section">
-                    <Divider horizontal>Section</Divider>
-                    <Segment>
-                      <Button.Group fluid>
-                        <Button
-                          color={FLTR_BUYING ? "orange" : FLTR_DEFAULT}
-                          onClick={() =>
-                            setFiltersFn({
-                              section: !FLTR_BUYING ? "buy" : undefined
-                            })
-                          }
-                        >
-                          Buy
-                        </Button>
-                        <Button.Or />
-                        <Button
-                          color={FLTR_SELLING ? "green" : FLTR_DEFAULT}
-                          onClick={() =>
-                            setFiltersFn({
-                              section: !FLTR_SELLING ? "sell" : undefined
-                            })
-                          }
-                        >
-                          Sell
-                        </Button>
-                      </Button.Group>
-                    </Segment>
-                  </List.Item>
-                  <List.Item>
-                    <Divider horizontal>Categories</Divider>
-                    <Menu fluid secondary vertical>
-                      <Menu.Item
-                        name="All"
-                        active={!filters.category}
-                        onClick={() => {
-                          setFiltersFn({ category: undefined });
-                        }}
-                      >
-                        All
-                        <Icon name="grid layout" />
-                      </Menu.Item>
-                      {catMap &&
-                        Object.keys(catMap).map(catKey => (
-                          <Menu.Item
-                            key={catKey}
-                            name={catMap[catKey]}
-                            active={catKey === filters.category}
-                            onClick={() => {
-                              setFiltersFn({ category: catKey });
-                            }}
-                          >
-                            {catMap[catKey]}
-                            <Icon name={icons[catKey]} />
-                          </Menu.Item>
-                        ))}
-                    </Menu>
-                  </List.Item>
-                </List>
-              );
-            }}
-          </CategoryContext.Consumer>
-        );
-      }}
-    </PostFeedContext.Consumer>
-  );
-};
+// const Filters = () => {
+//   return (
+//     <PostFeedContext.Consumer>
+//       {({ setFiltersFn, filters }) => {
+//         const FLTR_BUYING = filters.section === "buy";
+//         const FLTR_SELLING = filters.section === "sell";
+//         const FLTR_DEFAULT = undefined;
+//         return (
+//           <CategoryContext.Consumer>
+//             {({ categories: catMap, icons }) => {
+//               return (
+//                 <List style={{ padding: 0 }}>
+//                   <List.Item key="flt-section">
+//                     <Divider horizontal>Section</Divider>
+//                     <Segment>
+//                       <Button.Group fluid>
+//                         <Button
+//                           color={FLTR_BUYING ? "orange" : FLTR_DEFAULT}
+//                           onClick={() =>
+//                             setFiltersFn({
+//                               section: !FLTR_BUYING ? "buy" : undefined
+//                             })
+//                           }
+//                         >
+//                           Buy
+//                         </Button>
+//                         <Button.Or />
+//                         <Button
+//                           color={FLTR_SELLING ? "green" : FLTR_DEFAULT}
+//                           onClick={() =>
+//                             setFiltersFn({
+//                               section: !FLTR_SELLING ? "sell" : undefined
+//                             })
+//                           }
+//                         >
+//                           Sell
+//                         </Button>
+//                       </Button.Group>
+//                     </Segment>
+//                   </List.Item>
+//                   <List.Item>
+//                     <Divider horizontal>Categories</Divider>
+//                     <Menu fluid secondary vertical>
+//                       <Menu.Item
+//                         name="All"
+//                         active={!filters.category}
+//                         onClick={() => {
+//                           setFiltersFn({ category: undefined });
+//                         }}
+//                       >
+//                         All
+//                         <Icon name="grid layout" />
+//                       </Menu.Item>
+//                       {catMap &&
+//                         Object.keys(catMap).map(catKey => (
+//                           <Menu.Item
+//                             key={catKey}
+//                             name={catMap[catKey]}
+//                             active={catKey === filters.category}
+//                             onClick={() => {
+//                               setFiltersFn({ category: catKey });
+//                             }}
+//                           >
+//                             {catMap[catKey]}
+//                             <Icon name={icons[catKey]} />
+//                           </Menu.Item>
+//                         ))}
+//                     </Menu>
+//                   </List.Item>
+//                 </List>
+//               );
+//             }}
+//           </CategoryContext.Consumer>
+//         );
+//       }}
+//     </PostFeedContext.Consumer>
+//   );
+// };
 
 const UserOptions = () => <React.Fragment />;
 

@@ -1,32 +1,37 @@
 import React from "react";
-import { Segment, Header, Loader, Item } from "semantic-ui-react";
+import { Segment, Header, Item } from "semantic-ui-react";
 import PostItem from "./../post-feed/PostItem";
 import { GlobalConsumer } from "./../../contexts";
-import { HLink } from "./../../lib/history";
 import { Link } from "@reach/router";
 import PostFeedContext from "./../../contexts/PostFeedContext";
+import { PlaceHolder } from "./../post-feed";
+import { range } from "lodash";
 
 const Posts = ({ list }) => {
   return (
     <GlobalConsumer>
       {({ category: { categories }, responsive: { isMobile } }) => (
         <Item.Group divided unstackable={isMobile}>
-          {list.map(post => {
-            let postObj = post;
-            if (post.isRemoved) {
-              postObj = post.post;
-            }
-            return (
-              <PostItem
-                isCompact={isMobile}
-                key={post._refNo}
-                post={postObj}
-                categories={categories}
-                basic
-                isRemoved={post.isRemoved}
-              />
-            );
-          })}
+          {list
+            ? list.map(post => {
+                let postObj = post;
+                if (post.isRemoved) {
+                  postObj = post.post;
+                }
+                return (
+                  <PostItem
+                    isCompact={isMobile}
+                    key={post._refNo}
+                    post={postObj}
+                    categories={categories}
+                    basic
+                    isRemoved={post.isRemoved}
+                  />
+                );
+              })
+            : range(5).map(i => (
+                <PlaceHolder key={"pl" + i} isMobile={isMobile} />
+              ))}
         </Item.Group>
       )}
     </GlobalConsumer>
@@ -54,7 +59,7 @@ export default class SectionPosts extends React.Component {
           </PostFeedContext.Consumer>
         </Header>
         <Segment attached color={color}>
-          {posts ? <Posts list={posts} /> : <Loader active inline="centered" />}
+          <Posts list={posts} />
         </Segment>
       </React.Fragment>
     );

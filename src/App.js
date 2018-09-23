@@ -12,7 +12,6 @@ import {
   Label,
   Header,
   Button,
-  Container,
   Icon
 } from "semantic-ui-react";
 

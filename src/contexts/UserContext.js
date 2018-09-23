@@ -1,6 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import apolloClient from "./../lib/apollo";
+import { groupBy } from "lodash";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -16,6 +17,13 @@ const USER_DETAIL_FRAGMENT = `
         code
         name
         isAdmin
+      }
+      socialServices{
+        type
+        accessToken{
+          token
+          expiration
+        }
       }
   }
 `;
@@ -38,8 +46,10 @@ const ME_LOGIN = gql`
 `;
 
 class Provider extends React.Component {
-  state = {};
-  updateUser(user, roles) {
+  state = {
+    accessToken: null
+  };
+  updateUser(user, roles, socialServices) {
     let isAdmin = false;
     if (roles)
       roles.forEach(role => {
@@ -47,10 +57,12 @@ class Provider extends React.Component {
           isAdmin = true;
         }
       });
+    const mappedByServices = groupBy(socialServices, "type");
     this.setState({
       user,
       roles,
-      isAdmin
+      isAdmin,
+      socialServices: mappedByServices
     });
   }
   async componentWillMount() {
@@ -59,7 +71,7 @@ class Provider extends React.Component {
     const { data } = await apolloClient.query({
       query: GET_ME
     });
-    self.updateUser(data.Me.user, data.Me.roles);
+    self.updateUser(data.Me.user, data.Me.roles, data.Me.socialServices);
     self.setState({
       loading: undefined
     });
@@ -75,7 +87,11 @@ class Provider extends React.Component {
           console.log(data); //TRACE
           if (!data) return;
           console.log(data.MeLoggedIn.user);
-          self.updateUser(data.MeLoggedIn.user, data.MeLoggedIn.roles);
+          self.updateUser(
+            data.MeLoggedIn.user,
+            data.MeLoggedIn.roles,
+            data.MeLoggedIn.socialServices
+          );
         }
       });
   }

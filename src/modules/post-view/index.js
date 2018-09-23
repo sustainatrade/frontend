@@ -5,7 +5,6 @@ import {
   Modal,
   Image,
   Button,
-  Header,
   Divider,
   Container
 } from "semantic-ui-react";

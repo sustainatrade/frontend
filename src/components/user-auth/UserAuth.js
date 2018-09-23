@@ -119,8 +119,8 @@ export default class UserAuth extends React.Component {
   async authWithFacebook() {
     const authDetail = await app.auth().signInWithPopup(facebookProvider);
 
-    console.log("authed with facebook");
     const { credential } = authDetail;
+    //EAAHRvEehTqMBAM319sqNr6k9EUHEZA1TlyGiSdZAVQrKUfzxENWyCL9ZA173GOu3Cjxf66Nd6rjdA1KAWUjgMVLwsuB8pHZBJDHEG9MqC6z3AljDcMC9203qgX7CeCVIg7cEs05LL57Dx9OTZBF7S0TmkwZCeBb6IZD
     const photoUrl = getPhoto(credential.providerId, authDetail);
     const dataUri = await imageUrlToUri(photoUrl);
     localStorage.setItem(PHOTO_DATA_URI_KEY, dataUri);

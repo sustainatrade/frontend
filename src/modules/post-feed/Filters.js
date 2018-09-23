@@ -1,8 +1,6 @@
 import React from "react";
 import "./Filters.css";
 import {
-  List,
-  Segment,
   Accordion,
   Divider,
   Label,

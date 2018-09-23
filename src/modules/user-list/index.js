@@ -13,6 +13,9 @@ import {
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import get from "lodash/get";
+import UserContext from "./../../contexts/UserContext";
+import { Router, Link } from "@reach/router";
+import Profile from "./Profile";
 
 const USER_LIST = gql`
   query {
@@ -30,74 +33,75 @@ const USER_LIST = gql`
   }
 `;
 
-export default class UserList extends Component {
+const UserList = () => (
+  <UserContext.Consumer>
+    {({ socialServices }) => {
+      const fbAccessToken = get(socialServices, "FACEBOOK.0.accessToken");
+      return (
+        <React.Fragment>
+          <Segment basic>
+            <Grid columns="equal">
+              <Grid.Column>
+                <Header as="h1" content="Traders" />
+              </Grid.Column>
+              <Grid.Column mobile="8" computer="3">
+                <Input fluid placeholder="Search..." icon="search" />
+              </Grid.Column>
+            </Grid>
+          </Segment>
+          <Divider />
+          <Query query={USER_LIST}>
+            {({ loading, error, data }) => {
+              const users = get(data, "UserList.list", []);
+              if (loading) return <Loader inline="centered" />;
+              return (
+                <List divided verticalAlign="middle">
+                  {users.map(user => {
+                    let photoUrl = "";
+
+                    if (fbAccessToken && user.socialIds) {
+                      const fbId = user.socialIds.find(
+                        sid => sid.providerId === "facebook.com"
+                      );
+                      if (fbId) {
+                        photoUrl =
+                          "https://graph.facebook.com/v3.1/" +
+                          fbId.uid +
+                          "/picture?access_token=" +
+                          fbAccessToken.token;
+                      }
+                    }
+                    return (
+                      <List.Item key={user.id}>
+                        <List.Content floated="right">
+                          <Button>Block</Button>
+                        </List.Content>
+                        <Image avatar src={photoUrl} />
+                        <List.Content as={Link} to={`/u/${user.id}`}>
+                          {user.displayName}
+                        </List.Content>
+                      </List.Item>
+                    );
+                  })}
+                </List>
+              );
+            }}
+          </Query>
+        </React.Fragment>
+      );
+    }}
+  </UserContext.Consumer>
+);
+
+export default class UserRoute extends Component {
   state = {};
+
   render() {
     return (
-      <React.Fragment>
-        <Segment basic>
-          <Grid columns="equal">
-            <Grid.Column>
-              <Header as="h1" content="Traders" />
-            </Grid.Column>
-            <Grid.Column mobile="8" computer="3">
-              <Input fluid placeholder="Search..." icon="search" />
-            </Grid.Column>
-          </Grid>
-        </Segment>
-        <Divider />
-        <Query query={USER_LIST}>
-          {({ loading, error, data }) => {
-            console.log("userlistdata"); //TRACE
-            console.log(data); //TRACE
-            const users = get(data, "UserList.list", []);
-            if (loading) return <Loader inline="centered" />;
-            return (
-              <List divided verticalAlign="middle">
-                {users.map(user => (
-                  <List.Item key={user.id}>
-                    <List.Content floated="right">
-                      <Button>Block</Button>
-                    </List.Content>
-                    <Image avatar src={user.photoUrl} />
-                    <List.Content>{user.displayName}</List.Content>
-                  </List.Item>
-                ))}
-              </List>
-            );
-          }}
-        </Query>
-        {/* // <List divided verticalAlign="middle">
-        //   <List.Item>
-        //     <List.Content floated="right">
-        //       <Button>Add</Button>
-        //     </List.Content>
-        //     <Image avatar src="" />
-        //     <List.Content>Lena</List.Content>
-        //   </List.Item>
-        //   <List.Item>
-        //     <List.Content floated="right">
-        //       <Button>Add</Button>
-        //     </List.Content>
-        //     <Image avatar src="" />
-        //     <List.Content>Lindsay</List.Content>
-        //   </List.Item>
-        //   <List.Item>
-        //     <List.Content floated="right">
-        //       <Button>Add</Button>
-        //     </List.Content>
-        //     <Image avatar src="" />
-        //     <List.Content>Mark</List.Content>
-        //   </List.Item>
-        //   <List.Item>
-        //     <List.Content floated="right">
-        //       <Button>Add</Button>
-        //     </List.Content>
-        //     <Image avatar src="" />
-        //     <List.Content>Molly</List.Content>
-        //   </List.Item>
-        // </List> */}
-      </React.Fragment>
+      <Router primary={false}>
+        <Profile path="/:userId" />
+        <UserList path="*" />
+      </Router>
     );
   }
 }
