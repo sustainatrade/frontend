@@ -19,6 +19,15 @@ import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
 import VisibilityButton from "./../../components/visibility-button/VisibilityButton";
+import ContentWrapper from "./../../components/content-wrapper/ContentWrapper";
+import Post from "./../post-view";
+import { Router } from "@reach/router";
+
+const PostView = props => (
+  <ContentWrapper open>
+    <Post {...props} />
+  </ContentWrapper>
+);
 
 export const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -200,6 +209,9 @@ export default class PostFeed extends Component {
                   )}
                 </Menu>
                 {categories && <Feed categories={categories} />}
+                <Router primary={false}>
+                  <PostView path="/:postTitle/:postRefNo" />
+                </Router>
               </React.Fragment>
             );
           }}

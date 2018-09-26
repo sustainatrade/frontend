@@ -1,7 +1,6 @@
 import React from "react";
 import * as gql from "../gql-schemas";
 import apolloClient from "../lib/apollo";
-import { history } from "./../lib/history";
 import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
 import Notification from "antd/lib/notification";
@@ -136,24 +135,8 @@ class Provider extends React.Component {
     }
   };
 
-  parseLocation = (location, action) => {
-    const { viewPostFn, closeFn } = this.state;
-    const paths = location.pathname.split("/");
-    const route = paths[1];
-    const postRefNo = paths[3];
-    if (route === "posts" && postRefNo) {
-      viewPostFn(postRefNo);
-    } else {
-      closeFn();
-    }
-  };
   //TESTING
   componentDidMount() {
-    this.parseLocation(history.location);
-    history.listen((location, action) => {
-      console.log(action, location.pathname, location.state);
-      this.parseLocation(location);
-    });
     const { postViewMode, setPostViewMode } = this.state;
     if (!postViewMode) {
       setPostViewMode(VIEW_MODES.compact);

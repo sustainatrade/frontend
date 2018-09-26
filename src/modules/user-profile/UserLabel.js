@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import get from "lodash/get";
-import { HLink } from "./../../lib/history";
+import { Link } from "@reach/router";
 
 const USER = gql`
   query($_refNo: String!) {
@@ -25,7 +25,7 @@ export default class UserLabel extends Component {
         {({ loading, error, data = {} }) => {
           if (loading) return <span>-----</span>;
           const user = get(data, "User.user", {});
-          return <HLink to={`/u/${refNo}`}>{user.displayName}</HLink>;
+          return <Link to={`/u/${refNo}`}>{user.displayName}</Link>;
         }}
       </Query>
     );

@@ -50,7 +50,7 @@ export default class SectionPosts extends React.Component {
             {({ setFiltersFn }) => (
               <Link
                 style={{ float: "right" }}
-                to={`/p`}
+                to={`/posts`}
                 onClick={() => setFiltersFn({ section: section.key })}
               >
                 More >>

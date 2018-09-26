@@ -11,19 +11,6 @@ import ContentWrapper, {
 } from "./../components/content-wrapper/ContentWrapper";
 import Post from "./post-view";
 
-const PostView = () => {
-  return (
-    <GlobalConsumer>
-      {({ postView: { post } }) => {
-        return (
-          <ContentWrapper open={post !== undefined}>
-            {post && <Post />}
-          </ContentWrapper>
-        );
-      }}
-    </GlobalConsumer>
-  );
-};
 export default class EcoContent extends Component {
   state = { visible: false };
 
@@ -82,10 +69,9 @@ export default class EcoContent extends Component {
               )}
               <Router>
                 <UserList path="u/*" />
-                <PostFeed path="p/*" />
-                <Home default />
+                <PostFeed path="posts/*" />
+                <Home exact default />
               </Router>
-              <PostView />
             </div>
           </WrapperContext.Provider>
         );

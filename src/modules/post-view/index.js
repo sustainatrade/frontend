@@ -62,10 +62,17 @@ class PostComments extends Component {
   }
 }
 
-export default class PostView extends Component {
+class PostView extends Component {
   state = {};
 
   async componentWillMount() {
+    const {
+      postView: { viewPostFn }
+    } = this.props.globalContext;
+    const { postRefNo } = this.props;
+    viewPostFn(postRefNo);
+
+    // fetch categories
     const ret = await apolloClient.query({
       query: CATEGORY_LIST
     });
@@ -185,3 +192,9 @@ export default class PostView extends Component {
     );
   }
 }
+
+export default props => (
+  <GlobalConsumer>
+    {globalContext => <PostView {...props} globalContext={globalContext} />}
+  </GlobalConsumer>
+);

@@ -7,7 +7,6 @@ import {
   Icon
   // Container
 } from "semantic-ui-react";
-import { HLink } from "./../../lib/history";
 // import axios from "axios";
 // import get from "lodash/get";
 import PostViewContext from "./../../contexts/PostViewContext";
@@ -23,6 +22,8 @@ import { MsImage } from "./../../components";
 import FollowButton from "./FollowButton";
 import MoreProps from "./MoreProps";
 import { VIEW_MODES } from "./../../contexts/PostViewContext";
+
+import { Link } from "@reach/router";
 
 import "./PostItem.css";
 import Popover from "antd/lib/popover";
@@ -194,7 +195,7 @@ export default class PostItem extends Component {
                   )}
                 <Item.Header
                   className="title"
-                  as={HLink}
+                  as={Link}
                   to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
                     post._refNo
                   }`}
