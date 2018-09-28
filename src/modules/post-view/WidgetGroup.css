@@ -1,0 +1,10 @@
+.widget-group span {
+  font-weight: bold !important;
+  font-size: medium;
+  margin: 5px 10px;
+}
+
+.widget-group .button {
+  font-weight: bold !important;
+}
+
