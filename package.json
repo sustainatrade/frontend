@@ -38,7 +38,7 @@
     "subscriptions-transport-ws": "0.9.15"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env NODE_PATH=./src react-scripts start",
     "build": "node build.js",
     "server": "nodemon --watch server server/index.js",
     "test": "react-scripts test --env=jsdom",

@@ -19,15 +19,10 @@ import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import PropChangeHandler from "../../components/prop-change-handler/PropChangeHandler";
 import VisibilityButton from "./../../components/visibility-button/VisibilityButton";
-import ContentWrapper from "./../../components/content-wrapper/ContentWrapper";
 import Post from "./../post-view";
 import { Router } from "@reach/router";
 
-const PostView = props => (
-  <ContentWrapper open>
-    <Post {...props} />
-  </ContentWrapper>
-);
+const PostView = props => <Post {...props} />;
 
 export const PlaceHolder = ({ isMobile, ...props }) => (
   <ContentLoader
@@ -99,6 +94,7 @@ const Feed = ({ categories }) => {
                         post={postObj}
                         categories={categories}
                         basic
+                        withLabels={false}
                         isRemoved={post.isRemoved}
                       />
                     );
@@ -162,12 +158,8 @@ export default class PostFeed extends Component {
               postCount
             }
           }) => {
-            return (
+            const FeedContent = () => (
               <React.Fragment>
-                <PropChangeHandler
-                  prop={user}
-                  handler={user => user && loadPostCountFn(user.id)}
-                />
                 <Filters isMobile={isMobile} />
                 <Menu
                   secondary
@@ -209,8 +201,17 @@ export default class PostFeed extends Component {
                   )}
                 </Menu>
                 {categories && <Feed categories={categories} />}
+              </React.Fragment>
+            );
+            return (
+              <React.Fragment>
+                <PropChangeHandler
+                  prop={user}
+                  handler={user => user && loadPostCountFn(user.id)}
+                />
                 <Router primary={false}>
                   <PostView path="/:postTitle/:postRefNo" />
+                  <FeedContent default />
                 </Router>
               </React.Fragment>
             );

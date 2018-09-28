@@ -1,32 +1,30 @@
 .post {
-    padding-bottom: 10px !important;
+  padding-bottom: 10px !important;
 }
 .post .mobile-meta {
-    margin-top: 5px !important;
+  margin-top: 5px !important;
 }
 .post .title .label {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 .post .actn-lbl {
-    width: 100%;
-    margin: 5px 5px 0px 0px;
+  width: 100%;
+  margin: 5px 5px 0px 0px;
 }
 .post .desktop-meta {
-    margin: 0 !important
+  margin: 0 !important;
 }
 .post .extra {
-    margin: 0 !important
-}
-.post .content {
-    padding-left: 10px !important
+  margin: 0 !important;
+  display: inline !important;
 }
 
 .post .image {
-    cursor: "pointer";
-    min-height: 75px;
-    max-width: 75px;
+  cursor: "pointer";
+  min-height: 75px;
+  max-width: 75px;
 }
 
 .post .actn-lbl div {
-    display: block
+  display: block;
 }

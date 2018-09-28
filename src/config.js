@@ -13,5 +13,8 @@ module.exports = {
       color: "green",
       displayName: "Selling"
     }
-  ]
+  ],
+  posts: {
+    actionButtonSize: "tiny"
+  }
 };

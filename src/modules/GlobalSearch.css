@@ -9,7 +9,9 @@
 .searcher input {
   height: 36px;
   font-weight: bold;
-  font-size: x-large;
+  font-size: large;
+  border-radius: 5px !important;
+  background-color:#efefef !important;
 }
 
 .searcher-mobile input {

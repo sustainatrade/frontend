@@ -4,7 +4,8 @@ import {
   Item,
   Button,
   List,
-  Icon
+  Icon,
+  Divider
   // Container
 } from "semantic-ui-react";
 // import axios from "axios";
@@ -20,13 +21,16 @@ import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import FollowButton from "./FollowButton";
-import MoreProps from "./MoreProps";
+import CommentButton from "./CommentButton";
+import ShareButton from "./ShareButton";
+import MoreButton from "./MoreButton";
 import { VIEW_MODES } from "./../../contexts/PostViewContext";
+import WidgetGroup from "./../post-view/WidgetGroup";
 
 import { Link } from "@reach/router";
 
 import "./PostItem.css";
-import Popover from "antd/lib/popover";
+
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
@@ -36,87 +40,80 @@ export function getShareUrl(post) {
   )}/${post._refNo}`;
 }
 
-export default class PostItem extends Component {
-  state = { commentCount: 0 };
-
-  renderActions(post, isCompact) {
-    return (
-      <GlobalConsumer>
-        {({ postView: { viewPostFn }, user: { isAdmin } }) => (
-          <React.Fragment>
+export const PostActions = ({
+  post,
+  isCompact,
+  isDetailed,
+  noLabels = true
+}) => (
+  <GlobalConsumer>
+    {({ postView, user, postFeed: { setSearchesFn } }) => {
+      const float = isDetailed ? "left" : "right";
+      const dividerStyle = isDetailed ? {} : { margin: "4px 0px" };
+      return (
+        <React.Fragment>
+          {isDetailed && <Divider style={dividerStyle} />}
+          <div style={{ float }}>
             <FollowButton post={post} isCompact={isCompact} />
-            {(() => {
-              if (isCompact)
-                return (
-                  <Label as="a" className="actn-lbl">
-                    <Icon name="quote left" />
-                    {this.state.commentCount}
-                  </Label>
-                );
-              if (!isCompact)
-                return (
-                  <Button
-                    as="div"
-                    labelPosition="right"
-                    title="Comments"
-                    onClick={() => viewPostFn(post._refNo)}
-                  >
-                    <Button icon>
-                      <Icon name="quote left" title="Comments" />
-                    </Button>
-                    <Label as="a" basic pointing="left">
-                      {this.state.commentCount}
-                    </Label>
-                  </Button>
-                );
-            })()}
-            {!isCompact &&
-              this.props.detailed && (
-                <Share href={getShareUrl(post)}>
-                  <Button icon color="facebook" title={getShareUrl(post)}>
-                    <Icon name="facebook f" title="Comments" />
-                  </Button>
-                </Share>
-              )}
-            {(() => {
-              const poProps = {
-                placement: "bottomRight"
-              };
-              if (isCompact) {
-                poProps.placement = "rightBottom";
-              }
-              return (
-                <Popover
-                  content={
-                    <div
-                      style={{ width: 200 }}
-                      onClick={() => this.setState({ showMore: false })}
-                    >
-                      <MoreProps {...this.props} isAdmin={isAdmin} />
-                    </div>
-                  }
-                  trigger="click"
-                  visible={this.state.showMore}
-                  onVisibleChange={showMore => this.setState({ showMore })}
-                  {...poProps}
-                >
-                  {isCompact ? (
-                    <Label basic as="a" className="actn-lbl">
-                      <center>
-                        <Icon name="ellipsis horizontal" />
-                      </center>
-                    </Label>
-                  ) : (
-                    <Button basic icon="ellipsis horizontal" title="More" />
-                  )}
-                </Popover>
-              );
-            })()}
-          </React.Fragment>
-        )}
-      </GlobalConsumer>
-    );
-  }
+            <CommentButton
+              post={post}
+              isCompact={isCompact}
+              postViewContext={postView}
+            />
+            {!isCompact && isDetailed && <ShareButton post={post} />}
+            <MoreButton isCompact={isCompact} post={post} userContext={user} />
+          </div>
+          <Divider fitted hidden clearing />
+          <Divider
+            fitted={!isDetailed}
+            hidden={!isDetailed}
+            style={dividerStyle}
+          />
+          {!noLabels &&
+            !isCompact &&
+            post.tags.map(tag => (
+              <Label
+                key={tag}
+                onClick={() => setSearchesFn({ PostTag: tag })}
+                style={{ cursor: "pointer", float }}
+                content={tag}
+              />
+            ))}
+        </React.Fragment>
+      );
+    }}
+  </GlobalConsumer>
+);
+
+export const TitleLabels = ({ post, isRemoved, withLabels }) => {
+  const sectionContent = withLabels ? (
+    <React.Fragment>
+      Section
+      <Label.Detail>{post.section.toUpperCase()}</Label.Detail>
+    </React.Fragment>
+  ) : (
+    post.section.toUpperCase()
+  );
+  return (
+    <React.Fragment>
+      <Label
+        color={post.section === "sell" ? "green" : "orange"}
+        size="small"
+        image={withLabels}
+        basic={!withLabels}
+      >
+        {sectionContent}
+      </Label>
+      {isRemoved && (
+        <Label color="red" size="small">
+          REMOVED
+        </Label>
+      )}
+    </React.Fragment>
+  );
+};
+export default class PostItem extends Component {
+  state = {};
 
   renderImage() {
     const { post, isCompact } = this.props;
@@ -148,7 +145,11 @@ export default class PostItem extends Component {
                       onClick={() => viewPostFn(post._refNo)}
                     />
                   )}
-                  {this.renderActions(post, true)}
+                  <PostActions
+                    isDetailed={this.props.detailed}
+                    post={post}
+                    isCompact
+                  />
                 </div>
               )}
               {!isCompact && (
@@ -190,7 +191,10 @@ export default class PostItem extends Component {
                 {!isCompact &&
                   !detailed && (
                     <div style={{ float: "right" }}>
-                      {this.renderActions(post)}
+                      <PostActions
+                        isDetailed={this.props.detailed}
+                        post={post}
+                      />
                     </div>
                   )}
                 <Item.Header
@@ -200,19 +204,14 @@ export default class PostItem extends Component {
                     post._refNo
                   }`}
                 >
-                  <Label
-                    color={post.section === "sell" ? "green" : "orange"}
-                    basic
-                    size="small"
-                  >
-                    {post.section.toUpperCase()}
-                  </Label>
-                  {isRemoved && (
-                    <Label color="red" size="small">
-                      REMOVED
-                    </Label>
+                  {detailed ? (
+                    <h1>{post.title}</h1>
+                  ) : (
+                    <React.Fragment>
+                      <TitleLabels post={post} isRemoved={isRemoved} />
+                      {post.title}
+                    </React.Fragment>
                   )}
-                  <span>{post.title}</span>
                 </Item.Header>
                 <Item.Meta
                   className={
@@ -250,23 +249,16 @@ export default class PostItem extends Component {
                   <Item.Description>{post.description}</Item.Description>
                 )}
                 <Item.Extra>
-                  {/* <Label
-                        color={post.section === "sell" ? "green" : "orange"}
-                      >
-                        <Icon name="weixin" />
-                        <Label.Detail>
-                          {post.section.toUpperCase()}
-                        </Label.Detail>
-                      </Label> */}
-                  {post.tags.map(tag => (
-                    <Label
-                      key={tag}
-                      onClick={() => setSearchesFn({ PostTag: tag })}
-                      style={{ cursor: "pointer" }}
-                      content={tag}
-                    />
-                  ))}
-                  {detailed && <div>{this.renderActions(post)}</div>}
+                  <WidgetGroup entity={post} />
+                  {detailed && (
+                    <div>
+                      <PostActions
+                        isDetailed={this.props.detailed}
+                        post={post}
+                        noLabels={false}
+                      />
+                    </div>
+                  )}
                 </Item.Extra>
               </Item.Content>
             </Item>

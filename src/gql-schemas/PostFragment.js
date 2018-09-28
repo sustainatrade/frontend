@@ -12,6 +12,13 @@ fragment PostFragment on Post {
   createdDate
   followerCount
   isFollowing
+  widgets {
+    id
+    name
+    values
+    types
+    displayName
+  }
 }
 `;
 

@@ -4,7 +4,10 @@ import {
   Grid,
   Modal,
   Image,
+  Label,
+  Segment,
   Button,
+  Icon,
   Divider,
   Container
 } from "semantic-ui-react";
@@ -14,7 +17,7 @@ import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import UserContext from "./../../contexts/UserContext";
 import gql from "graphql-tag";
-import PostItem from "./../post-feed/PostItem";
+import PostItem, { TitleLabels, PostActions } from "./../post-feed/PostItem";
 import PostWidget from "./PostWidget";
 import { Comments } from "react-facebook";
 import { MsImage } from "./../../components";
@@ -168,21 +171,37 @@ class PostView extends Component {
             );
           };
 
+          const postItemProps = {
+            post,
+            categories,
+            detailed: true,
+            isDetailed: true
+          };
           return (
-            <Grid doubling columns={2} style={{ margin: 0 }}>
-              <Grid.Column width={10} style={{ padding: 0, paddingBottom: 10 }}>
+            <Grid doubling columns={2} style={{ margin: 0 }} stretched>
+              <Grid.Column
+                width={10}
+                style={{
+                  padding: 5,
+                  paddingBottom: 10,
+                  borderRight: "#00000017 solid 1px"
+                }}
+              >
+                <div>
+                  <TitleLabels {...postItemProps} withLabels />
+                  <PostActions {...postItemProps} noLabels isDetailed={false} />
+                </div>
                 <Item.Group divided>
-                  <PostItem post={post} categories={categories} detailed />
+                  <PostItem {...postItemProps} />
                   {renderGallery()}
                   {this.renderWidgets(post, widgets)}
                 </Item.Group>
               </Grid.Column>
               <Grid.Column
                 width={6}
-                style={{ padding: 0, paddingLeft: isMobile ? 0 : 10 }}
+                style={{ padding: 5, backgroundColor: "rgb(243, 244, 245)" }}
               >
                 <PostComments post={post} />
-                <Divider horizontal> More Posts</Divider>
                 <Container textAlign="center">No other posts.</Container>
               </Grid.Column>
             </Grid>

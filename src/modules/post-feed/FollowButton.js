@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Mutation } from "react-apollo";
-import { FOLLOW_POST } from "./../../gql-schemas";
+import { FOLLOW_POST } from "gql-schemas";
 import { Label, Button, Icon } from "semantic-ui-react";
+import config from "config";
+
+const ACTION_BUTTON_SIZE = config.posts.actionButtonSize;
 
 export default class FollowButton extends Component {
   state = {};
@@ -56,11 +59,12 @@ export default class FollowButton extends Component {
               {!isCompact && (
                 <Button
                   as="div"
+                  size={ACTION_BUTTON_SIZE}
                   labelPosition="right"
                   title={title}
                   onClick={onClickHandler}
                 >
-                  <Button color={followerColor} icon>
+                  <Button size={ACTION_BUTTON_SIZE} color={followerColor} icon>
                     <Icon {...iconProps} />
                   </Button>
                   <Label color={followerColor} as="a" basic pointing="left">
