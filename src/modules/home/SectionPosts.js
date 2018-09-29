@@ -43,7 +43,7 @@ export default class SectionPosts extends React.Component {
     const { color, displayName } = section;
     return (
       <React.Fragment>
-        <Header as="h5" attached="top" color={color}>
+        <Header as="h5" attached="top" color={color} style={{ width: "100%" }}>
           Recent {displayName}
           <PostFeedContext.Consumer>
             {({ setFiltersFn }) => (
@@ -57,7 +57,7 @@ export default class SectionPosts extends React.Component {
             )}
           </PostFeedContext.Consumer>
         </Header>
-        <Segment attached color={color}>
+        <Segment attached color={color} style={{ width: "100%" }}>
           <Posts list={posts} />
         </Segment>
       </React.Fragment>

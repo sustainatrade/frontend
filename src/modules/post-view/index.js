@@ -130,7 +130,12 @@ class PostView extends Component {
                 <Item.Description>
                   <ResponsiveContext.Consumer>
                     {({ isMobile }) => (
-                      <Grid doubling stretched columns={isMobile ? 1 : 2}>
+                      <Grid
+                        doubling
+                        stretched
+                        columns={isMobile ? 1 : 2}
+                        style={{ margin: 0 }}
+                      >
                         {widgets.map(wId => (
                           <Grid.Column key={wId}>
                             <PostWidget key={wId} fromRefNo={wId} fluid />
