@@ -6,9 +6,6 @@ import Home from "./home";
 import UserList from "./user-list";
 import { GlobalConsumer } from "./../contexts";
 import { Router } from "@reach/router";
-import ContentWrapper, {
-  WrapperContext
-} from "./../components/content-wrapper/ContentWrapper";
 import Post from "./post-view";
 
 export default class EcoContent extends Component {
@@ -43,37 +40,26 @@ export default class EcoContent extends Component {
           style1.visibility = "collapse";
         }
         return (
-          <WrapperContext.Provider
-            value={{
-              active: wrapperActive,
-              setActive: flag => {
-                this.setState({ wrapperActive: flag });
-              }
-            }}
-          >
-            <div style={style1}>
-              {showSidebar && (
-                <div
-                  style={style2}
-                  onMouseEnter={() =>
-                    this.setState({ showSidebarScroll: true })
-                  }
-                  onMouseLeave={() =>
-                    this.setState({ showSidebarScroll: undefined })
-                  }
-                >
-                  <Segment basic style={style3}>
-                    <Sidebar />
-                  </Segment>
-                </div>
-              )}
-              <Router>
-                <UserList path="u/*" />
-                <PostFeed path="posts/*" />
-                <Home exact default />
-              </Router>
-            </div>
-          </WrapperContext.Provider>
+          <div style={style1}>
+            {showSidebar && (
+              <div
+                style={style2}
+                onMouseEnter={() => this.setState({ showSidebarScroll: true })}
+                onMouseLeave={() =>
+                  this.setState({ showSidebarScroll: undefined })
+                }
+              >
+                <Segment basic style={style3}>
+                  <Sidebar />
+                </Segment>
+              </div>
+            )}
+            <Router>
+              <UserList path="u/*" />
+              <PostFeed path="posts/*" />
+              <Home exact default />
+            </Router>
+          </div>
         );
       }}
     </GlobalConsumer>
