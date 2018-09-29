@@ -53,7 +53,7 @@ export default class FollowButton extends Component {
                   color={followerColor}
                   onClick={onClickHandler}
                 >
-                  <Icon {...iconProps} /> {followers}
+                  <Icon {...iconProps} /> {followers || 0}
                 </Label>
               )}
               {!isCompact && (
@@ -68,7 +68,7 @@ export default class FollowButton extends Component {
                     <Icon {...iconProps} />
                   </Button>
                   <Label color={followerColor} as="a" basic pointing="left">
-                    {followers}
+                    {followers || 0}
                   </Label>
                 </Button>
               )}

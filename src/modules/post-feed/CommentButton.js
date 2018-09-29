@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Mutation } from "react-apollo";
-import { FOLLOW_POST } from "gql-schemas";
+// import { Mutation } from "react-apollo";
+// import { FOLLOW_POST } from "gql-schemas";
 import { Label, Button, Icon } from "semantic-ui-react";
 import config from "config";
 

@@ -4,10 +4,7 @@ import {
   Grid,
   Modal,
   Image,
-  Label,
-  Segment,
   Button,
-  Icon,
   Divider,
   Container
 } from "semantic-ui-react";
@@ -17,11 +14,17 @@ import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import UserContext from "./../../contexts/UserContext";
 import gql from "graphql-tag";
-import PostItem, { TitleLabels, PostActions } from "./../post-feed/PostItem";
+import PostItem, {
+  TitleLabels,
+  PostActions,
+  PostItemPlaceHolder
+} from "./../post-feed/PostItem";
 import PostWidget from "./PostWidget";
 import { Comments } from "react-facebook";
 import { MsImage } from "./../../components";
 import { getShareUrl } from "./../post-feed/PostItem";
+
+import BaseLoader from "components/base-loader/BaseLoader";
 
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
@@ -65,6 +68,26 @@ class PostComments extends Component {
   }
 }
 
+const PostViewHeaders = postItemProps => {
+  if (!postItemProps.post || !postItemProps.categories) {
+    return (
+      <BaseLoader mobileHeight={30} desktopHeight={20}>
+        {({ height }) => (
+          <React.Fragment>
+            <rect x="0" y="0" rx="3" ry="3" width="100" height={height} />
+            <rect x="250" y="0" rx="3" ry="3" width="150" height={height} />
+          </React.Fragment>
+        )}
+      </BaseLoader>
+    );
+  }
+  return (
+    <div>
+      <TitleLabels {...postItemProps} withLabels />
+      <PostActions {...postItemProps} noLabels isDetailed={false} />
+    </div>
+  );
+};
 class PostView extends Component {
   state = {};
 
@@ -133,7 +156,8 @@ class PostView extends Component {
           responsive: { isMobile },
           category: { categories }
         }) => {
-          if (!(post && categories)) return <div>Loading</div>;
+          // const loading = !(post && categories);
+          // if (loading) return <div>loading</div>;
 
           const renderGallery = () => {
             return (
@@ -187,21 +211,22 @@ class PostView extends Component {
                   borderRight: "#00000017 solid 1px"
                 }}
               >
-                <div>
-                  <TitleLabels {...postItemProps} withLabels />
-                  <PostActions {...postItemProps} noLabels isDetailed={false} />
-                </div>
+                <PostViewHeaders {...postItemProps} />
                 <Item.Group divided>
-                  <PostItem {...postItemProps} />
-                  {renderGallery()}
-                  {this.renderWidgets(post, widgets)}
+                  {post ? (
+                    <PostItem {...postItemProps} />
+                  ) : (
+                    <PostItemPlaceHolder desktopWidth={300} />
+                  )}
+                  {post && renderGallery()}
+                  {post && widgets && this.renderWidgets(post, widgets)}
                 </Item.Group>
               </Grid.Column>
               <Grid.Column
                 width={6}
                 style={{ padding: 5, backgroundColor: "rgb(243, 244, 245)" }}
               >
-                <PostComments post={post} />
+                {post && <PostComments post={post} />}
                 <Container textAlign="center">No other posts.</Container>
               </Grid.Column>
             </Grid>

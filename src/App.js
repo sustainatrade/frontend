@@ -15,6 +15,8 @@ import {
   Icon
 } from "semantic-ui-react";
 
+import CookiePopup from "./components/cookie-popup/CookiePopup";
+
 // Antd component styles here
 import "antd/lib/drawer/style/css";
 import "antd/lib/upload/style/css";
@@ -138,14 +140,16 @@ class Root extends React.Component {
                   )}
                   {isMobile && (
                     <Menu.Item
+                      active={showMobileSidebar}
                       onClick={() =>
                         this.setState({ showMobileSidebar: !showMobileSidebar })
                       }
                     >
-                      <Icon
+                      {/* <Icon
                         size="large"
                         name={!showMobileSidebar ? "content" : "x"}
-                      />
+                      /> */}
+                      <img style={{ width: 25 }} alt="" src={logo} />
                     </Menu.Item>
                   )}
                   <Menu.Menu
@@ -165,6 +169,7 @@ class Root extends React.Component {
                     <EcoContent
                       showSidebar={isMobile ? showMobileSidebar : true}
                     />
+                    <CookiePopup />
                   </FacebookProvider>
                 </div>
                 {isMobile && (

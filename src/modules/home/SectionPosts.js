@@ -1,10 +1,9 @@
 import React from "react";
 import { Segment, Header, Item } from "semantic-ui-react";
-import PostItem from "./../post-feed/PostItem";
+import PostItem, { PostItemPlaceHolder } from "./../post-feed/PostItem";
 import { GlobalConsumer } from "./../../contexts";
 import { Link } from "@reach/router";
 import PostFeedContext from "./../../contexts/PostFeedContext";
-import { PlaceHolder } from "./../post-feed";
 import { range } from "lodash";
 
 const Posts = ({ list }) => {
@@ -30,7 +29,7 @@ const Posts = ({ list }) => {
                 );
               })
             : range(5).map(i => (
-                <PlaceHolder key={"pl" + i} isMobile={isMobile} />
+                <PostItemPlaceHolder key={"pl" + i} isMobile={isMobile} />
               ))}
         </Item.Group>
       )}

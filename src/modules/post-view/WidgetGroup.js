@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import {
   Label,
-  Item,
-  Button,
-  List,
-  Icon,
-  Divider
+  Button
   // Container
 } from "semantic-ui-react";
 import "./WidgetGroup.css";
 import { manifests } from "./../../components/widgets/";
-import config from "./../../config";
+// import config from "./../../config";
 import { get, compact, sortBy } from "lodash";
 
 export default class WidgetGroup extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { FOLLOW_POST } from "gql-schemas";
-import { Label, Button, Icon } from "semantic-ui-react";
+// import { FOLLOW_POST } from "gql-schemas";
+import { Button, Icon } from "semantic-ui-react";
 import { Share } from "react-facebook";
 import { getShareUrl } from "./PostItem";
 import config from "config";

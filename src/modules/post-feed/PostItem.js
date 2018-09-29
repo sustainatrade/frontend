@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import {
   Label,
   Item,
-  Button,
   List,
-  Icon,
   Divider
   // Container
 } from "semantic-ui-react";
@@ -16,7 +14,6 @@ import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
 import moment from "moment";
-import { Share } from "react-facebook";
 import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
@@ -26,7 +23,9 @@ import ShareButton from "./ShareButton";
 import MoreButton from "./MoreButton";
 import { VIEW_MODES } from "./../../contexts/PostViewContext";
 import WidgetGroup from "./../post-view/WidgetGroup";
+import get from "lodash/get";
 
+import BaseLoader from "components/base-loader/BaseLoader";
 import { Link } from "@reach/router";
 
 import "./PostItem.css";
@@ -230,9 +229,11 @@ export default class PostItem extends Component {
                     <CategoryContext.Consumer>
                       {({ icons, categories }) => (
                         <List.Item>
-                          <List.Icon name={icons[post.category]} />
+                          <List.Icon
+                            name={get(icons, post.category, "spinner")}
+                          />
                           <List.Content>
-                            {categories[post.category]}
+                            {get(categories, post.category, "---")}
                           </List.Content>
                         </List.Item>
                       )}
@@ -268,3 +269,25 @@ export default class PostItem extends Component {
     );
   }
 }
+
+export const PostItemPlaceHolder = props => (
+  <BaseLoader
+    desktopHeight={50}
+    mobileHeight={70}
+    desktopWidth={660}
+    mobileWidth={225}
+    {...props}
+  >
+    {height => (
+      <React.Fragment>
+        <rect x="60" y="5" rx="4" ry="4" width="189.54" height="15" />
+        <rect x="60" y="23" rx="3" ry="3" width="60" height="10" />
+        <rect x="60" y="40" rx="3" ry="3" width="60.82" height="10" />
+        <rect x="60" y="55" rx="3" ry="3" width="60.82" height="10" />
+        <rect x="60" y="75" rx="2" ry="2" width="60" height="18" />
+        <rect x="240" y="75" rx="2" ry="2" width="60" height="18" />
+        <rect x="0" y="5" rx="0" ry="0" width="50" height="50" />
+      </React.Fragment>
+    )}
+  </BaseLoader>
+);

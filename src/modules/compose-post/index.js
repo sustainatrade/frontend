@@ -364,7 +364,7 @@ export default class ComposePost extends Component {
               </Form.Group>
               <Form.Field
                 control={TextArea}
-                label="Description"
+                label="Description (Summary)"
                 placeholder="Description"
                 value={form.description || ""}
                 onChange={(e, { value }) => updateForm({ description: value })}

@@ -98,7 +98,12 @@ class Provider extends React.Component {
     viewPostFn: async _refNo => {
       const self = this;
       if (this.state.loading) return;
-      self.setState({ loading: true, loadingRefNo: _refNo });
+      self.setState({
+        loading: true,
+        loadingRefNo: _refNo,
+        post: undefined,
+        widgets: undefined
+      });
 
       const ret = await apolloClient.query({
         query: gql.GET_POST,

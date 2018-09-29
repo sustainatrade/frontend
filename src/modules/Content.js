@@ -6,7 +6,6 @@ import Home from "./home";
 import UserList from "./user-list";
 import { GlobalConsumer } from "./../contexts";
 import { Router } from "@reach/router";
-import Post from "./post-view";
 
 export default class EcoContent extends Component {
   state = { visible: false };
