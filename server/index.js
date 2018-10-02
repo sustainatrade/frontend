@@ -66,9 +66,10 @@ const rootHandler = (request, response) => {
   response.send(data);
 };
 
+app.get("/", rootHandler);
+
 app.use(express.static(path.resolve(__dirname, STATIC_DIR)));
 
-app.get("/", rootHandler);
 app.get("*", rootHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
