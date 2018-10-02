@@ -9,5 +9,7 @@ module.exports = {
   siteName: process.env.SITE_NAME || "sustainatrade.com",
   storageServer:
     process.env.STORAGE_SERVER || "https://storage.sustainatrade.com",
-  postPhotoPath: process.env.POST_PHOTO_PATH || "/file/eco-trade-assets"
+  postPhotoPath: process.env.POST_PHOTO_PATH || "/file/eco-trade-assets",
+  iconFileName:
+    process.env.ICON_FILE_NAME || "3482c4ee454c07d84ec56238494f15427c842f3e.png"
 };

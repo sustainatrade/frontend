@@ -6,7 +6,12 @@ const fs = require("fs");
 const cacheControl = require("express-cache-controller");
 const routes = require("./routeloaders");
 const compression = require("compression");
-const { siteName, postPhotoPath, storageServer } = require("./config");
+const {
+  siteName,
+  postPhotoPath,
+  storageServer,
+  iconFileName
+} = require("./config");
 
 const STATIC_DIR = process.env.STATIC_DIR || "./../build";
 const INDEX_PATH = path.resolve(__dirname, STATIC_DIR, "index.html");
@@ -54,7 +59,7 @@ app.get(
 );
 
 const rootHandler = (request, response) => {
-  const image = "3482c4ee454c07d84ec56238494f15427c842f3e.png";
+  const image = iconFileName || "3482c4ee454c07d84ec56238494f15427c842f3e.png";
   const imageUrl = `${storageServer}${postPhotoPath}/${image}?width=75&height=75`;
   const metaTags = {
     OG_TITLE: siteName,
