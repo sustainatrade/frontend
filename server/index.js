@@ -57,19 +57,18 @@ const rootHandler = (request, response) => {
   const image = "3482c4ee454c07d84ec56238494f15427c842f3e.png";
   const imageUrl = `${storageServer}${postPhotoPath}/${image}?width=75&height=75`;
   const metaTags = {
-    OG_TITLE: "sustain@trade",
+    OG_TITLE: siteName,
     OG_IMAGE: imageUrl,
-    OG_DESCRIPTION: "sustain a,trade",
+    OG_DESCRIPTION: siteName,
     OG_SITE_NAME: siteName
   };
   let data = getReplacedHtml(metaTags);
   response.send(data);
 };
 
-app.get("/", rootHandler);
-
 app.use(express.static(path.resolve(__dirname, STATIC_DIR)));
 
+app.get("/", rootHandler);
 app.get("*", rootHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
