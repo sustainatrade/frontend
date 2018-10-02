@@ -7,6 +7,16 @@ module.exports = Object.assign(
     reqCredentials: "include",
     sections: [
       {
+        key: "question",
+        color: "yellow",
+        displayName: "Questions"
+      },
+      {
+        key: "answer",
+        color: "blue",
+        displayName: "Answers"
+      },
+      {
         key: "buy",
         color: "orange",
         displayName: "Buying"

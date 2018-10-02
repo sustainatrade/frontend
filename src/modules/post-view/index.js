@@ -9,7 +9,7 @@ import {
   Container
 } from "semantic-ui-react";
 import apolloClient from "./../../lib/apollo";
-import WidgetContext from "./../../contexts/WidgetContext";
+
 import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import UserContext from "./../../contexts/UserContext";
@@ -17,9 +17,11 @@ import gql from "graphql-tag";
 import PostItem, {
   TitleLabels,
   PostActions,
+  ShareButtons,
   PostItemPlaceHolder
 } from "./../post-feed/PostItem";
 import PostWidget from "./PostWidget";
+import SectionActions from "./../section-actions";
 import { Comments } from "react-facebook";
 import { MsImage } from "./../../components";
 import { getShareUrl } from "./../post-feed/PostItem";
@@ -84,6 +86,10 @@ const PostViewHeaders = postItemProps => {
   return (
     <div>
       <TitleLabels {...postItemProps} withLabels />
+      <div style={{ float: "right" }}>
+        {" | "}
+        <ShareButtons post={postItemProps.post} />
+      </div>
       <PostActions {...postItemProps} noLabels isDetailed={false} />
     </div>
   );
@@ -115,19 +121,13 @@ class PostView extends Component {
 
   renderWidgets(post, widgets) {
     return (
-      <Item>
+      <Item style={{ backgroundColor: "#f7f7f7" }}>
         <UserContext.Consumer>
           {({ user, loading }) => {
             // const isMyPost = user && post.createdBy === user.id;
             return (
               <Item.Content>
-                <WidgetContext.Consumer>
-                  {({ showSelectWidget }) => (
-                    <Item.Header style={{ width: "100%" }}>Specs</Item.Header>
-                  )}
-                </WidgetContext.Consumer>
-                <Item.Meta>{widgets.length || 0} Specs</Item.Meta>
-                <Item.Description>
+                <Item.Description style={{ width: "100%" }}>
                   <ResponsiveContext.Consumer>
                     {({ isMobile }) => (
                       <Grid
@@ -165,38 +165,33 @@ class PostView extends Component {
           // if (loading) return <div>loading</div>;
 
           const renderGallery = () => {
+            if (!post.photos || post.photos.length === 0) {
+              return <React.Fragment />;
+            }
             return (
-              <Item>
-                <Item.Content>
-                  <Item.Header>Gallery</Item.Header>
-                  <Item.Meta>{post.photos.length} Photos</Item.Meta>
-                  <Item.Description>
-                    <Image.Group>
-                      {post.photos.map((photo, i) => (
-                        <Modal
-                          key={i}
-                          trigger={
-                            <MsImage
-                              height={150}
-                              width={150}
-                              style={{ cursor: "pointer" }}
-                              src={`${storage}${path}/${photo}`}
-                            />
-                          }
-                          basic
-                          size="small"
-                        >
-                          <Modal.Content>
-                            <center>
-                              <Image src={`${storage}${path}/${photo}`} />
-                            </center>
-                          </Modal.Content>
-                        </Modal>
-                      ))}
-                    </Image.Group>
-                  </Item.Description>
-                </Item.Content>
-              </Item>
+              <Image.Group>
+                {post.photos.map((photo, i) => (
+                  <Modal
+                    key={i}
+                    trigger={
+                      <MsImage
+                        height={50}
+                        width={50}
+                        style={{ cursor: "pointer" }}
+                        src={`${storage}${path}/${photo}`}
+                      />
+                    }
+                    basic
+                    size="small"
+                  >
+                    <Modal.Content>
+                      <center>
+                        <Image src={`${storage}${path}/${photo}`} />
+                      </center>
+                    </Modal.Content>
+                  </Modal>
+                ))}
+              </Image.Group>
             );
           };
 
@@ -213,6 +208,7 @@ class PostView extends Component {
                 style={{
                   padding: 5,
                   paddingBottom: 10,
+                  paddingRight: isMobile ? 5 : 10,
                   borderRight: "#00000017 solid 1px"
                 }}
               >
@@ -224,6 +220,7 @@ class PostView extends Component {
                     <PostItemPlaceHolder desktopWidth={300} />
                   )}
                   {post && renderGallery()}
+                  {post && <SectionActions post={post} />}
                   {post && widgets && this.renderWidgets(post, widgets)}
                 </Item.Group>
               </Grid.Column>

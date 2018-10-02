@@ -3,6 +3,7 @@ import {
   Label,
   Item,
   List,
+  Segment,
   Divider
   // Container
 } from "semantic-ui-react";
@@ -19,11 +20,12 @@ import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import FollowButton from "./FollowButton";
 import CommentButton from "./CommentButton";
-import ShareButton from "./ShareButton";
+import FbShareButton from "./FbShareButton";
 import MoreButton from "./MoreButton";
 import { VIEW_MODES } from "./../../contexts/PostViewContext";
 import WidgetGroup from "./../post-view/WidgetGroup";
 import get from "lodash/get";
+import config from "config";
 
 import BaseLoader from "components/base-loader/BaseLoader";
 import { Link } from "@reach/router";
@@ -38,7 +40,17 @@ export function getShareUrl(post) {
     post.title.substring(0, 30)
   )}/${post._refNo}`;
 }
-
+export const ShareButtons = ({ post }) => (
+  <GlobalConsumer>
+    {({ postView, user, postFeed: { setSearchesFn } }) => {
+      return (
+        <React.Fragment>
+          <FbShareButton post={post} />
+        </React.Fragment>
+      );
+    }}
+  </GlobalConsumer>
+);
 export const PostActions = ({
   post,
   isCompact,
@@ -59,7 +71,6 @@ export const PostActions = ({
               isCompact={isCompact}
               postViewContext={postView}
             />
-            {!isCompact && isDetailed && <ShareButton post={post} />}
             <MoreButton isCompact={isCompact} post={post} userContext={user} />
           </div>
           <Divider fitted hidden clearing />
@@ -96,7 +107,7 @@ export const TitleLabels = ({ post, isRemoved, withLabels }) => {
   return (
     <React.Fragment>
       <Label
-        color={post.section === "sell" ? "green" : "orange"}
+        color={config.sections.find(s => s.key === post.section).color}
         size="small"
         image={withLabels}
         basic={!withLabels}
@@ -247,19 +258,19 @@ export default class PostItem extends Component {
                   </List>
                 </Item.Meta>
                 {!basic && (
-                  <Item.Description>{post.description}</Item.Description>
+                  <Item.Description>
+                    <Segment
+                      basic
+                      secondary
+                      size="large"
+                      style={{ marginBottom: 10 }}
+                    >
+                      {post.description}
+                    </Segment>
+                  </Item.Description>
                 )}
                 <Item.Extra>
                   <WidgetGroup entity={post} />
-                  {detailed && (
-                    <div>
-                      <PostActions
-                        isDetailed={this.props.detailed}
-                        post={post}
-                        noLabels={false}
-                      />
-                    </div>
-                  )}
                 </Item.Extra>
               </Item.Content>
             </Item>
