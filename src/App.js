@@ -150,6 +150,13 @@ class Root extends React.Component {
                         name={!showMobileSidebar ? "content" : "x"}
                       /> */}
                       <img style={{ width: 25 }} alt="" src={logo} />
+                      <Icon
+                        name={
+                          showMobileSidebar ? "caret square down" : "caret down"
+                        }
+                        size="large"
+                        color={showMobileSidebar ? "black" : "grey"}
+                      />
                     </Menu.Item>
                   )}
                   <Menu.Menu

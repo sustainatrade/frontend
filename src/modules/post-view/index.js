@@ -220,7 +220,7 @@ class PostView extends Component {
                     <PostItemPlaceHolder desktopWidth={300} />
                   )}
                   {post && renderGallery()}
-                  {post && <SectionActions post={post} />}
+                  {/* {post && <SectionActions post={post} />} */}
                   {post && widgets && this.renderWidgets(post, widgets)}
                 </Item.Group>
               </Grid.Column>
@@ -229,7 +229,12 @@ class PostView extends Component {
                 style={{ padding: 5, backgroundColor: "rgb(243, 244, 245)" }}
               >
                 {post && <PostComments post={post} />}
-                <Container textAlign="center">No other posts.</Container>
+                <Container
+                  textAlign="center"
+                  style={{ marginBottom: 100, marginTop: 50 }}
+                >
+                  No other posts.
+                </Container>
               </Grid.Column>
             </Grid>
           );
