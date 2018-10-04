@@ -163,7 +163,10 @@ class Root extends React.Component {
                     position="right"
                     style={(() => {
                       const style = { paddingTop: 5 };
-                      if (isMobile) style.width = "100%";
+                      if (isMobile) {
+                        style.width = "55%";
+                        style.marginRight = "70px";
+                      }
                       return style;
                     })()}
                   >
