@@ -107,7 +107,7 @@ export const TitleLabels = ({ post, isRemoved, withLabels }) => {
   return (
     <React.Fragment>
       <Label
-        color={config.sections.find(s => s.key === post.section).color}
+        color={get(config.sections.find(s => s.key === post.section), "color")}
         size="small"
         image={withLabels}
         basic={!withLabels}
@@ -183,6 +183,11 @@ export default class PostItem extends Component {
     const { post, isCompact, isRemoved, basic, detailed } = this.props;
 
     if (!post) {
+      return <React.Fragment />;
+    }
+
+    const section = config.sections.find(s => s.key === post.section);
+    if (!section) {
       return <React.Fragment />;
     }
 
