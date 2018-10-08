@@ -4,6 +4,7 @@ export * from "./FollowPost";
 export * from "./ReportPost";
 export * from "./RemovePost";
 export * from "./PostList";
+export * from "./GetPost";
 
 export const CREATE_POST = gql`
   mutation($post: CreatePostInput) {
@@ -32,29 +33,6 @@ export const EDIT_POST = gql`
         category
         description
         _refNo
-      }
-    }
-  }
-`;
-
-export const GET_POST = gql`
-  query($_refNo: String!) {
-    Post(input: { _refNo: $_refNo }) {
-      status
-      widgets
-      post {
-        id
-        title
-        section
-        category
-        description
-        photos
-        tags
-        _refNo
-        createdBy
-        createdDate
-        followerCount
-        isFollowing
       }
     }
   }

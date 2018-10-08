@@ -43,7 +43,7 @@ class Provider extends React.Component {
           return;
         }
         const ret = await apolloClient.query({
-          query: gql.GET_POST,
+          query: gql.GET_POST.query,
           variables: { _refNo: refNo },
           options: {
             fetchPolicy: "network-only"
@@ -122,7 +122,7 @@ class Provider extends React.Component {
         tags
       }) => {
         try {
-          console.log("editting.");
+          console.log("editting." + gql.GET_POST.key);
           const ret = await apolloClient.mutate({
             mutation: gql.EDIT_POST,
             variables: {
@@ -135,7 +135,8 @@ class Provider extends React.Component {
                 photos,
                 tags
               }
-            }
+            },
+            refetchQueries: () => [gql.GET_POST.key]
           });
           const { EditPost } = ret.data;
           return EditPost.post;
@@ -152,7 +153,8 @@ class Provider extends React.Component {
             mutation: gql.CREATE_POST,
             variables: {
               post
-            }
+            },
+            refetchQueries: () => [gql.GET_POST.key]
           });
           const { CreatePost } = ret.data;
           return CreatePost.post;

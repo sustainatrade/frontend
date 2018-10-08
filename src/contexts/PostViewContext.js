@@ -5,6 +5,7 @@ import Modal from "antd/lib/modal";
 import { Form } from "semantic-ui-react";
 import Notification from "antd/lib/notification";
 import ls from "lscache";
+import nanoid from "nanoid";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -106,12 +107,14 @@ class Provider extends React.Component {
       });
 
       const ret = await apolloClient.query({
-        query: gql.GET_POST,
-        variables: { _refNo },
+        query: gql.GET_POST.query,
+        variables: { _refNo, _hash: nanoid() },
         options: {
-          fetchPolicy: "network-only"
+          fetchPolicy: "network"
         }
       });
+      console.log("ret"); //TRACE
+      console.log(ret); //TRACE
       if (ret.data.Post.status === "SUCCESS") {
         self.setState({
           post: ret.data.Post.post,
