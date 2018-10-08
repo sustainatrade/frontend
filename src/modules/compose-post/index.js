@@ -193,10 +193,19 @@ export default class ComposePost extends Component {
           closeModal,
           submit
         },
+        category: { categories },
         uploader: { upload, status, isUploading },
         widget: { submitWidgetsFn }
       }) => {
-        const errsx = [];
+        let errsx = [],
+          options = [];
+        if (categories) {
+          options = Object.keys(categories).map(catKey => ({
+            key: catKey,
+            text: categories[catKey],
+            value: catKey
+          }));
+        }
         // console.log("form"); //TRACE
         // console.log(form); //TRACE
         // if (error) {
@@ -335,31 +344,14 @@ export default class ComposePost extends Component {
                 </Form.Field>
                 <Form.Field required>
                   <label>Category</label>
-                  <Query query={CATEGORY_LIST}>
-                    {({ loading, error, data = {} }) => {
-                      const { CategoryList } = data;
-                      let options = [];
-                      if (CategoryList) {
-                        options = CategoryList.list.map(cat => ({
-                          key: cat.id,
-                          text: cat.name,
-                          value: cat.id
-                        }));
-                      }
-                      return (
-                        <Form.Select
-                          options={options}
-                          placeholder="Select Category"
-                          loading={loading}
-                          value={form.category}
-                          onChange={(e, { value }) =>
-                            updateForm({ category: value })
-                          }
-                          required
-                        />
-                      );
-                    }}
-                  </Query>
+                  <Form.Select
+                    options={options}
+                    placeholder="Select Category"
+                    loading={loading}
+                    value={form.category}
+                    onChange={(e, { value }) => updateForm({ category: value })}
+                    required
+                  />
                 </Form.Field>
               </Form.Group>
               <Form.Field
