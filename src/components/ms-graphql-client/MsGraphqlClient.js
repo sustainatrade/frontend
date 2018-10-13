@@ -10,6 +10,7 @@ import get from "lodash/get";
 import EventEmitter from "eventemitter3";
 import { TYPES } from "./../../errors";
 import fragmentMatcher from "./FragmentMatcher";
+import { publicToken } from "./../../config";
 
 export const emitter = new EventEmitter();
 emitter.addOnce = (eventName, handler) => {
@@ -61,7 +62,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
     return {
       headers: {
         ...headers,
-        authorization: cokke || null
+        authorization: cokke || publicToken
       }
     };
   });

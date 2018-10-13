@@ -1,6 +1,7 @@
 module.exports = Object.assign(
   {
     siteName: "Sustain@trade",
+    publicToken: "please no hax",
     facebookAppId: "320301788758144",
     graphqlServer: localStorage.getItem("graphql"),
     graphqlWsServer: localStorage.getItem("graphql-ws"),
