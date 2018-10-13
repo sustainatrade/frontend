@@ -181,8 +181,6 @@ class Provider extends React.Component {
           }
         }
       });
-      console.log("data"); //TRACE
-      console.log(data); //TRACE
       const { PostList } = data;
       // const stateUpdates = {}
       if (PostList.status === "SUCCESS") {

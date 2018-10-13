@@ -251,8 +251,6 @@ export default class Filters extends React.Component {
         }) => {
           const filterValues =
             tmpFilters === null ? currentFilters : tmpFilters;
-            console.log("currentFilters"); //TRACE
-            console.log(currentFilters); //TRACE
           return (
             <React.Fragment>
               {isMobile && <Divider style={{ marginTop: 35 }} />}

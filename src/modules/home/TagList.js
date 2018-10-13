@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import ContentLoader from "react-content-loader";
 import PostFeedContext from "./../../contexts/PostFeedContext";
+import { navigate } from "@reach/router";
 
 const TAG_LIST = gql`
   query {
@@ -58,7 +59,10 @@ export default class TagList extends Component {
                     {data.PostTagList.list.map(tag => (
                       <Label
                         key={tag.name}
-                        onClick={() => setSearchesFn({ PostTag: tag.name })}
+                        onClick={() => {
+                          setSearchesFn({ PostTag: tag.name });
+                          navigate("posts");
+                        }}
                         style={{ cursor: "pointer" }}
                       >
                         {tag.name}

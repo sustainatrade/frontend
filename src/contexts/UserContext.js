@@ -71,6 +71,9 @@ class Provider extends React.Component {
     const { data } = await apolloClient.query({
       query: GET_ME
     });
+    if (!data.Me.user) {
+      localStorage.removeItem("_c");
+    }
     self.updateUser(data.Me.user, data.Me.roles, data.Me.socialServices);
     self.setState({
       loading: undefined
