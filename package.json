@@ -3,14 +3,14 @@
   "version": "0.0.1",
   "dependencies": {
     "@reach/router": "1.2.1",
-    "antd": "3.9.3",
+    "antd": "3.10.1",
     "apollo-cache-inmemory": "1.3.5",
     "apollo-client": "2.4.2",
     "apollo-link-error": "1.1.1",
     "apollo-link-http": "1.5.5",
     "apollo-link-ws": "1.0.9",
     "axios": "0.18.0",
-    "body-scroll-lock": "2.5.7",
+    "body-scroll-lock": "2.5.10",
     "classnames": "2.2.6",
     "eventemitter3": "3.1.0",
     "firebase": "5.5.4",
@@ -19,7 +19,7 @@
     "history": "4.7.2",
     "immutable": "3.8.2",
     "ioredis": "4.0.0",
-    "loadable-components": "^2.2.3",
+    "loadable-components": "2.2.3",
     "lodash": "4.17.11",
     "lscache": "1.2.0",
     "moment": "2.22.2",
@@ -34,7 +34,7 @@
     "react-helmet": "5.2.0",
     "react-loadable": "5.5.0",
     "react-props-editor": "1.0.3",
-    "react-scripts": "1.1.5",
+    "react-scripts": "2.0.4",
     "semantic-ui-react": "0.82.5",
     "subscriptions-transport-ws": "0.9.15"
   },
@@ -48,7 +48,7 @@
   "devDependencies": {
     "async-shelljs": "0.1.2",
     "cross-env": "5.2.0",
-    "eslint-plugin-prettier": "2.7.0",
+    "eslint-plugin-prettier": "3.0.0",
     "prettier": "1.14.3"
   }
 }
