@@ -13,25 +13,15 @@ import {
   Header,
   Loader
 } from "semantic-ui-react";
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+// import { Query } from "react-apollo";
 import WidgetContext from "./../../contexts/WidgetContext";
 import UploadPhoto from "./UploadPhoto";
 import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
 import { GlobalConsumer } from "./../../contexts";
 import { sections } from "./../../config";
-
-const CATEGORY_LIST = gql`
-  query {
-    CategoryList {
-      list {
-        id
-        name
-      }
-    }
-  }
-`;
+import { getUrl } from "./../../contexts/PostFeedContext";
+import { Link } from "@reach/router";
 
 const UPLOAD_NAME = "Post Image Upload";
 
@@ -115,6 +105,7 @@ export default class ComposePost extends Component {
                           <center>
                             Deleted
                             {` `}
+                            {/*eslint-disable-next-line*/}
                             <a onClick={() => undeleteWidget(index)}>Undo</a>
                           </center>
                         </Segment>
@@ -156,20 +147,22 @@ export default class ComposePost extends Component {
       <GlobalConsumer>
         {({ createPost: { closeModal }, postView: { viewPostFn } }) => (
           <center>
-            <Button
-              content="View Post"
-              icon="eye"
-              color="green"
-              onClick={() => {
-                this.setState({
-                  form: {},
-                  formErrors: [],
-                  mutKey: Date.now()
-                });
-                closeModal();
-                viewPostFn(post._refNo);
-              }}
-            />
+            <Link to={getUrl(post)}>
+              <Button
+                content="View Post"
+                icon="eye"
+                color="green"
+                onClick={() => {
+                  this.setState({
+                    form: {},
+                    formErrors: [],
+                    mutKey: Date.now()
+                  });
+                  closeModal();
+                  // viewPostFn(post._refNo, post);
+                }}
+              />
+            </Link>
           </center>
         )}
       </GlobalConsumer>

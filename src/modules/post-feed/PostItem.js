@@ -15,7 +15,6 @@ import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
 import moment from "moment";
-import { kebabCase } from "lodash";
 import UserLabel from "./../user-profile/UserLabel";
 import { MsImage } from "./../../components";
 import FollowButton from "./FollowButton";
@@ -23,6 +22,7 @@ import CommentButton from "./CommentButton";
 import FbShareButton from "./FbShareButton";
 import MoreButton from "./MoreButton";
 import { VIEW_MODES } from "./../../contexts/PostViewContext";
+import { getUrl } from "./../../contexts/PostFeedContext";
 import WidgetGroup from "./../post-view/WidgetGroup";
 import get from "lodash/get";
 import config from "config";
@@ -35,11 +35,6 @@ import "./PostItem.css";
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
-export function getShareUrl(post) {
-  return `https://sustainatrade.com/posts/${kebabCase(
-    post.title.substring(0, 30)
-  )}/${post._refNo}`;
-}
 export const ShareButtons = ({ post }) => (
   <GlobalConsumer>
     {({ postView, user, postFeed: { setSearchesFn } }) => {
@@ -212,13 +207,7 @@ export default class PostItem extends Component {
                       />
                     </div>
                   )}
-                <Item.Header
-                  className="title"
-                  as={Link}
-                  to={`/posts/${kebabCase(post.title.substring(0, 30))}/${
-                    post._refNo
-                  }`}
-                >
+                <Item.Header className="title" as={Link} to={getUrl(post)}>
                   {detailed ? (
                     <h1>{post.title}</h1>
                   ) : (

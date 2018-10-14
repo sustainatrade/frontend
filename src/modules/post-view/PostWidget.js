@@ -27,6 +27,7 @@ export default class PostWidget extends Component {
   };
   async stateFromData(data = {}) {
     const newState = Object.assign({}, data);
+    // eslint-disable-next-line
     if (data.propTypes) newState.types = data.propTypes;
     if (data.propValues) newState.values = data.propValues;
     this.setState(newState);

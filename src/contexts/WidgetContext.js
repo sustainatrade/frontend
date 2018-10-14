@@ -55,15 +55,18 @@ class Provider extends React.Component {
           widget.name = "-";
           if (!widget._refNo) return null; //Not changed
         } else if (widget._refNo) {
+          // eslint-disable-next-line
           if (widget.types || widget.propTypes) widget.type = "MODIFY";
           else return null; //Not changed
         } else widget.type = "CREATE";
 
         const widgetInput = Object.assign({}, widget, {
+          // eslint-disable-next-line
           types: JSON.stringify(widget.types || widget.propTypes),
           values: JSON.stringify(widget.values || widget.propValues)
         });
         delete widgetInput.__deleted;
+        // eslint-disable-next-line
         delete widgetInput.propTypes;
         delete widgetInput.propValues;
         delete widgetInput.key;

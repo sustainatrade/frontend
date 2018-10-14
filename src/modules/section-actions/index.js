@@ -1,5 +1,5 @@
 import React from "react";
-import { Segment, Button, Icon } from "semantic-ui-react";
+import { Segment } from "semantic-ui-react";
 import loadable from "loadable-components";
 
 const createSectionAction = importObj => {

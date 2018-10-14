@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Label, Button, Icon } from "semantic-ui-react";
 import Popover from "antd/lib/popover";
 // import { Share } from "react-facebook";
-// import { getShareUrl } from "./PostItem";
 import MoreProps from "./MoreProps";
 
 import config from "config";

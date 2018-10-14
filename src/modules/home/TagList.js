@@ -3,8 +3,9 @@ import { Label } from "semantic-ui-react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import ContentLoader from "react-content-loader";
-import PostFeedContext from "./../../contexts/PostFeedContext";
-import { navigate } from "@reach/router";
+import PostFeedContext, { getTagUrl } from "./../../contexts/PostFeedContext";
+import { Link } from "@reach/router";
+// import { kebabCase } from "lodash";
 
 const TAG_LIST = gql`
   query {
@@ -58,11 +59,13 @@ export default class TagList extends Component {
                   <Label.Group size="large">
                     {data.PostTagList.list.map(tag => (
                       <Label
+                        as={Link}
+                        to={getTagUrl(tag)}
                         key={tag.name}
-                        onClick={() => {
-                          setSearchesFn({ PostTag: tag.name });
-                          navigate("posts");
-                        }}
+                        // onClick={() => {
+                        //   // setSearchesFn({ PostTag: tag.name });
+                        //   navigate("posts");
+                        // }}
                         style={{ cursor: "pointer" }}
                       >
                         {tag.name}

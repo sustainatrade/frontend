@@ -3,9 +3,24 @@ import gql from "graphql-tag";
 import get from "lodash/get";
 import apolloClient from "./../lib/apollo";
 import postFragment from "./../gql-schemas/PostFragment";
+import { kebabCase } from "lodash";
 
 const Context = React.createContext();
 const { Consumer } = Context;
+
+export function getShareUrl(post) {
+  return `https://${window.location.hostname}/posts/${kebabCase(
+    post.title.substring(0, 30)
+  )}/${post._refNo}`;
+}
+
+export function getUrl(post) {
+  return `/posts/${kebabCase(post.title.substring(0, 30))}/${post._refNo}`;
+}
+
+export function getTagUrl(tag) {
+  return `/t/${tag.name}`;
+}
 
 const POST_CREATED = gql`
   subscription($device: String) {
@@ -204,7 +219,7 @@ class Provider extends React.Component {
   };
   async componentWillMount() {
     const self = this;
-    self.state.loadMoreFn(0);
+    // self.state.loadMoreFn(0);
     apolloClient
       .subscribe({
         query: POST_CREATED,

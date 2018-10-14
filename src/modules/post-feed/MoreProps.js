@@ -3,7 +3,7 @@ import { GlobalConsumer } from "./../../contexts";
 // import { Mutation } from "react-apollo";
 // import { FOLLOW_POST } from "./../../gql-schemas";
 import { List, Icon, Loader } from "semantic-ui-react";
-import { getShareUrl } from "./PostItem";
+import { getShareUrl } from "./../../contexts/PostFeedContext";
 import { Share } from "react-facebook";
 
 // function sleep(ms) {

@@ -13,8 +13,10 @@ export default class HidePostModal extends Component {
         {({ postView: { removePostFn }, postFeed: { loadMoreFn } }) => {
           return (
             <React.Fragment>
+              {/* eslint-disable-next-line*/}
               <a onClick={() => this.setState({ opened: true })}>
-                <Icon name="cancel" color="grey" size="large" />Remove Post{" "}
+                <Icon name="cancel" color="grey" size="large" />
+                Remove Post{" "}
                 <Label size="mini" style={{ float: "right" }} color="green">
                   admin
                 </Label>

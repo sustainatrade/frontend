@@ -3,8 +3,9 @@ import { Search, List } from "semantic-ui-react";
 import gql from "graphql-tag";
 import classNames from "classnames";
 import apolloClient from "./../lib/apollo";
-import PostFeedContext from "./../contexts/PostFeedContext";
+import PostFeedContext, { getTagUrl } from "./../contexts/PostFeedContext";
 import ResponsiveContext from "./../contexts/Responsive";
+import { navigate } from "@reach/router";
 import _ from "lodash";
 import "./GlobalSearch.css";
 
@@ -30,7 +31,6 @@ const USER_LIST = gql`
       list {
         id
         displayName
-        photoUrl
       }
     }
   }
@@ -50,38 +50,6 @@ export default class SearchToolbar extends Component {
             <PostFeedContext.Consumer>
               {({ setSearchesFn, searches }) => (
                 <List horizontal style={fluid ? { width: "100%" } : {}}>
-                  {/* {searches.User && (
-                    <List.Item style={{ textAlign: "center" }}>
-                      <Label size="huge" image color="green">
-                        <img
-                          alt="/"
-                          src="https://react.semantic-ui.com/assets/images/avatar/small/ade.jpg"
-                        />
-                        {searches.User}
-                        <Icon
-                          name="delete"
-                          onClick={() => {
-                            setSearchesFn({ User: undefined });
-                          }}
-                        />
-                      </Label>
-                    </List.Item>
-                  )}
-                  {searches.PostTag && (
-                    <List.Item style={{ textAlign: "center" }}>
-                      <Label size="huge" image color="teal">
-                        <img src="https://imgur.com/download/S18wVvv" alt="/" />
-                        {searches.PostTag}
-                        <Icon
-                          name="delete"
-                          title="Remove tag search"
-                          onClick={() => {
-                            setSearchesFn({ PostTag: undefined });
-                          }}
-                        />
-                      </Label>
-                    </List.Item>
-                  )} */}
                   <List.Item>
                     <Search
                       fluid={fluid}
@@ -93,7 +61,14 @@ export default class SearchToolbar extends Component {
                       placeholder="Search"
                       onResultSelect={(e, { result }) => {
                         this.setState({ searchTxt: undefined });
-                        setSearchesFn({ [result.descriptor]: result.key });
+                        // setSearchesFn({ [result.descriptor]: result.key });
+                        switch (result.descriptor) {
+                          case "PostTag":
+                            navigate(getTagUrl(result.model));
+                            break;
+                          default:
+                            break;
+                        }
                       }}
                       onSearchChange={_.debounce(
                         async (e, { value }) => {
@@ -136,19 +111,13 @@ export default class SearchToolbar extends Component {
                                       rItem.photoUrl ||
                                       "https://imgur.com/download/S18wVvv",
                                     price: descriptor,
-                                    descriptor
+                                    descriptor,
+                                    model: rItem
                                   }))
                                 );
                               }
                             }
                           });
-                          // if (PostTagList) {
-                          //     qResult.push(PostTagList.list.map(tag=>({
-                          //         key: tag.name,
-                          //         title: `${tag.name}(${tag.count})`,
-                          //         price: 'tag'
-                          //     })))
-                          // }
                           console.log("qResult"); //TRACE
                           console.log(qResult); //TRACE
                           this.setState({ isLoading: false, results: qResult });

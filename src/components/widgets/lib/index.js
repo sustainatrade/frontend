@@ -84,7 +84,7 @@ export function createWidget(widgetObj, opts) {
     size: 0,
     async propTypes() {
       const widget = await widgetObj;
-
+      // eslint-disable-next-line
       return widget.default.propTypes || {};
     },
     async propObjects() {

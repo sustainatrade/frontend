@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import { Segment } from "semantic-ui-react";
 import Sidebar from "./Sidebar";
-import PostFeed from "./post-feed";
-import Home from "./home";
-import UserList from "./user-list";
 import { GlobalConsumer } from "./../contexts";
+import { Loader } from "semantic-ui-react";
 import { Router } from "@reach/router";
+import loadable from "loadable-components";
+
+export const createPageRoute = importObj => {
+  return loadable(() => import(`${importObj}`), {
+    LoadingComponent: () => <Loader inline="centered" />
+  });
+};
+
+const UserList = createPageRoute("./user-list");
+const Home = createPageRoute("./home");
+const PostFeed = createPageRoute("./post-feed");
+const TagFeed = createPageRoute("./tag-feed");
 
 export default class EcoContent extends Component {
   state = { visible: false };
@@ -55,6 +65,7 @@ export default class EcoContent extends Component {
             )}
             <Router>
               <UserList path="u/*" />
+              <TagFeed path="t/:tagName" />
               <PostFeed path="posts/*" />
               <Home exact default />
             </Router>

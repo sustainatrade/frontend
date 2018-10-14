@@ -21,10 +21,9 @@ import PostItem, {
   PostItemPlaceHolder
 } from "./../post-feed/PostItem";
 import PostWidget from "./PostWidget";
-import SectionActions from "./../section-actions";
 import { Comments } from "react-facebook";
 import { MsImage } from "./../../components";
-import { getShareUrl } from "./../post-feed/PostItem";
+import { getShareUrl } from "./../../contexts/PostFeedContext";
 
 import BaseLoader from "components/base-loader/BaseLoader";
 

@@ -25,7 +25,7 @@ import "antd/lib/notification/style/css";
 import "antd/lib/slider/style/css";
 import "antd/lib/timeline/style/css";
 import "antd/lib/popover/style/css";
-import FacebookProvider from "react-facebook";
+import { FacebookProvider } from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";
 import logo from "./sat.png";
