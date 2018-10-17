@@ -15,6 +15,7 @@ export default class WidgetGroup extends Component {
     const { entity } = this.props;
     const { activeWidgetIdx } = this.state;
     const entityWidgets = get(entity, "widgets", []);
+    if (entityWidgets.length === 0) return <React.Fragment />;
     const list = entityWidgets.map(widget => {
       return { type: manifests[widget.name], widget };
     });

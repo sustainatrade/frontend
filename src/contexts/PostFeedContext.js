@@ -9,13 +9,13 @@ const Context = React.createContext();
 const { Consumer } = Context;
 
 export function getShareUrl(post) {
-  return `https://${window.location.hostname}/posts/${kebabCase(
+  return `https://${window.location.hostname}/p/${kebabCase(
     post.title.substring(0, 30)
   )}/${post._refNo}`;
 }
 
 export function getUrl(post) {
-  return `/posts/${kebabCase(post.title.substring(0, 30))}/${post._refNo}`;
+  return `/p/${kebabCase(post.title.substring(0, 30))}/${post._refNo}`;
 }
 
 export function getTagUrl(tag) {

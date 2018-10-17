@@ -66,7 +66,7 @@ export default class EcoContent extends Component {
             <Router>
               <UserList path="u/*" />
               <TagFeed path="t/:tagName" />
-              <PostFeed path="posts/*" />
+              <PostFeed path="p/*" />
               <Home exact default />
             </Router>
           </div>

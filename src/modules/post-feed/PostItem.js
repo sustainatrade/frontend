@@ -10,7 +10,7 @@ import {
 // import axios from "axios";
 // import get from "lodash/get";
 import PostViewContext from "./../../contexts/PostViewContext";
-// import PostFeedContext from "./../../contexts/PostFeedContext";
+import { getTagUrl } from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
 import imagePlaceholder from "./placeholder.png";
 import { GlobalConsumer } from "./../../contexts";
@@ -46,6 +46,20 @@ export const ShareButtons = ({ post }) => (
     }}
   </GlobalConsumer>
 );
+
+const PostTags = ({ post, floated, postFeedContext: { setSearchesFn } }) => {
+  return post.tags.map(tag => (
+    <Label
+      as={Link}
+      to={getTagUrl({ name: tag })}
+      key={tag}
+      style={{ cursor: "pointer", float: floated }}
+    >
+      {tag}
+    </Label>
+  ));
+};
+
 export const PostActions = ({
   post,
   isCompact,
@@ -53,7 +67,7 @@ export const PostActions = ({
   noLabels = true
 }) => (
   <GlobalConsumer>
-    {({ postView, user, postFeed: { setSearchesFn } }) => {
+    {({ postView, user, postFeed: postFeedContext }) => {
       const float = isDetailed ? "left" : "right";
       const dividerStyle = isDetailed ? {} : { margin: "4px 0px" };
       return (
@@ -75,15 +89,13 @@ export const PostActions = ({
             style={dividerStyle}
           />
           {!noLabels &&
-            !isCompact &&
-            post.tags.map(tag => (
-              <Label
-                key={tag}
-                onClick={() => setSearchesFn({ PostTag: tag })}
-                style={{ cursor: "pointer", float }}
-                content={tag}
+            !isCompact && (
+              <PostTags
+                post={post}
+                floated={float}
+                postFeedContext={postFeedContext}
               />
-            ))}
+            )}
         </React.Fragment>
       );
     }}
@@ -189,7 +201,7 @@ export default class PostItem extends Component {
     return (
       <GlobalConsumer>
         {({
-          postFeed: { setSearchesFn },
+          postFeed: postFeedContext,
           postView: { viewPostFn, postViewMode, loading },
           responsive: { isMobile },
           user: { user }
@@ -253,13 +265,14 @@ export default class PostItem extends Component {
                 </Item.Meta>
                 {!basic && (
                   <Item.Description>
+                    <PostTags post={post} postFeedContext={postFeedContext} />
                     <Segment
                       basic
                       secondary
                       size="large"
                       style={{ marginBottom: 10 }}
                     >
-                      {post.description}
+                      <p style={{ whiteSpace: "pre" }}>{post.description}</p>
                     </Segment>
                   </Item.Description>
                 )}

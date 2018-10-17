@@ -2,6 +2,6 @@ const posts = require("./posts");
 const users = require("./users");
 
 module.exports = {
-  posts,
-  users
+  p: posts,
+  u: users
 };

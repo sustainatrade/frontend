@@ -119,6 +119,7 @@ class PostView extends Component {
   }
 
   renderWidgets(post, widgets) {
+    if (widgets.length === 0) return <React.Fragment />;
     return (
       <Item style={{ backgroundColor: "#f7f7f7" }}>
         <UserContext.Consumer>
