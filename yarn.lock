@@ -8280,9 +8280,9 @@ react-loadable@5.5.0:
   dependencies:
     prop-types "^15.5.0"
 
-react-props-editor@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-props-editor/-/react-props-editor-1.0.3.tgz#ac0e123ebae6f8d1057af072a04ccb9284a7cb06"
+react-props-editor@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-props-editor/-/react-props-editor-1.0.5.tgz#3c47fe3af42722df2311b3ef0f8e7dcea62009f3"
   dependencies:
     lodash "^4.17.10"
 
