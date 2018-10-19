@@ -53,7 +53,7 @@ class Root extends React.Component {
     });
     //check sw version from server
     console.log("window.clientSwVersion"); //TRACE
-    console.log(window.clientSwVersion); //TRACE
+    console.log("Client Version Is: ", window.clientSwVersion); //TRACE
     const ret = await fetch(config.swConfigUrl, {
       method: "post"
     });
