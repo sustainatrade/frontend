@@ -4,13 +4,18 @@ import { Responsive } from "semantic-ui-react";
 const Context = React.createContext({});
 
 class Provider extends React.Component {
-  state = {};
+  state = { isMobile: true };
 
   handleOnUpdate = (e, { width }) => {
     const { isMobile } = this.state;
     const newIsMobile = width < 780;
-    if (isMobile !== newIsMobile)
-      this.setState({ isMobile: newIsMobile, width });
+
+    if (isMobile !== newIsMobile) {
+      this.setState({
+        isMobile: newIsMobile,
+        width
+      });
+    }
   };
 
   render() {

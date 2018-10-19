@@ -1,7 +1,21 @@
-const { asyncExec } = require("async-shelljs");
 const nanoid = require("nanoid");
 
-(async () => {
-  const buildCmd = ` cross-env REACT_APP_RAND_HASH=${nanoid()} NODE_PATH=./src react-scripts build`;
-  await asyncExec(buildCmd);
-})();
+process.env["NODE_ENV"] = "production";
+process.env["NODE_PATH"] = "./src";
+process.env["REACT_APP_RAND_HASH"] = nanoid();
+
+var BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+
+const webpackConfigProd = require("react-scripts/config/webpack.config.prod");
+
+webpackConfigProd.plugins.push(
+  new BundleAnalyzerPlugin({
+    analyzerMode: "static",
+    reportFilename: "report.html"
+  })
+);
+
+webpackConfigProd.resolve.alias["@ant-design/icons"] = "purched-antd-icons";
+
+require("react-scripts/scripts/build");

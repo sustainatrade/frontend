@@ -234,7 +234,7 @@ export default class PostItem extends Component {
                     isCompact || isMobile ? "mobile-meta" : "desktop-meta"
                   }
                 >
-                  <List horizontal={!(isCompact || isMobile)}>
+                  <List size="tiny" horizontal={!(isCompact || isMobile)}>
                     {!basic && (
                       <List.Item>
                         <List.Icon name="user" />
@@ -272,7 +272,9 @@ export default class PostItem extends Component {
                       size="large"
                       style={{ marginBottom: 10 }}
                     >
-                      <p style={{ whiteSpace: "pre" }}>{post.description}</p>
+                      <p style={{ whiteSpace: "pre-wrap" }}>
+                        {post.description}
+                      </p>
                     </Segment>
                   </Item.Description>
                 )}

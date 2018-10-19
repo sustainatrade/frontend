@@ -8,12 +8,10 @@ import {
   Divider,
   Container
 } from "semantic-ui-react";
-import apolloClient from "./../../lib/apollo";
 
 import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
 import UserContext from "./../../contexts/UserContext";
-import gql from "graphql-tag";
 import PostItem, {
   TitleLabels,
   PostActions,
@@ -30,16 +28,6 @@ import BaseLoader from "components/base-loader/BaseLoader";
 const path = localStorage.getItem("postPhotoPath");
 const storage = localStorage.getItem("storage");
 
-const CATEGORY_LIST = gql`
-  query {
-    CategoryList {
-      list {
-        id
-        name
-      }
-    }
-  }
-`;
 class PostComments extends Component {
   state = {};
   render() {
@@ -103,19 +91,19 @@ class PostView extends Component {
     const { postRefNo } = this.props;
     viewPostFn(postRefNo);
 
-    // fetch categories
-    const ret = await apolloClient.query({
-      query: CATEGORY_LIST
-    });
-    const { CategoryList } = ret.data;
-    let categories;
-    if (CategoryList) {
-      categories = {};
-      CategoryList.list.forEach(cat => {
-        categories[cat.id] = cat.name;
-      });
-    }
-    this.setState({ categories });
+    // // fetch categories
+    // const ret = await apolloClient.query({
+    //   query: CATEGORY_LIST
+    // });
+    // const { CategoryList } = ret.data;
+    // let categories;
+    // if (CategoryList) {
+    //   categories = {};
+    //   CategoryList.list.forEach(cat => {
+    //     categories[cat.id] = cat.name;
+    //   });
+    // }
+    // this.setState({ categories });
   }
 
   renderWidgets(post, widgets) {
@@ -212,7 +200,9 @@ class PostView extends Component {
                   borderRight: "#00000017 solid 1px"
                 }}
               >
-                <PostViewHeaders {...postItemProps} />
+                <div style={{ maxHeight: 35 }}>
+                  <PostViewHeaders {...postItemProps} />
+                </div>
                 <Item.Group divided>
                   {post ? (
                     <PostItem {...postItemProps} />

@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Segment } from "semantic-ui-react";
-import Sidebar from "./Sidebar";
 import { GlobalConsumer } from "./../contexts";
 import { Loader } from "semantic-ui-react";
 import { Router } from "@reach/router";
 import loadable from "loadable-components";
+
+const Sidebar = loadable(() => import(`./Sidebar`), {
+  LoadingComponent: () => <div />
+});
 
 export const createPageRoute = importObj => {
   return loadable(() => import(`${importObj}`), {
@@ -63,7 +66,7 @@ export default class EcoContent extends Component {
                 </Segment>
               </div>
             )}
-            <Router>
+            <Router primary={false}>
               <UserList path="u/*" />
               <TagFeed path="t/:tagName" />
               <PostFeed path="p/*" />

@@ -16,7 +16,7 @@ import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
 import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
 import { UserAuth } from "../components";
-import { Menus } from "./../App";
+import { Menus } from "./../components/main-header/MainHeader";
 import { Router } from "@reach/router";
 import TagList from "./home/TagList";
 

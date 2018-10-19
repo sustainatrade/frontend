@@ -10,6 +10,7 @@
   padding: 0px;
   overflow-x: auto;
   overflow-y: hidden;
+  border-bottom: solid 1px #0000001f;
 }
 
 .filter-scroller {

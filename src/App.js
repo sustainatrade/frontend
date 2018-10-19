@@ -1,21 +1,12 @@
-import { UserAuth } from "./components";
 import React from "react";
 import EcoContent from "./modules/Content";
-import GlobalSearch from "./modules/GlobalSearch";
 import RootContextProvider from "./contexts";
 import ResponsiveContext from "./contexts/Responsive";
-import {
-  Menu,
-  Dropdown,
-  Divider,
-  Dimmer,
-  Label,
-  Header,
-  Button,
-  Icon
-} from "semantic-ui-react";
+import { Divider, Menu, Dimmer, Header, Button, Icon } from "semantic-ui-react";
 
 import CookiePopup from "./components/cookie-popup/CookiePopup";
+import loadable from "loadable-components";
+import "./App.css";
 
 // Antd component styles here
 import "antd/lib/drawer/style/css";
@@ -25,80 +16,25 @@ import "antd/lib/notification/style/css";
 import "antd/lib/slider/style/css";
 import "antd/lib/timeline/style/css";
 import "antd/lib/popover/style/css";
+import "antd/lib/icon/style/css";
 import { FacebookProvider } from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";
-import logo from "./sat.png";
 // Service worker
 import { addNewContentAvailableListener } from "./registerServiceWorker";
-import { Link } from "@reach/router";
 
-import PropTypes from "prop-types";
-
-Dropdown.Item.propTypes = {
-  ...Dropdown.Item.propTypes,
-  as: PropTypes.any
-};
-
-const CenterItem = ({ children, as = Menu, ...otherProps }) => (
-  <as.Item as="a" {...otherProps}>
-    <span style={{ margin: "auto" }}>{children}</span>
-  </as.Item>
+const EmptyHeader = () => (
+  <Menu className="top-header">
+    <Menu.Item>...</Menu.Item>
+  </Menu>
 );
-export const Menus = ({ mobile }) => {
-  const staticDomain = `//static.${window.location.host}`;
-  return (
-    <React.Fragment>
-      <CenterItem href="/">
-        <img height="25" alt="" src={logo} />
 
-        <Label color="red" horizontal size="mini">
-          beta
-        </Label>
-      </CenterItem>
-      <Dropdown
-        item
-        openOnFocus
-        text="Discover"
-        simple
-        style={{ fontWeight: "bold" }}
-        icon="map marker alternate"
-      >
-        <Dropdown.Menu>
-          <Dropdown.Item as={Link} to="/">
-            <Icon name="cubes" />
-            Items
-          </Dropdown.Item>
-          <Dropdown.Item as={Link} to="/u">
-            <Icon name="users" /> Traders
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-      <CenterItem href={staticDomain + "/about"}>About</CenterItem>
-      <CenterItem href={staticDomain + "/blog"}>Blog</CenterItem>
-      <CenterItem href={staticDomain + "/send-feedback"}>
-        Send Feedback
-      </CenterItem>
-      <Dropdown
-        item
-        icon="ellipsis horizontal"
-        style={mobile ? { paddingLeft: "46%" } : undefined}
-      >
-        <Dropdown.Menu>
-          <CenterItem as={Dropdown} href={staticDomain + "/privacy-policy"}>
-            Privacy
-          </CenterItem>
-          <CenterItem as={Dropdown} href={staticDomain + "/terms"}>
-            Terms
-          </CenterItem>
-          <CenterItem as={Dropdown} href={staticDomain + "/faq"}>
-            FAQ
-          </CenterItem>
-        </Dropdown.Menu>
-      </Dropdown>
-    </React.Fragment>
-  );
-};
+const MainHeader = loadable(
+  () => import(`./components/main-header/MainHeader`),
+  {
+    LoadingComponent: () => <EmptyHeader />
+  }
+);
 
 class Root extends React.Component {
   state = {
@@ -118,62 +54,19 @@ class Root extends React.Component {
     return (
       <RootContextProvider>
         <ResponsiveContext.Consumer>
-          {({ isMobile }) => {
+          {({ isMobile, ...rest }) => {
+            console.log("rest"); //TRACE
+            console.log(rest); //TRACE
             return (
               <React.Fragment>
-                <Menu
-                  style={{
-                    borderRadius: 0,
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "50px",
-                    zIndex: 902,
-                    backgroundColor: "white"
-                  }}
-                >
-                  {!isMobile && (
-                    <React.Fragment>
-                      <Menus />
-                    </React.Fragment>
-                  )}
-                  {isMobile && (
-                    <Menu.Item
-                      active={showMobileSidebar}
-                      onClick={() =>
-                        this.setState({ showMobileSidebar: !showMobileSidebar })
-                      }
-                    >
-                      {/* <Icon
-                        size="large"
-                        name={!showMobileSidebar ? "content" : "x"}
-                      /> */}
-                      <img style={{ width: 25 }} alt="" src={logo} />
-                      <Icon
-                        name={
-                          showMobileSidebar ? "caret square down" : "caret down"
-                        }
-                        size="large"
-                        color={showMobileSidebar ? "black" : "grey"}
-                      />
-                    </Menu.Item>
-                  )}
-                  <Menu.Menu
-                    position="right"
-                    style={(() => {
-                      const style = { paddingTop: 5 };
-                      if (isMobile) {
-                        style.width = "55%";
-                        style.marginRight = "70px";
-                      }
-                      return style;
-                    })()}
-                  >
-                    <GlobalSearch fluid={isMobile} />
-                    <UserAuth compact={isMobile} />
-                  </Menu.Menu>
-                </Menu>
+                <MainHeader
+                  reponsiveContext={{ isMobile, ...rest }}
+                  showMobileSidebar={showMobileSidebar}
+                  onSetShowMobileSidebar={flag =>
+                    this.setState({ showMobileSidebar: flag })
+                  }
+                />
+
                 <div>
                   <FacebookProvider appId="512081562521251">
                     <EcoContent
@@ -204,7 +97,9 @@ class Root extends React.Component {
           <Header as="h2" icon inverted>
             <Icon name="info" />
             New Update Available!
-            <Header.Subheader>I need you to refresh this page</Header.Subheader>
+            <Header.Subheader>
+              Close all tabs to get latest version
+            </Header.Subheader>
             <Divider hidden />
             <Button
               primary

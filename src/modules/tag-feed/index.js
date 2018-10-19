@@ -4,27 +4,13 @@ import { Header, Icon, Segment } from "semantic-ui-react";
 import { GlobalConsumer } from "./../../contexts";
 
 class TagFeed extends Component {
-  state = {
-    disableInfiniteScroll: true
-  };
-  async componentWillMount() {
-    const { tagName, context } = this.props;
-    const {
-      // category: { loading, categories },
-      // user: { user },
-      // responsive: { isMobile },
-      postFeed: { setSearchesFn }
-    } = context;
-    await setSearchesFn({ PostTag: tagName });
-    this.setState({ disableInfiniteScroll: false });
-  }
   render() {
-    const { tagName } = this.props;
-    const { disableInfiniteScroll } = this.state;
+    const { tagName, context } = this.props;
     return (
       <div>
         <FeedContent
-          disableInfiniteScroll={disableInfiniteScroll}
+          postFeedContext={context.postFeed}
+          search={{ PostTag: tagName }}
           header={
             <Segment basic>
               <Header as="h1">

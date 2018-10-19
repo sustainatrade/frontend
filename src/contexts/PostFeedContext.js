@@ -63,8 +63,12 @@ class Provider extends React.Component {
     searches: {},
     postCount: {},
     unreadPosts: [],
+    scrollPos: 0,
     list: [],
     postListTimeStamp: new Date().toISOString(),
+    setScrollPos: pos => {
+      this.setState({ scrollPos: pos });
+    },
     setFilterActiveIndex: idx => {
       this.setState({ filterActiveIndex: idx });
     },
@@ -127,10 +131,16 @@ class Provider extends React.Component {
       });
       await this.state.loadMoreFn(0);
     },
-    setSearchesFn: async newSearches => {
+    setSearchesFn: async searchFields => {
       const oldSearches = this.state.searches;
+      const newSearch = Object.assign({}, oldSearches, searchFields);
+      for (const sKey in newSearch) {
+        if (newSearch[sKey] === undefined) {
+          delete newSearch[sKey];
+        }
+      }
       await this.setState({
-        searches: Object.assign({}, oldSearches, newSearches)
+        searches: newSearch
       });
       await this.state.loadMoreFn(0);
     },
@@ -212,7 +222,7 @@ class Provider extends React.Component {
         this.setState({ loadingMore: false, noMore: true });
       }
     },
-    limit: 10,
+    limit: 5,
     skip: 0,
     noMore: false,
     loadingMore: false

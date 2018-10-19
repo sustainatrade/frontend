@@ -1,0 +1,10 @@
+.top-header {
+  border-radius: 0 !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  z-index: 902;
+  background-color: white !important;
+}

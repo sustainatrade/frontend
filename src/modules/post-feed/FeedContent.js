@@ -115,10 +115,42 @@ const Feed = ({ categories, disableInfiniteScroll }) => {
 export default class FeedContent extends Component {
   state = {
     activeMenu: "latest",
-    fetchTimeStamp: Date.now()
+    fetchTimeStamp: Date.now(),
+    disableInfiniteScroll: true
   };
+
+  componentDidCatch(error, info) {
+    console.log("error"); //TRACE
+    console.log(error, info); //TRACE
+  }
+
+  async componentDidMount() {
+    const {
+      search = {},
+      postFeedContext: { scrollPos, searches = {}, setSearchesFn }
+    } = this.props;
+
+    if (JSON.stringify(search) !== JSON.stringify(searches)) {
+      console.log("search feedcontent"); //TRACE
+      console.log(search); //TRACE
+      await setSearchesFn(search);
+    } else {
+      window.scrollTo(0, scrollPos);
+    }
+    this.setState({ disableInfiniteScroll: false });
+  }
+
+  componentWillUnmount() {
+    const {
+      postFeedContext: { setScrollPos }
+    } = this.props;
+    const scrollHeight = window.pageYOffset;
+    setScrollPos(scrollHeight);
+  }
+
   render() {
-    const { disableInfiniteScroll, header } = this.props;
+    const { header } = this.props;
+    const { disableInfiniteScroll } = this.state;
     return (
       <GlobalConsumer>
         {({

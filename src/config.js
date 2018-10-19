@@ -30,6 +30,10 @@ module.exports = Object.assign(
     ],
     posts: {
       actionButtonSize: "tiny"
+    },
+    staticPages: {
+      privacy: "",
+      about: "https://www.sustainatrade.com"
     }
   },
   window.OVERRIDE_CONFIG
