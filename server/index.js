@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const cacheControl = require("express-cache-controller");
 const routes = require("./routeloaders");
+const cors = require("cors");
 const compression = require("compression");
 const {
   siteName,
@@ -18,6 +19,8 @@ const INDEX_PATH = path.resolve(__dirname, STATIC_DIR, "index.html");
 const htmlData = fs.readFileSync(INDEX_PATH, "utf8");
 
 app.use(compression());
+
+if (process.env["NODE_ENV"] === "dev") app.use(cors());
 
 function getReplacedHtml(metaTags) {
   let data = htmlData;
@@ -46,6 +49,11 @@ for (const key in routes) {
   app.get(`/${key}`, routeHandler(key));
   app.get(`/${key}/*`, routeHandler(key));
 }
+
+app.post("/sw-config", function(request, response) {
+  const swConfigPath = path.resolve(__dirname, "./sw-config.json");
+  response.sendFile(swConfigPath);
+});
 
 app.get(
   "/service-worker.js",

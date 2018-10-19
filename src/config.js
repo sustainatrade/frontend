@@ -34,7 +34,11 @@ module.exports = Object.assign(
     staticPages: {
       privacy: "",
       about: "https://www.sustainatrade.com"
-    }
+    },
+    swConfigUrl:
+      process.env["NODE_ENV"] === "production"
+        ? "/sw-config"
+        : "http://localhost:3001/sw-config"
   },
   window.OVERRIDE_CONFIG
 );

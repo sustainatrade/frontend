@@ -7,6 +7,8 @@ import { Divider, Menu, Dimmer, Header, Button, Icon } from "semantic-ui-react";
 import CookiePopup from "./components/cookie-popup/CookiePopup";
 import loadable from "loadable-components";
 import "./App.css";
+import config from "config";
+import get from "lodash/get";
 
 // Antd component styles here
 import "antd/lib/drawer/style/css";
@@ -21,7 +23,10 @@ import { FacebookProvider } from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";
 // Service worker
-import { addNewContentAvailableListener } from "./registerServiceWorker";
+import {
+  addNewContentAvailableListener,
+  unregister
+} from "./registerServiceWorker";
 
 const EmptyHeader = () => (
   <Menu className="top-header">
@@ -41,11 +46,25 @@ class Root extends React.Component {
     showMobileSidebar: false,
     showReloader: false
   };
-  componentWillMount() {
+  async componentWillMount() {
     addNewContentAvailableListener("app", () => {
       console.log("new update available");
       this.setState({ showReloader: true });
     });
+    //check sw version from server
+    console.log("window.clientSwVersion"); //TRACE
+    console.log(window.clientSwVersion); //TRACE
+    const ret = await fetch(config.swConfigUrl, {
+      method: "post"
+    });
+    const swConfig = await ret.json();
+    console.log("swConfig"); //TRACE
+    console.log(swConfig); //TRACE
+    const serverSwVersion = get(swConfig, "version");
+    if (serverSwVersion !== window.clientSwVersion) {
+      this.setState({ showReloader: true });
+      unregister();
+    }
   }
 
   render() {
@@ -55,8 +74,6 @@ class Root extends React.Component {
       <RootContextProvider>
         <ResponsiveContext.Consumer>
           {({ isMobile, ...rest }) => {
-            console.log("rest"); //TRACE
-            console.log(rest); //TRACE
             return (
               <React.Fragment>
                 <MainHeader
