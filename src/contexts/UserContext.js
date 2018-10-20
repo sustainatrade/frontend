@@ -1,32 +1,14 @@
 import React from "react";
 import gql from "graphql-tag";
 import apolloClient from "./../lib/apollo";
+import { Query } from "react-apollo";
 import { groupBy } from "lodash";
+import USER_DETAIL_FRAGMENT from "./../gql-schemas/UserDetailFragment";
+import get from "lodash/get";
 
 const Context = React.createContext();
 const { Consumer } = Context;
-const USER_DETAIL_FRAGMENT = `
-  fragment UserDetail on MeOutput {
-    status
-      user {
-        id
-        displayName
-        roles
-      }
-      roles {
-        code
-        name
-        isAdmin
-      }
-      socialServices{
-        type
-        accessToken{
-          token
-          expiration
-        }
-      }
-  }
-`;
+
 const GET_ME = gql`
   ${USER_DETAIL_FRAGMENT}
   query {
@@ -58,26 +40,21 @@ class Provider extends React.Component {
         }
       });
     const mappedByServices = groupBy(socialServices, "type");
-    this.setState({
+    // this.setState({
+    //   user,
+    //   roles,
+    //   isAdmin,
+    //   socialServices: mappedByServices
+    // });
+    return {
       user,
       roles,
       isAdmin,
       socialServices: mappedByServices
-    });
+    };
   }
   async componentWillMount() {
     const self = this;
-    self.setState({ loading: true });
-    const { data } = await apolloClient.query({
-      query: GET_ME
-    });
-    if (!data.Me.user) {
-      localStorage.removeItem("_c");
-    }
-    self.updateUser(data.Me.user, data.Me.roles, data.Me.socialServices);
-    self.setState({
-      loading: undefined
-    });
 
     apolloClient
       .subscribe({
@@ -101,7 +78,28 @@ class Provider extends React.Component {
 
   render() {
     const { children } = this.props;
-    return <Context.Provider value={this.state}>{children}</Context.Provider>;
+    return (
+      <Query query={GET_ME}>
+        {({ data, loading }) => {
+          const contextState = { ...this.state };
+          contextState.loading = loading;
+          if (data.Me) {
+            if (!data.Me.user) {
+              localStorage.removeItem("_c");
+            }
+            const userData = this.updateUser(
+              data.Me.user,
+              data.Me.roles,
+              data.Me.socialServices
+            );
+            Object.assign(contextState, userData);
+          }
+          return (
+            <Context.Provider value={contextState}>{children}</Context.Provider>
+          );
+        }}
+      </Query>
+    );
   }
 }
 

@@ -5,6 +5,10 @@ import { Loader } from "semantic-ui-react";
 import { Router } from "@reach/router";
 import loadable from "loadable-components";
 
+const CreatePost = loadable(() => import(`./create-post`), {
+  LoadingComponent: () => <Loader inline="centered" />
+});
+
 const Sidebar = loadable(() => import(`./Sidebar`), {
   LoadingComponent: () => <div />
 });
@@ -70,6 +74,7 @@ export default class EcoContent extends Component {
               <UserList path="u/*" />
               <TagFeed path="t/:tagName" />
               <PostFeed path="p/*" />
+              <CreatePost path="create/*" />
               <Home exact default />
             </Router>
           </div>

@@ -11,11 +11,13 @@ import PostFeedContext from "./PostFeedContext";
 import PostViewContext from "./PostViewContext";
 import CategoryContext from "./CategoryContext";
 import WidgetContext from "./WidgetContext";
+import PostWidgetContext from "./PostWidgetContext";
 
 const contexts = {
   createPost: CreatePostContext,
   postFeed: PostFeedContext,
   widget: WidgetContext,
+  postWidget: PostWidgetContext,
   postView: PostViewContext,
   category: CategoryContext,
   user: UserContext,

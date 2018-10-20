@@ -11,7 +11,7 @@ const USER = gql`
       status
       user {
         id
-        displayName
+        username
       }
     }
   }
@@ -25,7 +25,7 @@ export default class UserLabel extends Component {
         {({ loading, error, data = {} }) => {
           if (loading) return <span>-----</span>;
           const user = get(data, "User.user", {});
-          return <Link to={`/u/${refNo}`}>{user.displayName}</Link>;
+          return <Link to={`/u/${refNo}`}>{user.username}</Link>;
         }}
       </Query>
     );

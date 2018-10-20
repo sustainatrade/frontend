@@ -5,7 +5,9 @@ import {
   Button,
   Icon,
   Modal,
-  // Label,
+  Input,
+  Label,
+  Divider,
   Image,
   Header
 } from "semantic-ui-react";
@@ -18,6 +20,10 @@ import LoginContext from "./LoginContext";
 import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
 import { TYPES } from "./../../errors";
 import { imageUrlToUri } from "./../../lib/image";
+import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
+import get from "lodash/get";
+import debounce from "lodash/debounce";
+import WelcomeModal, { PHOTO_DATA_URI_KEY } from "./WelcomeModal";
 
 const GET_ME = gql`
   query {
@@ -26,16 +32,9 @@ const GET_ME = gql`
       user {
         id
         displayName
+        username
         roles
       }
-    }
-  }
-`;
-const LOGIN = gql`
-  mutation($creds: UserAuthLoginInput) {
-    UserAuthLogin(input: $creds) {
-      status
-      cookie
     }
   }
 `;
@@ -73,7 +72,6 @@ function getPhoto(provider, authDetail) {
   }
 }
 
-export const PHOTO_DATA_URI_KEY = "photoDataUri";
 /**
  * General component description in JSDoc format. Markdown is *supported*.
  */
@@ -124,6 +122,8 @@ export default class UserAuth extends React.Component {
     const photoUrl = getPhoto(credential.providerId, authDetail);
     const dataUri = await imageUrlToUri(photoUrl);
     localStorage.setItem(PHOTO_DATA_URI_KEY, dataUri);
+    console.log("authDetail"); //TRACE
+    console.log(authDetail); //TRACE
     this.setState({ authDetail });
   }
   async authWithGoogle() {
@@ -132,56 +132,6 @@ export default class UserAuth extends React.Component {
     console.log("authed with google");
     this.setState({ authDetail: result });
   }
-  renderWelcomeModal = (data, refetch) => (
-    <LoginContext.Consumer>
-      {({ authDetail, doLogin }) => {
-        if (!authDetail) return;
-
-        const { user, credential } = authDetail;
-        const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
-        return (
-          <Modal open={true} size="mini">
-            <Header as="h3" image>
-              <center>
-                <Image src={photoDataUri} size="tiny" circular />
-                {user.displayName}
-              </center>
-            </Header>
-            <Modal.Content>
-              <center>
-                <p>Hello! Have a good time!!</p>
-
-                <Mutation
-                  mutation={LOGIN}
-                  variables={{
-                    creds: {
-                      accessToken: credential.accessToken,
-                      provider: credential.providerId
-                    }
-                  }}
-                  onCompleted={data => {
-                    doLogin(data);
-                    refetch();
-                  }}
-                >
-                  {(auth, { loading, error, data }) => {
-                    if (data) {
-                      return <div>Done!</div>;
-                    }
-                    return (
-                      <Button loading={loading} color="green" onClick={auth}>
-                        Continue
-                      </Button>
-                    );
-                  }}
-                </Mutation>
-              </center>
-            </Modal.Content>
-          </Modal>
-        );
-      }}
-    </LoginContext.Consumer>
-  );
 
   renderLogout = (data, refetch) => (
     <LoginContext.Consumer>
@@ -190,10 +140,8 @@ export default class UserAuth extends React.Component {
         const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
         function dropDownOptions(logoutClicked) {
           const list = [];
-          if (compact) {
-            list.push({ key: 0, text: user.displayName, disabled: true });
-          }
 
+          list.push({ key: 0, text: user.username, disabled: true });
           list.push({ key: 1, text: "Setting", value: 1 });
           list.push({
             key: 2,
@@ -211,7 +159,10 @@ export default class UserAuth extends React.Component {
               style={{ width: 23, height: 23 }}
               src={photoDataUri}
             />{" "}
-            {!compact && user.displayName}
+            {!compact &&
+              (user.username.length > 10
+                ? `${user.username.substring(0, 9)}...`
+                : user.username)}
           </span>
         );
         return (
@@ -325,7 +276,7 @@ export default class UserAuth extends React.Component {
                   ) : (
                     <React.Fragment>
                       {buttonDisplay(data, refetch)}
-                      {this.renderWelcomeModal(data, refetch)}
+                      <WelcomeModal data={data} refetch={refetch} />
                     </React.Fragment>
                   )}
                 </div>

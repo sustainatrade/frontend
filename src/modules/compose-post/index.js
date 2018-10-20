@@ -15,13 +15,29 @@ import {
 } from "semantic-ui-react";
 // import { Query } from "react-apollo";
 import WidgetContext from "./../../contexts/WidgetContext";
-import UploadPhoto from "./UploadPhoto";
 import PostWidget from "./../post-view/PostWidget";
 import SubmitStatus from "./SubmitStatus";
 import { GlobalConsumer } from "./../../contexts";
 import { sections } from "./../../config";
 import { getUrl } from "./../../contexts/PostFeedContext";
 import { Link } from "@reach/router";
+import loadable from "loadable-components";
+
+const UploadPhoto = loadable(() => import(`./UploadPhoto`), {
+  LoadingComponent: () => (
+    <div>
+      <Loader inline="centered" active />
+    </div>
+  )
+});
+
+const CreateWidget = loadable(() => import(`./CreateWidget`), {
+  LoadingComponent: () => (
+    <div>
+      <Loader inline="centered" active />
+    </div>
+  )
+});
 
 const UPLOAD_NAME = "Post Image Upload";
 
@@ -32,10 +48,27 @@ function tagItem(tag) {
     text: tag
   };
 }
+
+function createAddOnsButton({ active, content, ...rest }) {
+  return (
+    <Button
+      type="button"
+      basic={!active}
+      size="small"
+      icon
+      labelPosition="left"
+      {...rest}
+    >
+      <Icon name={active ? "minus" : "plus"} />
+      {content}
+    </Button>
+  );
+}
 export default class ComposePost extends Component {
   state = {
     tagInput: { key: "_", text: "", value: "" },
-    mutKey: Date.now()
+    mutKey: Date.now(),
+    showCreateWidget: false
   };
 
   renderTags({ form, updateForm }) {
@@ -207,6 +240,8 @@ export default class ComposePost extends Component {
         if (formErrors.length > 0) {
           errsx.push(...formErrors);
         }
+        console.log("errsx"); //TRACE
+        console.log(errsx); //TRACE
         if (loading) return <Loader active inline="centered" />;
         return (
           <React.Fragment>
@@ -251,16 +286,23 @@ export default class ComposePost extends Component {
                     errs.push(`"${f}" should not be empty`);
                   }
                 });
+                console.log("111");
+
                 if (errs.length > 0) {
+                  console.log("errs"); //TRACE
+                  console.log(errs); //TRACE
                   this.setState({ formErrors: errs });
+                  console.log("done");
                   return;
                 }
+                console.log("1112");
                 const path = localStorage.getItem("postPhotoPath");
                 submitStatus = this.state.submitStatus;
                 submitStatus.steps.s1.done = true;
                 submitStatus.steps.s1.loading = false;
                 submitStatus.steps.s2.loading = true;
                 await this.setState({ submitStatus });
+                console.log("1113");
                 // const [photoResponse] = await Promise.all([
                 //   Promise.resolve(["sdfsdf.jps"]),
                 //   sleep(200)
@@ -268,7 +310,7 @@ export default class ComposePost extends Component {
                 const photoResponse = await upload({
                   name: UPLOAD_NAME,
                   path,
-                  files: photos
+                  files: photos || []
                 });
                 submitStatus = this.state.submitStatus;
                 submitStatus.steps.s2.done = true;
@@ -305,14 +347,6 @@ export default class ComposePost extends Component {
                 });
               }}
             >
-              <Form.Field
-                control={Input}
-                label="Title"
-                placeholder="Title"
-                required
-                value={form.title || ""}
-                onChange={(e, { value }) => updateForm({ title: value })}
-              />
               <Form.Group widths="equal">
                 <Form.Field required>
                   <label>Section</label>
@@ -348,6 +382,15 @@ export default class ComposePost extends Component {
                 </Form.Field>
               </Form.Group>
               <Form.Field
+                control={Input}
+                label="Title"
+                placeholder="Title"
+                required
+                value={form.title || ""}
+                onChange={(e, { value }) => updateForm({ title: value })}
+              />
+
+              <Form.Field
                 control={TextArea}
                 label="Description (Summary)"
                 placeholder="Description"
@@ -355,18 +398,53 @@ export default class ComposePost extends Component {
                 onChange={(e, { value }) => updateForm({ description: value })}
                 required
               />
-              <Divider horizontal>Tags</Divider>
-              {this.renderTags({ form, updateForm })}
-              <Divider horizontal>Photos</Divider>
-              <UploadPhoto defaultPhotos={form.photos} />
-              <Divider horizontal>Specs</Divider>
-              {this.renderSpecs({
-                addWidget,
-                widgets,
-                editWidget,
-                deleteWidget,
-                undeleteWidget
+              <Divider />
+              {createAddOnsButton({
+                content: "Tags",
+                active: this.state.showTags,
+                onClick: () => {
+                  this.setState(({ showTags }) => {
+                    return { showTags: !showTags };
+                  });
+                }
               })}
+              {createAddOnsButton({
+                content: "Photos",
+                active: this.state.showPhotos,
+                onClick: () => {
+                  this.setState(({ showPhotos }) => {
+                    return { showPhotos: !showPhotos };
+                  });
+                }
+              })}
+              {createAddOnsButton({
+                content: "Specs",
+                active: this.state.showSpecs,
+                onClick: () => {
+                  this.setState(({ showSpecs }) => {
+                    return { showSpecs: !showSpecs };
+                  });
+                }
+              })}
+              <Divider horizontal />
+              {this.state.showTags && (
+                <React.Fragment>
+                  <Divider horizontal>Tags</Divider>
+                  {this.renderTags({ form, updateForm })}
+                </React.Fragment>
+              )}
+              {this.state.showPhotos && (
+                <React.Fragment>
+                  <Divider horizontal>Photos</Divider>
+                  <UploadPhoto defaultPhotos={form.photos} />
+                </React.Fragment>
+              )}
+              {this.state.showSpecs && (
+                <React.Fragment>
+                  <Divider horizontal>Specs</Divider>
+                  <CreateWidget />
+                </React.Fragment>
+              )}
               <Divider />
               <div style={{ textAlign: "right" }}>
                 <Button

@@ -1,6 +1,38 @@
+import React from "react";
 import { createWidget } from "./lib";
 import { capitalize } from "lodash";
 import config from "./../../config";
+import loadable from "loadable-components";
+import { Loader } from "semantic-ui-react";
+
+const templates = {};
+const registerTemplate = ({ code, name, tags, icon, description }) => {
+  templates[code] = {
+    code,
+    name,
+    tags,
+    icon,
+    description,
+    component: loadable(() => import(`./templates/${code}`), {
+      render: ({ Component, error, loading, ownProps }) => {
+        if (error) return <div>Oups! {error.message}</div>;
+        if (loading) return <Loader inline="centered" />;
+        return (
+          <Component
+            {...ownProps}
+            {...{
+              code,
+              name,
+              tags,
+              icon,
+              description
+            }}
+          />
+        );
+      }
+    })
+  };
+};
 
 const manifests = {
   HelloWorld: createWidget(import("./HelloWorld"), {
@@ -50,4 +82,8 @@ const manifests = {
   Quality: createWidget(import("./Quality"), { icon: "shield alternate" })
 };
 
-export { manifests };
+for (const tpl of config.templates) {
+  registerTemplate(tpl);
+}
+
+export { manifests, templates };

@@ -28,6 +28,13 @@ module.exports = Object.assign(
         displayName: "Selling"
       }
     ],
+    templates: [
+      {
+        code: "buy-item",
+        name: "Buying Item",
+        icon: { type: "shopping-cart", theme: "outlined" }
+      }
+    ],
     posts: {
       actionButtonSize: "tiny"
     },
