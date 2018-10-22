@@ -6,8 +6,56 @@ import { MODES } from "./../index";
 import PostWidgetContext from "../../../contexts/WidgetContext";
 import apolloClient from "lib/apollo";
 
+const Preview = ({ ownProps, view: View, compact: Compact }) => (
+  <>
+    <div
+      style={{
+        backgroundColor: "#eaeaea",
+        padding: 20,
+        paddingLeft: 5,
+        paddingRight: 5,
+        marginBottom: 5,
+        marginTop: 5
+      }}
+    >
+      <center>
+        <Segment raised style={{ maxWidth: 500 }}>
+          <View {...ownProps} />
+        </Segment>
+      </center>
+    </div>
+  </>
+);
+
+class Editor extends React.Component {
+  state = { editValues: undefined };
+  render() {
+    const { values, editor: EditorComponent, children } = this.props;
+    const { editValues } = this.state;
+    return (
+      <>
+        <EditorComponent
+          updateValues={newValues => {
+            console.log("newValues"); //TRACE
+            console.log(newValues); //TRACE
+            const newEditValues = Object.assign(
+              {},
+              values || {},
+              editValues,
+              newValues
+            );
+            this.setState({ editValues: newEditValues });
+            // onValuesChanged && onValuesChanged(updatedValues);
+          }}
+        />
+        {children({ editValues, hello: "haha" })}
+      </>
+    );
+  }
+}
+
 class WidgetBase extends React.Component {
-  state = { values: null, loading: false };
+  state = { values: undefined, loading: false };
 
   render() {
     const {
@@ -60,6 +108,8 @@ class WidgetBase extends React.Component {
               default:
                 RenderObj = () => <span>Empty</span>;
             }
+            console.log("values,defaultValues"); //TRACE
+            console.log(values, defaultValues); //TRACE
             const ownProps = {
               context,
               values: values ? values : defaultValues
@@ -69,43 +119,57 @@ class WidgetBase extends React.Component {
             }
             console.log("moddd"); //TRACE
             console.log(mode, values); //TRACE
+            console.log("ownProps"); //TRACE
+            console.log(ownProps); //TRACE
             return (
               <>
-                <RenderObj
-                  {...ownProps}
-                  updateValues={newValues => {
-                    const updatedValues = Object.assign({}, values, newValues);
-                    this.setState({ values: updatedValues });
-                    onValuesChanged && onValuesChanged(updatedValues);
-                  }}
-                />
+                {mode !== "editor" && <RenderObj {...ownProps} />}
                 {mode === "editor" && children ? (
-                  <>
-                    <Divider />
-                    <Button
-                      content="Save"
-                      icon="save"
-                      size="small"
-                      loading={context.submitting}
-                      primary
-                      onClick={async () => {
-                        // await apolloClient.
-                        console.log("values"); //TRACE
-                        console.log(values); //TRACE
-                        await context.submitWidgetsFn([
-                          {
-                            _refNo,
-                            code,
-                            name,
-                            values: JSON.stringify(values),
-                            postRefNo
-                          }
-                        ]);
-                      }}
-                    />
-                    <Button content="Remove" icon="trash" size="small" basic />
-                    {children({ save: () => this.save(), hello: "haha" })}
-                  </>
+                  <Editor {...ownProps} editor={editor}>
+                    {({ editValues }) => {
+                      console.log("editValues"); //TRACE
+                      console.log(editValues); //TRACE
+                      return (
+                        <>
+                          <Preview
+                            ownProps={{ values: editValues }}
+                            view={view}
+                            compact={compact}
+                          />
+                          <Button
+                            content="Save"
+                            icon="save"
+                            size="small"
+                            loading={context.submitting}
+                            primary
+                            onClick={async () => {
+                              // await apolloClient.
+                              console.log("values"); //TRACE
+                              console.log(editValues); //TRACE
+                              if (editValues) {
+                                await context.submitWidgetsFn([
+                                  {
+                                    _refNo,
+                                    code,
+                                    name,
+                                    values: JSON.stringify(editValues),
+                                    postRefNo
+                                  }
+                                ]);
+                              }
+                            }}
+                          />
+                          <Button
+                            content="Remove"
+                            icon="trash"
+                            size="small"
+                            basic
+                          />
+                          {children({ save: () => this.save(), hello: "haha" })}
+                        </>
+                      );
+                    }}
+                  </Editor>
                 ) : (
                   children
                 )}

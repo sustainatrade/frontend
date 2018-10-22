@@ -14,6 +14,7 @@ import { contents, MODES } from "./../../components/widgets";
 import Icon from "antd/lib/icon";
 import { LAST_DRAFT } from "../../gql-schemas";
 import CreatePostContext from "../../contexts/CreatePost";
+import Responsive from "../../contexts/Responsive";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
 import "./create-post.css";
@@ -22,6 +23,7 @@ class NewContent extends Component {
   state = { values: null };
   render() {
     const {
+      mobile,
       contentKey,
       active,
       onClick,
@@ -35,13 +37,14 @@ class NewContent extends Component {
     } = this.props;
     const { values } = this.state;
     const Content = contents[contentKey].component;
-    const style = {};
+    const style = mobile ? { paddingLeft: 0, paddingRight: 0 } : {};
     if (!active) {
       style.cursor = "pointer";
-      style.padding = 2;
     }
     return (
       <Segment
+        color="grey"
+        basic
         onClick={onClick}
         style={style}
         className={active ? "" : "new-post-inactive"}
@@ -111,7 +114,7 @@ class ActionButtons extends Component {
       PreviewContent = contents[selectedTemplate].component;
     }
     return (
-      <Segment color="blue">
+      <Segment color="blue" basic>
         {showCollection ? (
           <React.Fragment>
             <Header>
@@ -204,81 +207,86 @@ export default class CreatePost extends Component {
   render() {
     const { activeIndex } = this.state;
     return (
-      <Query query={LAST_DRAFT.query}>
-        {({ loading, data }) => {
-          if (loading) return <Loader inline="centered" active />;
-          console.log("data"); //TRACE
-          console.log(data); //TRACE
-          const post = get(data, "LastDraft.post");
-          const newContents = get(post, "widgets", []);
-          return (
-            <Container>
-              <Divider hidden />
-              <Header as="h1" dividing>
-                Create Post
-              </Header>
-              <CreatePostContext.Consumer>
-                {({ editPost }) => (
-                  <Input
-                    size="big"
-                    fluid
-                    defaultValue={post.title}
-                    label={{ basic: true, content: "Title" }}
-                    placeholder="What is this about?"
-                    onChange={debounce((_, { value }) => {
-                      editPost({ _refNo: post._refNo, title: value });
-                    }, 1000)}
-                  />
-                )}
-              </CreatePostContext.Consumer>
-              <Segment.Group>
-                {/* <Content /> */}
-                {newContents.map((content, ii) => (
-                  <NewContent
-                    key={ii}
-                    index={ii}
-                    _refNo={content._refNo}
-                    postRefNo={post._refNo}
-                    contentKey={content.code}
-                    defaultValues={content.values}
-                    active={ii === activeIndex}
-                    onUpdated={values => {
-                      const updatedContents = [...newContents];
-                      updatedContents[ii].values = values;
-                      this.setState({ newContents: updatedContents });
+      <Responsive.Consumer>
+        {({ isMobile }) => (
+          <Query query={LAST_DRAFT.query}>
+            {({ loading, data }) => {
+              if (loading) return <Loader inline="centered" active />;
+              console.log("data"); //TRACE
+              console.log(data); //TRACE
+              const post = get(data, "LastDraft.post");
+              const newContents = get(post, "widgets", []);
+              console.log("newContents"); //TRACE
+              console.log(newContents); //TRACE
+              return (
+                <Container>
+                  <Divider hidden />
+                  <Header as="h1" dividing>
+                    Create Post
+                  </Header>
+                  <CreatePostContext.Consumer>
+                    {({ editPost }) => (
+                      <Input
+                        size="big"
+                        fluid
+                        defaultValue={post.title}
+                        label={{ basic: true, content: "Title" }}
+                        placeholder="What is this about?"
+                        onChange={debounce((_, { value }) => {
+                          editPost({ _refNo: post._refNo, title: value });
+                        }, 1000)}
+                      />
+                    )}
+                  </CreatePostContext.Consumer>
+                  {newContents.map((content, ii) => (
+                    <NewContent
+                      mobile={isMobile}
+                      key={ii}
+                      index={ii}
+                      _refNo={content._refNo}
+                      postRefNo={post._refNo}
+                      contentKey={content.code}
+                      defaultValues={content.values}
+                      active={ii === activeIndex}
+                      onUpdated={values => {
+                        const updatedContents = [...newContents];
+                        updatedContents[ii].values = values;
+                        this.setState({ newContents: updatedContents });
+                      }}
+                      onClose={() => this.setState({ activeIndex: null })}
+                      onDelete={index => {
+                        const filteredContents = newContents.filter(
+                          (_, i) => i !== index
+                        );
+                        this.setState({ newContents: filteredContents });
+                      }}
+                      onClick={() =>
+                        ii !== activeIndex && this.setState({ activeIndex: ii })
+                      }
+                    />
+                  ))}
+                  <ActionButtons
+                    mobile={isMobile}
+                    newContents={newContents}
+                    onClick={() => this.setState({ activeIndex: null })}
+                    onSelected={contentKey => {
+                      const updatedContents = [
+                        ...newContents,
+                        { code: contentKey }
+                      ];
+                      this.setState({
+                        newContents: updatedContents,
+                        activeIndex: updatedContents.length - 1
+                      });
                     }}
-                    onClose={() => this.setState({ activeIndex: null })}
-                    onDelete={index => {
-                      const filteredContents = newContents.filter(
-                        (_, i) => i !== index
-                      );
-                      this.setState({ newContents: filteredContents });
-                    }}
-                    onClick={() =>
-                      ii !== activeIndex && this.setState({ activeIndex: ii })
-                    }
                   />
-                ))}
-                <ActionButtons
-                  newContents={newContents}
-                  onClick={() => this.setState({ activeIndex: null })}
-                  onSelected={contentKey => {
-                    const updatedContents = [
-                      ...newContents,
-                      { code: contentKey }
-                    ];
-                    this.setState({
-                      newContents: updatedContents,
-                      activeIndex: updatedContents.length - 1
-                    });
-                  }}
-                />
-              </Segment.Group>
-              <Divider hidden />
-            </Container>
-          );
-        }}
-      </Query>
+                  <Divider hidden />
+                </Container>
+              );
+            }}
+          </Query>
+        )}
+      </Responsive.Consumer>
     );
   }
 }
