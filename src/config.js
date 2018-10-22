@@ -28,7 +28,7 @@ module.exports = Object.assign(
         displayName: "Selling"
       }
     ],
-    templates: [
+    contents: [
       {
         code: "buy-item",
         name: "Buying Item",

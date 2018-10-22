@@ -125,6 +125,7 @@ class Provider extends React.Component {
           console.log("editting." + gql.GET_POST.key);
           const ret = await apolloClient.mutate({
             mutation: gql.EDIT_POST,
+            updateQueries: () => [gql.LAST_DRAFT.key],
             variables: {
               post: {
                 _refNo,

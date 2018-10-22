@@ -5,15 +5,15 @@ import config from "./../../config";
 import loadable from "loadable-components";
 import { Loader } from "semantic-ui-react";
 
-const templates = {};
+const contents = {};
 const registerTemplate = ({ code, name, tags, icon, description }) => {
-  templates[code] = {
+  contents[code] = {
     code,
     name,
     tags,
     icon,
     description,
-    component: loadable(() => import(`./templates/${code}`), {
+    component: loadable(() => import(`./contents/${code}`), {
       render: ({ Component, error, loading, ownProps }) => {
         if (error) return <div>Oups! {error.message}</div>;
         if (loading) return <Loader inline="centered" />;
@@ -82,8 +82,14 @@ const manifests = {
   Quality: createWidget(import("./Quality"), { icon: "shield alternate" })
 };
 
-for (const tpl of config.templates) {
+for (const tpl of config.contents) {
   registerTemplate(tpl);
 }
 
-export { manifests, templates };
+const MODES = {
+  VIEW: "view",
+  COMPACT: "compact",
+  EDITOR: "editor"
+};
+
+export { manifests, contents, MODES };

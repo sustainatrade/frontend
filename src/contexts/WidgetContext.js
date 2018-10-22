@@ -5,6 +5,7 @@ import Modal from "antd/lib/modal";
 import WidgetEditor from "./../components/widget-editor/WidgetEditor";
 import nanoid from "nanoid";
 import compact from "lodash/compact";
+import { LAST_DRAFT } from "../gql-schemas";
 
 const Context = React.createContext();
 const { Consumer } = Context;
@@ -55,19 +56,17 @@ class Provider extends React.Component {
           widget.name = "-";
           if (!widget._refNo) return null; //Not changed
         } else if (widget._refNo) {
-          // eslint-disable-next-line
-          if (widget.types || widget.propTypes) widget.type = "MODIFY";
-          else return null; //Not changed
+          widget.type = "MODIFY";
         } else widget.type = "CREATE";
 
         const widgetInput = Object.assign({}, widget, {
           // eslint-disable-next-line
-          types: JSON.stringify(widget.types || widget.propTypes),
+          // types: JSON.stringify(widget.types || widget.propTypes),
           values: JSON.stringify(widget.values || widget.propValues)
         });
         delete widgetInput.__deleted;
         // eslint-disable-next-line
-        delete widgetInput.propTypes;
+        // delete widgetInput.propTypes;
         delete widgetInput.propValues;
         delete widgetInput.key;
         return widgetInput;
@@ -76,7 +75,8 @@ class Provider extends React.Component {
         mutation: UPDATE_POST_WIDGETS,
         variables: {
           widgets: compact(newWidgets)
-        }
+        },
+        refetchQueries: () => [LAST_DRAFT.key]
       });
       this.setState({ submitting: false });
       return ret.data.UpdatePostWidgets.widgets;

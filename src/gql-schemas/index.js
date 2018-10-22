@@ -5,6 +5,7 @@ export * from "./ReportPost";
 export * from "./RemovePost";
 export * from "./PostList";
 export * from "./GetPost";
+export * from "./LastDraft";
 
 export const CREATE_POST = gql`
   mutation($post: CreatePostInput) {
