@@ -39,6 +39,7 @@ const afterWareLink = onError(
             emitter.emit(TYPES[errKey].eventName);
           }
         }
+        emitter.emit("NEW_ERROR", gqlError);
       });
       // console.log(networkError);
       return console.warn("An Error was unhandled! ");

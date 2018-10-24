@@ -51,9 +51,7 @@ class Provider extends React.Component {
       const newWidgets = widgetArray.map(widget => {
         if (widget.__deleted) {
           widget.type = "DELETE";
-          widget.types = {};
           widget.values = {};
-          widget.name = "-";
           if (!widget._refNo) return null; //Not changed
         } else if (widget._refNo) {
           widget.type = "MODIFY";

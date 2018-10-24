@@ -4,20 +4,11 @@ import { Segment, Header, Label, Divider, Button } from "semantic-ui-react";
 import Icon from "antd/lib/icon";
 import { MODES } from "./../index";
 import PostWidgetContext from "../../../contexts/WidgetContext";
-import apolloClient from "lib/apollo";
+import "./WidgetBase.css";
 
 const Preview = ({ ownProps, view: View, compact: Compact }) => (
   <>
-    <div
-      style={{
-        backgroundColor: "#eaeaea",
-        padding: 20,
-        paddingLeft: 5,
-        paddingRight: 5,
-        marginBottom: 5,
-        marginTop: 5
-      }}
-    >
+    <div className="widget-preview">
       <center>
         <Segment raised style={{ maxWidth: 500 }}>
           <View {...ownProps} />
@@ -29,15 +20,22 @@ const Preview = ({ ownProps, view: View, compact: Compact }) => (
 
 class Editor extends React.Component {
   state = { editValues: undefined };
+  componentDidMount() {
+    this.setState({ editValues: this.props.values });
+  }
   render() {
-    const { values, editor: EditorComponent, children } = this.props;
+    const {
+      values,
+      editor: EditorComponent,
+      onValuesChanged,
+      children
+    } = this.props;
     const { editValues } = this.state;
     return (
       <>
         <EditorComponent
+          defaultValues={values}
           updateValues={newValues => {
-            console.log("newValues"); //TRACE
-            console.log(newValues); //TRACE
             const newEditValues = Object.assign(
               {},
               values || {},
@@ -45,10 +43,13 @@ class Editor extends React.Component {
               newValues
             );
             this.setState({ editValues: newEditValues });
-            // onValuesChanged && onValuesChanged(updatedValues);
+            onValuesChanged && onValuesChanged(newEditValues);
           }}
         />
-        {children({ editValues, hello: "haha" })}
+        {children({
+          editValues: Object.assign(values || {}, editValues || {}),
+          hello: "haha"
+        })}
       </>
     );
   }
@@ -56,6 +57,11 @@ class Editor extends React.Component {
 
 class WidgetBase extends React.Component {
   state = { values: undefined, loading: false };
+
+  // shouldComponentUpdate(nextProps) {
+  //   const { defaultValues } = this.props;
+  //   return nextProps.defaultValues !== defaultValues;
+  // }
 
   render() {
     const {
@@ -76,7 +82,7 @@ class WidgetBase extends React.Component {
       postRefNo,
       children
     } = this.props;
-    const { values, loading } = this.state;
+    const { values, loading, saved } = this.state;
     return (
       <Segment basic={basic} key={code} style={style}>
         {mode === MODES.COMPACT ? (
@@ -108,8 +114,7 @@ class WidgetBase extends React.Component {
               default:
                 RenderObj = () => <span>Empty</span>;
             }
-            console.log("values,defaultValues"); //TRACE
-            console.log(values, defaultValues); //TRACE
+
             const ownProps = {
               context,
               values: values ? values : defaultValues
@@ -117,18 +122,20 @@ class WidgetBase extends React.Component {
             if (preview) {
               ownProps.values = previewData;
             }
-            console.log("moddd"); //TRACE
-            console.log(mode, values); //TRACE
-            console.log("ownProps"); //TRACE
-            console.log(ownProps); //TRACE
+
+            const oldValuesHash = JSON.stringify(defaultValues);
             return (
               <>
                 {mode !== "editor" && <RenderObj {...ownProps} />}
                 {mode === "editor" && children ? (
-                  <Editor {...ownProps} editor={editor}>
+                  <Editor
+                    {...ownProps}
+                    editor={editor}
+                    // onValuesChanged={onValuesChanged}
+                  >
                     {({ editValues }) => {
-                      console.log("editValues"); //TRACE
-                      console.log(editValues); //TRACE
+                      const editValuesHash = JSON.stringify(editValues);
+                      const saved = editValuesHash === oldValuesHash;
                       return (
                         <>
                           <Preview
@@ -137,11 +144,31 @@ class WidgetBase extends React.Component {
                             compact={compact}
                           />
                           <Button
-                            content="Save"
-                            icon="save"
+                            icon="trash"
+                            size="small"
+                            floated="right"
+                            color="red"
+                            loading={context.submitting}
+                            basic
+                            onClick={async () => {
+                              await context.submitWidgetsFn([
+                                {
+                                  __deleted: true,
+                                  _refNo,
+                                  code,
+                                  postRefNo
+                                }
+                              ]);
+                            }}
+                          />
+                          <Button
+                            content={saved ? "Saved" : "Save"}
+                            icon={saved ? "check" : "save"}
                             size="small"
                             loading={context.submitting}
-                            primary
+                            disabled={saved}
+                            color="green"
+                            floated="right"
                             onClick={async () => {
                               // await apolloClient.
                               console.log("values"); //TRACE
@@ -152,20 +179,16 @@ class WidgetBase extends React.Component {
                                     _refNo,
                                     code,
                                     name,
-                                    values: JSON.stringify(editValues),
+                                    values: editValues,
                                     postRefNo
                                   }
                                 ]);
+                                this.setState({ saved: true });
                               }
                             }}
                           />
-                          <Button
-                            content="Remove"
-                            icon="trash"
-                            size="small"
-                            basic
-                          />
                           {children({ save: () => this.save(), hello: "haha" })}
+                          <Divider hidden />
                         </>
                       );
                     }}

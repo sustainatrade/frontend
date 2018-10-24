@@ -140,7 +140,7 @@ export default class BuyItem extends Component {
             <div>
               <Input
                 style={{ marginRight: 10, marginBottom: 5 }}
-                defaultValue={get(props, "values.price.amount")}
+                defaultValue={get(props, "defaultValues.price.amount")}
                 label={<Dropdown defaultValue="php" options={options} />}
                 placeholder="Enter amount"
                 onChange={debounce((_, { value }) => {
@@ -154,6 +154,7 @@ export default class BuyItem extends Component {
                 placeholder="Select Category"
                 search
                 selection
+                defaultValue={get(props, "defaultValues.category")}
                 onChange={(_, { value }) => {
                   props.updateValues({
                     category: value

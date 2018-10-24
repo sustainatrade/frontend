@@ -12,6 +12,7 @@ import PostViewContext from "./PostViewContext";
 import CategoryContext from "./CategoryContext";
 import WidgetContext from "./WidgetContext";
 import PostWidgetContext from "./PostWidgetContext";
+import ErrorContext from "./ErrorContext";
 
 const contexts = {
   createPost: CreatePostContext,
@@ -22,7 +23,8 @@ const contexts = {
   category: CategoryContext,
   user: UserContext,
   uploader: UploaderContext,
-  responsive: ResponsiveContext
+  responsive: ResponsiveContext,
+  error: ErrorContext
 };
 
 //////

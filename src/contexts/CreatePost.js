@@ -112,6 +112,18 @@ class Provider extends React.Component {
           )
         });
       },
+      publishPost: async ({ refNo }) => {
+        const ret = await apolloClient.mutate({
+          mutation: gql.PUBLISH_POST.query,
+          variables: {
+            refNo: refNo
+          },
+          updateQueries: () => [gql.LAST_DRAFT.key],
+          refetchQueries: () => [gql.GET_POST.key]
+        });
+        console.log("ret"); //TRACE
+        console.log(ret); //TRACE
+      },
       editPost: async ({
         _refNo,
         title,
