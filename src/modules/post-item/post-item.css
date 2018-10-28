@@ -1,0 +1,8 @@
+.post-item .extra button:first-child {
+  margin-left: 3px !important;
+}
+
+.post-item {
+  padding-top: 10px !important;
+  padding-bottom: 5px !important;
+}

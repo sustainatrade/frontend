@@ -1,26 +1,8 @@
 import React, { Component } from "react";
-import {
-  Header,
-  Container,
-  Segment,
-  Label,
-  Loader,
-  Divider,
-  Popup,
-  Button,
-  Input
-} from "semantic-ui-react";
+import { Header, Loader, Divider } from "semantic-ui-react";
 import { Query } from "react-apollo";
-import { contents, MODES } from "./../../components/widgets";
-import Icon from "antd/lib/icon";
-import { LAST_DRAFT, PUBLISH_POST } from "../../gql-schemas";
-import CreatePostContext from "../../contexts/CreatePost";
-import ErrorContext from "../../contexts/ErrorContext";
-import Responsive from "../../contexts/Responsive";
-import PostWidgetContext from "../../contexts/WidgetContext";
-import { GlobalConsumer } from "../../contexts";
+import { LAST_DRAFT } from "../../gql-schemas";
 import get from "lodash/get";
-import debounce from "lodash/debounce";
 import "./create-post.css";
 import PostEditor from "./PostEditor";
 export default class CreatePost extends Component {
