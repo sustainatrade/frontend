@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import {
   Item,
   Grid,
@@ -6,227 +6,175 @@ import {
   Image,
   Button,
   Divider,
-  Container
+  Container,
+  List,
+  Header,
+  Loader,
+  Visibility,
+  Responsive
 } from "semantic-ui-react";
+import get from "lodash/get";
+import { Query } from "react-apollo";
+import UserLabel from "./../user-profile/UserLabel";
 
-import ResponsiveContext from "./../../contexts/Responsive";
 import { GlobalConsumer } from "./../../contexts";
-import UserContext from "./../../contexts/UserContext";
-import PostItem, {
-  TitleLabels,
-  PostActions,
-  ShareButtons,
-  PostItemPlaceHolder
-} from "./../post-feed/PostItem";
-import PostWidget from "./PostWidget";
-import { Comments } from "react-facebook";
-import { MsImage } from "./../../components";
-import { getShareUrl } from "./../../contexts/PostFeedContext";
+import { POST } from "./../../gql-schemas";
+import moment from "moment";
+import { contents, MODES } from "./../../components/widgets";
+import Actions from "./Actions";
+import { PostComments } from "./index.old";
 
-import BaseLoader from "components/base-loader/BaseLoader";
+const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
 
-const path = localStorage.getItem("postPhotoPath");
-const storage = localStorage.getItem("storage");
+const PostHeader = React.memo(
+  ({
+    context: {
+      responsive: { isMobile },
+      postView: { editting }
+    },
+    post
+  }) => (
+    <>
+      <Header as="h1" dividing>
+        {post.title}
+      </Header>
+      <List size="tiny" horizontal={isMobile}>
+        <List.Item>
+          <List.Icon name="user" />
+          <List.Content>
+            <UserLabel refNo={post.createdBy} />
+          </List.Content>
+        </List.Item>
+        <List.Item>
+          <List.Icon name="clock" />
+          <List.Content>
+            {moment(parseInt(post.createdDate, 10)).fromNow()}
+          </List.Content>
+        </List.Item>
+      </List>
+    </>
+  )
+);
 
-class PostComments extends Component {
-  state = {};
-  render() {
-    const { post } = this.props;
-    const { shown } = this.state;
+const PostContents = React.memo(
+  ({
+    context: {
+      responsive: { isMobile }
+    },
+    post
+  }) => {
     return (
-      <GlobalConsumer>
-        {({ responsive: { isMobile } }) => {
-          const comment = <Comments width="100%" href={getShareUrl(post)} />;
-          return (
-            <React.Fragment>
-              {isMobile && <Divider />}
-              {isMobile && !shown ? (
-                <center>
-                  <Button fluid onClick={() => this.setState({ shown: true })}>
-                    Show Comments
-                  </Button>
-                </center>
-              ) : (
-                comment
-              )}
-            </React.Fragment>
-          );
-        }}
-      </GlobalConsumer>
+      <>
+        <Divider horizontal />
+        <Container>
+          {post.widgets.map(widget => {
+            const ContentWidget = contents[widget.code].component;
+            return (
+              <ContentWidget
+                key={widget.id}
+                defaultValues={widget.values}
+                mode={MODES.VIEW}
+                basic
+                fitted
+              />
+            );
+          })}
+        </Container>
+      </>
     );
   }
-}
-
-const PostViewHeaders = postItemProps => {
-  if (!postItemProps.post || !postItemProps.categories) {
-    return (
-      <BaseLoader mobileHeight={30} desktopHeight={20}>
-        {({ height }) => (
-          <React.Fragment>
-            <rect x="0" y="0" rx="3" ry="3" width="100" height={height} />
-            <rect x="250" y="0" rx="3" ry="3" width="150" height={height} />
-          </React.Fragment>
-        )}
-      </BaseLoader>
-    );
-  }
-  return (
-    <div>
-      <TitleLabels {...postItemProps} withLabels />
-      <div style={{ float: "right" }}>
-        {" | "}
-        <ShareButtons post={postItemProps.post} />
-      </div>
-      <PostActions {...postItemProps} noLabels isDetailed={false} />
-    </div>
-  );
-};
+);
 class PostView extends Component {
-  state = {};
+  state = { showActions: false, width: null };
 
-  async componentWillMount() {
+  componentWillMount() {
     const {
-      postView: { viewPostFn }
-    } = this.props.globalContext;
-    const { postRefNo } = this.props;
-    viewPostFn(postRefNo);
-
-    // // fetch categories
-    // const ret = await apolloClient.query({
-    //   query: CATEGORY_LIST
-    // });
-    // const { CategoryList } = ret.data;
-    // let categories;
-    // if (CategoryList) {
-    //   categories = {};
-    //   CategoryList.list.forEach(cat => {
-    //     categories[cat.id] = cat.name;
-    //   });
-    // }
-    // this.setState({ categories });
+      globalContext: {
+        responsive: { setStretched }
+      }
+    } = this.props;
+    setStretched(true);
   }
 
-  renderWidgets(post, widgets) {
-    if (widgets.length === 0) return <React.Fragment />;
-    return (
-      <Item style={{ backgroundColor: "#f7f7f7" }}>
-        <UserContext.Consumer>
-          {({ user, loading }) => {
-            // const isMyPost = user && post.createdBy === user.id;
-            return (
-              <Item.Content>
-                <Item.Description style={{ width: "100%" }}>
-                  <ResponsiveContext.Consumer>
-                    {({ isMobile }) => (
-                      <Grid
-                        doubling
-                        stretched
-                        columns={isMobile ? 1 : 2}
-                        style={{ margin: 0 }}
-                      >
-                        {widgets.map(wId => (
-                          <Grid.Column key={wId}>
-                            <PostWidget key={wId} fromRefNo={wId} fluid />
-                          </Grid.Column>
-                        ))}
-                      </Grid>
-                    )}
-                  </ResponsiveContext.Consumer>
-                </Item.Description>
-              </Item.Content>
-            );
-          }}
-        </UserContext.Consumer>
-      </Item>
-    );
-  }
+  handleWidthUpdate = (e, { width }) => this.setState({ width });
+  handleOnScreen = (e, { calculations }) =>
+    this.setState({ width: calculations.width });
 
   render() {
+    const { postRefNo } = this.props;
+    const { showActions } = this.state;
+    console.log("postRefNo"); //TRACE
+    console.log(postRefNo); //TRACE
     return (
       <GlobalConsumer>
-        {({
-          postView: { post, widgets },
-          responsive: { isMobile },
-          category: { categories }
-        }) => {
-          // const loading = !(post && categories);
-          // if (loading) return <div>loading</div>;
-
-          const renderGallery = () => {
-            if (!post.photos || post.photos.length === 0) {
-              return <React.Fragment />;
-            }
-            return (
-              <Image.Group>
-                {post.photos.map((photo, i) => (
-                  <Modal
-                    key={i}
-                    trigger={
-                      <MsImage
-                        height={50}
-                        width={50}
-                        style={{ cursor: "pointer" }}
-                        src={`${storage}${path}/${photo}`}
-                      />
-                    }
-                    basic
-                    size="small"
-                  >
-                    <Modal.Content>
-                      <center>
-                        <Image src={`${storage}${path}/${photo}`} />
-                      </center>
-                    </Modal.Content>
-                  </Modal>
-                ))}
-              </Image.Group>
-            );
-          };
-
-          const postItemProps = {
-            post,
-            categories,
-            detailed: true,
-            isDetailed: true
-          };
+        {context => {
+          const {
+            responsive: { isMobile },
+            postView: { editting }
+          } = context;
+          const { width } = this.state;
           return (
-            <Grid doubling columns={2} style={{ margin: 0 }} stretched>
-              <Grid.Column
-                width={10}
-                style={{
-                  padding: 5,
-                  paddingBottom: 10,
-                  paddingRight: isMobile ? 5 : 10,
-                  borderRight: "#00000017 solid 1px"
-                }}
-              >
-                <div style={{ maxHeight: 35 }}>
-                  <PostViewHeaders {...postItemProps} />
-                </div>
-                <Item.Group divided>
-                  {post ? (
-                    <PostItem {...postItemProps} />
-                  ) : (
-                    <PostItemPlaceHolder desktopWidth={300} />
-                  )}
-                  {post && renderGallery()}
-                  {/* {post && <SectionActions post={post} />} */}
-                  {post && widgets && this.renderWidgets(post, widgets)}
-                </Item.Group>
-              </Grid.Column>
-              <Grid.Column
-                width={6}
-                style={{ padding: 5, backgroundColor: "rgb(243, 244, 245)" }}
-              >
-                {post && <PostComments post={post} />}
-                <Container
-                  textAlign="center"
-                  style={{ marginBottom: 100, marginTop: 50 }}
-                >
-                  No other posts.
-                </Container>
-              </Grid.Column>
-            </Grid>
+            <Query query={POST.query} variables={{ _refNo: postRefNo }}>
+              {({ data, loading }) => {
+                console.log("data"); //TRACE
+                console.log(data); //TRACE
+                const post = get(data, "Post.post");
+                if (loading && !post)
+                  return <Loader active inline="centered" />;
+
+                return (
+                  <>
+                    <Grid
+                      doubling
+                      columns={2}
+                      className="content-panel"
+                      style={{ margin: 0 }}
+                    >
+                      <Grid.Column
+                        width={10}
+                        style={{
+                          padding: 5,
+                          paddingBottom: 10,
+                          paddingRight: isMobile ? 5 : 10,
+                          borderRight: "#00000017 solid 1px"
+                        }}
+                      >
+                        <Visibility
+                          fireOnMount
+                          onOnScreen={this.handleOnScreen}
+                        >
+                          {editting ? (
+                            <Suspense
+                              fallback={<Loader active inline="centered" />}
+                            >
+                              <PostEditor post={post} />
+                            </Suspense>
+                          ) : (
+                            <>
+                              <PostHeader context={context} post={post} />
+                              <PostContents post={post} context={context} />
+                            </>
+                          )}
+
+                          <Divider hidden />
+                          <Divider hidden />
+                          <Divider hidden />
+                          <Actions post={post} size={{ width }} />
+                        </Visibility>
+                      </Grid.Column>
+                      <Grid.Column
+                        width={6}
+                        style={{
+                          padding: 5
+                        }}
+                      >
+                        <PostComments post={post} />
+                      </Grid.Column>
+                    </Grid>
+                  </>
+                );
+              }}
+            </Query>
           );
         }}
       </GlobalConsumer>

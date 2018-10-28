@@ -6,37 +6,21 @@ module.exports = Object.assign(
     graphqlServer: localStorage.getItem("graphql"),
     graphqlWsServer: localStorage.getItem("graphql-ws"),
     reqCredentials: "include",
-    sections: [
-      {
-        key: "question",
-        color: "yellow",
-        displayName: "Questions"
-      },
-      {
-        key: "answer",
-        color: "blue",
-        displayName: "Answers"
-      },
-      {
-        key: "buy",
-        color: "orange",
-        displayName: "Buying"
-      },
-      {
-        key: "sell",
-        color: "green",
-        displayName: "Selling"
-      }
-    ],
+    sections: [],
     contents: [
       {
         code: "buy-item",
         name: "Buying Item",
         icon: { type: "shopping-cart", theme: "outlined" }
+      },
+      {
+        code: "text",
+        name: "Text",
+        icon: { type: "font-size", theme: "outlined" }
       }
     ],
     posts: {
-      actionButtonSize: "tiny"
+      actionButtonSize: "medium"
     },
     staticPages: {
       privacy: "",

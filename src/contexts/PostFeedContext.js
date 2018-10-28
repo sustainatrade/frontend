@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import get from "lodash/get";
 import apolloClient from "./../lib/apollo";
 import postFragment from "./../gql-schemas/PostFragment";
+import { POST_LIST } from "../gql-schemas";
 import { kebabCase } from "lodash";
 
 const Context = React.createContext();
@@ -30,26 +31,6 @@ const POST_CREATED = gql`
         _refNo
         createdBy
         createdDate
-      }
-    }
-  }
-`;
-
-const POST_LIST = gql`
-  ${postFragment}
-  query($input: PostListInput) {
-    PostList(input: $input) {
-      status
-      list {
-        __typename
-        ...PostFragment
-        ... on RemovedPost {
-          isRemoved
-          _refNo
-          post {
-            ...PostFragment
-          }
-        }
       }
     }
   }
@@ -149,7 +130,7 @@ class Provider extends React.Component {
       await this.setState({
         filters: Object.assign({}, oldFilters, newFilters)
       });
-      await this.state.loadMoreFn(0);
+      await this.state.loadMoreFn({ reset: true });
     },
     fetchNewSectionPosts: async section => {
       // const { data } = await apolloClient.query({
@@ -163,9 +144,9 @@ class Provider extends React.Component {
       //   }
       // });
     },
-    loadMoreFn: async forceSkip => {
+    loadMoreFn: async ({ reset } = {}) => {
       const {
-        skip: oldSkip,
+        afterCursor: oldAfterCursor,
         limit,
         filters,
         searches,
@@ -173,9 +154,9 @@ class Provider extends React.Component {
         isFollowing,
         postListTimeStamp
       } = this.state;
-      let skip = oldSkip;
-      if (forceSkip >= 0) {
-        skip = forceSkip;
+      let afterCursor = oldAfterCursor;
+      if (reset) {
+        afterCursor = null;
         this.setState({
           list: [],
           loadingMore: false,
@@ -184,46 +165,51 @@ class Provider extends React.Component {
         });
       }
 
-      console.info(`Loading more. ${skip}:${limit}`);
+      console.info(`Loading more. ${afterCursor}:${limit}`);
       if (loadingMore) {
         console.log("waiting for previous loadingMore to finish");
         return;
       }
-      console.log("searches"); //TRACE
-      console.log(searches); //TRACE
       this.setState({ loadingMore: true });
+      console.log("filters"); //TRACE
+      console.log(filters); //TRACE
+      const queryFilters = {};
+      if (filters.content) {
+        queryFilters.widget = filters.content;
+      }
       const { data } = await apolloClient.query({
-        query: POST_LIST,
+        query: POST_LIST.query,
         variables: {
           input: {
-            category: filters.category,
-            section: filters.section,
             search: JSON.stringify(searches),
-            skip,
+            after: afterCursor,
             limit,
             isFollowing,
+            ...queryFilters,
             requestTimeStamp: postListTimeStamp
           }
         }
       });
       const { PostList } = data;
       // const stateUpdates = {}
-      if (PostList.status === "SUCCESS") {
-        const { list } = this.state;
-        if (PostList.list.length > 0)
-          this.setState({
-            loadingMore: false,
-            skip: skip + limit,
-            list: [...list, ...(PostList.list || [])]
-          });
-        else this.setState({ loadingMore: false, noMore: true });
-      } else {
-        // TODO: Error message here
-        this.setState({ loadingMore: false, noMore: true });
-      }
+      const { list } = this.state;
+      const postList = get(PostList, "edges", []);
+      if (postList.length > 0) {
+        const lastIndex = postList.length - 1;
+        const newAfterCursor = get(postList, [lastIndex, "cursor"]);
+        const updatedList = [
+          ...list,
+          ...(postList.map(edge => edge.node) || [])
+        ];
+        this.setState({
+          loadingMore: false,
+          afterCursor: newAfterCursor,
+          list: updatedList
+        });
+      } else this.setState({ loadingMore: false, noMore: true });
     },
-    limit: 5,
-    skip: 0,
+    limit: 1,
+    afterCursor: null,
     noMore: false,
     loadingMore: false
   };

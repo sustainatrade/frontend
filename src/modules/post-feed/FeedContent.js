@@ -12,7 +12,8 @@ import {
   Divider
 } from "semantic-ui-react";
 import { startCase } from "lodash";
-import PostItem, { PostItemPlaceHolder } from "./PostItem";
+import { PostItemPlaceHolder } from "./PostItem";
+import PostItem from "../post-item";
 
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import ResponsiveContext from "./../../contexts/Responsive";
@@ -154,7 +155,6 @@ export default class FeedContent extends Component {
     return (
       <GlobalConsumer>
         {({
-          category: { loading, categories },
           user: { user },
           responsive: { isMobile },
           postFeed: {
@@ -209,12 +209,7 @@ export default class FeedContent extends Component {
                 />
               )}
             </Menu>
-            {categories && (
-              <Feed
-                categories={categories}
-                disableInfiniteScroll={disableInfiniteScroll}
-              />
-            )}
+            <Feed disableInfiniteScroll={disableInfiniteScroll} />
           </React.Fragment>
         )}
       </GlobalConsumer>

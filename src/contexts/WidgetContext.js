@@ -5,25 +5,10 @@ import Modal from "antd/lib/modal";
 import WidgetEditor from "./../components/widget-editor/WidgetEditor";
 import nanoid from "nanoid";
 import compact from "lodash/compact";
-import { LAST_DRAFT } from "../gql-schemas";
+import { LAST_DRAFT, POST, UPDATE_POST_WIDGETS } from "../gql-schemas";
 
 const Context = React.createContext();
 const { Consumer } = Context;
-
-const UPDATE_POST_WIDGETS = gql`
-  mutation($hash: String, $widgets: [WidgetUpdateInput]!) {
-    UpdatePostWidgets(input: { _hash: $hash, widgets: $widgets }) {
-      status
-      widgets {
-        id
-        displayName
-        types
-        values
-        _refNo
-      }
-    }
-  }
-`;
 
 class Provider extends React.Component {
   state = {
@@ -69,15 +54,20 @@ class Provider extends React.Component {
         delete widgetInput.key;
         return widgetInput;
       });
-      const ret = await apolloClient.mutate({
-        mutation: UPDATE_POST_WIDGETS,
-        variables: {
-          widgets: compact(newWidgets)
-        },
-        refetchQueries: () => [LAST_DRAFT.key]
-      });
-      this.setState({ submitting: false });
-      return ret.data.UpdatePostWidgets.widgets;
+      try {
+        const ret = await apolloClient.mutate({
+          mutation: UPDATE_POST_WIDGETS.query,
+          variables: {
+            widgets: compact(newWidgets)
+          },
+          refetchQueries: () => [LAST_DRAFT.key, POST.key]
+        });
+        this.setState({ submitting: false });
+        return ret.data.UpdatePostWidgets.widgets;
+      } catch (err) {
+        this.setState({ submitting: false });
+        throw err;
+      }
     },
     submitNewFn: async widgetData => {
       this.setState({ submitting: true });
@@ -87,7 +77,7 @@ class Provider extends React.Component {
         values: JSON.stringify(widgetData.values)
       });
       const ret = await apolloClient.mutate({
-        mutation: UPDATE_POST_WIDGETS,
+        mutation: UPDATE_POST_WIDGETS.query,
         variables: {
           widgets: [widgetInput]
         }

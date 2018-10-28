@@ -84,14 +84,12 @@ class Root extends React.Component {
                   }
                 />
 
-                <div>
-                  <FacebookProvider appId="512081562521251">
-                    <EcoContent
-                      showSidebar={isMobile ? showMobileSidebar : true}
-                    />
-                    <CookiePopup />
-                  </FacebookProvider>
-                </div>
+                <FacebookProvider appId="512081562521251">
+                  <EcoContent
+                    showSidebar={isMobile ? showMobileSidebar : true}
+                  />
+                  <CookiePopup />
+                </FacebookProvider>
                 {isMobile && (
                   <Modal
                     visible={showMobileSidebar}

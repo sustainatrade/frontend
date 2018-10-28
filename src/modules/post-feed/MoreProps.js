@@ -50,7 +50,7 @@ export default class MoreProps extends Component {
           const isMyPost = user && post.createdBy === user.id;
           return (
             <List divided>
-              {isMyPost && (
+              {/* {isMyPost && (
                 <List.Item
                   as="a"
                   onClick={() => {
@@ -60,7 +60,7 @@ export default class MoreProps extends Component {
                   <List.Icon name="edit" size="large" verticalAlign="middle" />
                   <List.Content>Edit Post</List.Content>
                 </List.Item>
-              )}
+              )} */}
               {isMobile && (
                 <List.Item>
                   <Share href={getShareUrl(post)}>

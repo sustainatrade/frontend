@@ -4,6 +4,7 @@ import { GlobalConsumer } from "./../contexts";
 import { Loader } from "semantic-ui-react";
 import { Router } from "@reach/router";
 import loadable from "loadable-components";
+import Home from "./home";
 
 const CreatePost = loadable(() => import(`./create-post`), {
   LoadingComponent: () => <Loader inline="centered" />
@@ -20,7 +21,7 @@ export const createPageRoute = importObj => {
 };
 
 const UserList = createPageRoute("./user-list");
-const Home = createPageRoute("./home");
+// const Home = createPageRoute("./home");
 const PostFeed = createPageRoute("./post-feed");
 const TagFeed = createPageRoute("./tag-feed");
 
@@ -29,7 +30,10 @@ export default class EcoContent extends Component {
 
   render = () => (
     <GlobalConsumer>
-      {({ responsive: { isMobile }, postView: { post, closeFn } }) => {
+      {({
+        responsive: { isMobile, stretched },
+        postView: { post, closeFn }
+      }) => {
         const { showSidebarScroll, wrapperActive } = this.state;
         const { showSidebar } = this.props;
         const style1 = {},
@@ -56,7 +60,10 @@ export default class EcoContent extends Component {
           style1.visibility = "collapse";
         }
         return (
-          <div style={style1}>
+          <div
+            className={stretched ? "content-panel" : undefined}
+            style={style1}
+          >
             {showSidebar && (
               <div
                 style={style2}
@@ -70,7 +77,7 @@ export default class EcoContent extends Component {
                 </Segment>
               </div>
             )}
-            <Router primary={false}>
+            <Router primary={false} className="content-panel">
               <UserList path="u/*" />
               <TagFeed path="t/:tagName" />
               <PostFeed path="p/*" />

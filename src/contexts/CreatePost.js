@@ -118,8 +118,7 @@ class Provider extends React.Component {
           variables: {
             refNo: refNo
           },
-          updateQueries: () => [gql.LAST_DRAFT.key],
-          refetchQueries: () => [gql.GET_POST.key]
+          refetchQueries: () => [gql.LAST_DRAFT.key, gql.GET_POST.key]
         });
         console.log("ret"); //TRACE
         console.log(ret); //TRACE
