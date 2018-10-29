@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import EcoContent from "./modules/Content";
 import RootContextProvider from "./contexts";
-import ResponsiveContext from "./contexts/Responsive";
+import { Context as ResponsiveContext } from "./contexts/Responsive";
+import { Context as LayoutContext } from "./contexts/LayoutContext";
 import { Divider, Menu, Dimmer, Header, Button, Icon } from "semantic-ui-react";
 
 import CookiePopup from "./components/cookie-popup/CookiePopup";
@@ -41,6 +42,30 @@ const MainHeader = loadable(
   }
 );
 
+function HeaderWrapper() {
+  const { isMobile, ...rest } = useContext(ResponsiveContext);
+  const { showSidebar, setShowSidebar } = useContext(LayoutContext);
+  return (
+    <>
+      <MainHeader
+        reponsiveContext={{ isMobile, ...rest }}
+        showMobileSidebar={isMobile ? showSidebar : true}
+        onSetShowMobileSidebar={flag => setShowSidebar(flag)}
+      />
+      {isMobile && (
+        <Modal
+          visible={showSidebar}
+          zIndex={900}
+          onCancel={() => setShowSidebar(false)}
+          width={10}
+          style={{ top: 0, left: 0, display: "none" }}
+          footer={null}
+        />
+      )}
+    </>
+  );
+}
+
 class Root extends React.Component {
   state = {
     showMobileSidebar: false,
@@ -72,38 +97,13 @@ class Root extends React.Component {
 
     return (
       <RootContextProvider>
-        <ResponsiveContext.Consumer>
-          {({ isMobile, ...rest }) => {
-            return (
-              <React.Fragment>
-                <MainHeader
-                  reponsiveContext={{ isMobile, ...rest }}
-                  showMobileSidebar={showMobileSidebar}
-                  onSetShowMobileSidebar={flag =>
-                    this.setState({ showMobileSidebar: flag })
-                  }
-                />
-
-                <FacebookProvider appId="512081562521251">
-                  <EcoContent
-                    showSidebar={isMobile ? showMobileSidebar : true}
-                  />
-                  <CookiePopup />
-                </FacebookProvider>
-                {isMobile && (
-                  <Modal
-                    visible={showMobileSidebar}
-                    zIndex={900}
-                    onCancel={() => this.setState({ showMobileSidebar: false })}
-                    width={10}
-                    style={{ top: 0, left: 0, display: "none" }}
-                    footer={null}
-                  />
-                )}
-              </React.Fragment>
-            );
-          }}
-        </ResponsiveContext.Consumer>
+        <React.Fragment>
+          <HeaderWrapper />
+          <FacebookProvider appId="512081562521251">
+            <EcoContent />
+            <CookiePopup />
+          </FacebookProvider>
+        </React.Fragment>
         <Dimmer
           active={showReloader}
           onClickOutside={() => this.setState({ showReloader: false })}

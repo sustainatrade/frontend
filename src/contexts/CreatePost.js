@@ -6,7 +6,7 @@ import * as gql from "./../gql-schemas";
 import apolloClient from "./../lib/apollo";
 import nanoid from "nanoid";
 
-const Context = React.createContext();
+export const Context = React.createContext();
 const PHOTO_PATH = localStorage.getItem("postPhotoPath");
 const STORAGE = localStorage.getItem("storage");
 
@@ -20,6 +20,10 @@ class Provider extends React.Component {
       loading: false,
       form: {},
       formErrors: [],
+      publishedPost: null,
+      reset: () => {
+        this.setState({ publishedPost: null });
+      },
       updateForm: newProps => {
         const { form } = this.state;
         const newForm = Object.assign({}, form, newProps);
@@ -122,6 +126,10 @@ class Provider extends React.Component {
         });
         console.log("ret"); //TRACE
         console.log(ret); //TRACE
+        const post = get(ret, "data.PublishPost.post");
+        if (post) {
+          this.setState({ publishedPost: post });
+        }
       },
       editPost: async ({
         _refNo,

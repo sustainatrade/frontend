@@ -1,7 +1,7 @@
 import React from "react";
 import { Responsive } from "semantic-ui-react";
 
-const Context = React.createContext({});
+export const Context = React.createContext({});
 
 class Provider extends React.Component {
   state = {

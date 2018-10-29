@@ -203,6 +203,7 @@ const TitleEditor = React.memo(({ title, refNo }) => (
   <GlobalConsumer>
     {({ createPost: { editPost }, error }) => (
       <Input
+        key={refNo}
         size="big"
         fluid
         defaultValue={title}
