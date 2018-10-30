@@ -21,11 +21,11 @@ function usePwaUpdateChecker(props) {
         clientRoot.text()
       ]);
       if (serverHtml === clientHtml) {
-        console.log("no updated needed");
+        console.log("no update needed");
         setChecked(true);
         return;
       }
-      console.log("eupdating server caches...");
+      console.log("updating server caches...");
       const cacheNames = await caches.keys();
       for (const cacheName of cacheNames) {
         console.log(`updating index cache for ${cacheName}`);
