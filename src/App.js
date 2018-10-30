@@ -68,30 +68,6 @@ function HeaderWrapper() {
 }
 
 class Root extends React.Component {
-  state = {
-    showMobileSidebar: false,
-    showReloader: false
-  };
-  async componentWillMount() {
-    // addNewContentAvailableListener("app", () => {
-    //   console.log("new update available");
-    //   this.setState({ showReloader: true });
-    // });
-    // //check sw version from server
-    // console.log("qwindow.clientSwVersion"); //TRACE
-    // console.log("Client Version Is: ", window.clientSwVersion); //TRACE
-    // const ret = await fetch(config.swConfigUrl, {
-    //   method: "post"
-    // });
-    // const swConfig = await ret.json();
-    // console.log("swConfig"); //TRACE
-    // console.log(swConfig); //TRACE
-    // const serverSwVersion = get(swConfig, "version");
-    // if (serverSwVersion !== window.clientSwVersion) {
-    //   this.setState({ showReloader: true });
-    //   unregister();
-    // }
-  }
 
   render() {
     return (
