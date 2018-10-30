@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import {
   Segment,
   Button,
@@ -10,11 +10,16 @@ import {
   Divider
 } from "semantic-ui-react";
 import UserContext from "./../contexts/UserContext";
+import { Context as LayoutContext } from "./../contexts/LayoutContext";
 // import CategoryContext from "./../contexts/CategoryContext";
 // import PostFeedContext from "./../contexts/PostFeedContext";
 import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
-import CreatePostContext from "./../contexts/CreatePost";
-import ResponsiveContext from "./../contexts/Responsive";
+import CreatePostContext, {
+  Context as CreatePostCtx
+} from "./../contexts/CreatePost";
+import ResponsiveContext, {
+  Context as ResponsiveCtx
+} from "./../contexts/Responsive";
 import { UserAuth } from "../components";
 import { Menus } from "./../components/main-header/MainHeader";
 import { Router, Link } from "@reach/router";
@@ -69,31 +74,27 @@ const PostViewModes = () => (
   </PostViewContext.Consumer>
 );
 
+function AccountControls() {
+  const { modalOpened } = useContext(CreatePostCtx);
+  const { setShowSidebar } = useContext(LayoutContext);
+  const { isMobile } = useContext(ResponsiveCtx);
+  return (
+    <div>
+      <Link to="create">
+        <Button
+          disabled={modalOpened}
+          fluid
+          color="green"
+          content={"Create Post"}
+          icon="pencil"
+          onClick={() => isMobile && setShowSidebar(false)}
+        />
+      </Link>
+    </div>
+  );
+}
 export default class Sidebar extends Component {
   state = {};
-
-  renderAccount = () => {
-    return (
-      <div>
-        <CreatePostContext.Consumer>
-          {({ key, modalOpened, closeModal, openModal }) => (
-            <React.Fragment>
-              <Link to="create">
-                <Button
-                  disabled={modalOpened}
-                  fluid
-                  color="green"
-                  content={"Create Post"}
-                  icon="pencil"
-                  // onClick={() => openModal()}
-                />
-              </Link>
-            </React.Fragment>
-          )}
-        </CreatePostContext.Consumer>
-      </div>
-    );
-  };
 
   render() {
     const self = this;
@@ -119,7 +120,7 @@ export default class Sidebar extends Component {
                     <List.Item>
                       <Divider hidden fitted style={{ marginTop: 5 }} />
                       <Segment color="green" style={{ margin: 0 }}>
-                        {self.renderAccount()}
+                        <AccountControls />
                       </Segment>
                     </List.Item>
                   ) : (

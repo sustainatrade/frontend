@@ -3,12 +3,17 @@ import Post from "./../post-view";
 import { Router } from "@reach/router";
 import { createPageRoute } from "./../Content";
 import PostFeedContext from "./../../contexts/PostFeedContext";
+import { useSetSubHeader } from "../../hooks/SetSubHeader";
 // import FeedContent from "./FeedContent";
 
 const PostView = props => <Post {...props} />;
 
 const FeedContent = createPageRoute("./post-feed/FeedContent");
 
+function PostFeedContent(props) {
+  useSetSubHeader(null);
+  return <FeedContent {...props} />;
+}
 export default class PostFeed extends Component {
   render() {
     return (
@@ -25,7 +30,7 @@ export default class PostFeed extends Component {
                   path="/:postTitle/:postRefNo"
                   postFeedContext={postFeedContext}
                 />
-                <FeedContent
+                <PostFeedContent
                   default
                   postFeedContext={postFeedContext}
                   search={resetSearch}

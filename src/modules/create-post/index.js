@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Header,
   Icon,
@@ -13,7 +13,9 @@ import get from "lodash/get";
 import "./create-post.css";
 import PostEditor from "./PostEditor";
 import { Context } from "./../../contexts/CreatePost";
+import { Context as LayoutContext } from "./../../contexts/LayoutContext";
 import { navigate } from "@reach/router";
+import { useSetSubHeader } from "../../hooks/SetSubHeader";
 
 function PublishPostModal() {
   const { publishedPost, reset } = useContext(Context);
@@ -46,8 +48,10 @@ function PublishPostModal() {
     </Dimmer>
   );
 }
+const SubHeader = <span>Create Post</span>;
 export default function() {
-  
+  useSetSubHeader(SubHeader);
+
   return (
     <Query query={LAST_DRAFT.query}>
       {({ loading, data }) => {

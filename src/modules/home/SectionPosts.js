@@ -8,8 +8,6 @@ import PostFeedContext from "./../../contexts/PostFeedContext";
 import { range } from "lodash";
 
 const Posts = ({ list }) => {
-  console.log("list"); //TRACE
-  console.log(list); //TRACE
   return (
     <GlobalConsumer>
       {({ responsive: { isMobile } }) => (

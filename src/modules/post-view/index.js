@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from "react";
+import React, { Component, Suspense, useContext } from "react";
 import {
   Item,
   Grid,
@@ -23,8 +23,25 @@ import moment from "moment";
 import { contents, MODES } from "./../../components/widgets";
 import Actions from "./Actions";
 import { PostComments } from "./index.old";
+import { useSetSubHeader } from "../../hooks/SetSubHeader";
+import PostViewContext from "../../contexts/PostViewContext";
 
 const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
+
+function PostEditorWrapper(props) {
+  const { setEditMode } = useContext(PostViewContext.Context);
+  const PostHeader = (
+    <Button
+      content="Done"
+      icon="check"
+      color="green"
+      basic
+      onClick={() => setEditMode(false)}
+    />
+  );
+  useSetSubHeader(PostHeader, { hideBackButton: true });
+  return <PostEditor {...props} />;
+}
 
 const PostHeader = React.memo(
   ({
@@ -33,27 +50,30 @@ const PostHeader = React.memo(
       postView: { editting }
     },
     post
-  }) => (
-    <>
-      <Header as="h1" dividing>
-        {post.title}
-      </Header>
-      <List size="tiny" horizontal={isMobile}>
-        <List.Item>
-          <List.Icon name="user" />
-          <List.Content>
-            <UserLabel refNo={post.createdBy} />
-          </List.Content>
-        </List.Item>
-        <List.Item>
-          <List.Icon name="clock" />
-          <List.Content>
-            {moment(parseInt(post.createdDate, 10)).fromNow()}
-          </List.Content>
-        </List.Item>
-      </List>
-    </>
-  )
+  }) => {
+    useSetSubHeader(post.title);
+    return (
+      <>
+        <Header as="h1" dividing>
+          {post.title}
+        </Header>
+        <List size="tiny" horizontal={isMobile}>
+          <List.Item>
+            <List.Icon name="user" />
+            <List.Content>
+              <UserLabel refNo={post.createdBy} />
+            </List.Content>
+          </List.Item>
+          <List.Item>
+            <List.Icon name="clock" />
+            <List.Content>
+              {moment(parseInt(post.createdDate, 10)).fromNow()}
+            </List.Content>
+          </List.Item>
+        </List>
+      </>
+    );
+  }
 );
 
 const PostContents = React.memo(
@@ -147,7 +167,7 @@ class PostView extends Component {
                             <Suspense
                               fallback={<Loader active inline="centered" />}
                             >
-                              <PostEditor post={post} />
+                              <PostEditorWrapper post={post} />
                             </Suspense>
                           ) : (
                             <>

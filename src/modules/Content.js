@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Segment } from "semantic-ui-react";
-import { GlobalConsumer } from "./../contexts";
+import { Segment, Button, Header } from "semantic-ui-react";
 import { Loader } from "semantic-ui-react";
 import { Router } from "@reach/router";
 import loadable from "loadable-components";
 import Home from "./home";
-import { Context as LegacyContext } from "./../contexts/LayoutContext";
+import { Context as LayoutContext } from "./../contexts/LayoutContext";
 import { Context as ResponsiveContext } from "./../contexts/Responsive";
+import ThemeContext from "../contexts/ThemeContext";
 
 const CreatePost = loadable(() => import(`./create-post`), {
   LoadingComponent: () => <Loader inline="centered" />
@@ -29,6 +29,7 @@ const TagFeed = createPageRoute("./tag-feed");
 
 function SidebarWrapper() {
   const { isMobile } = useContext(ResponsiveContext);
+  const { secondaryBgColor } = useContext(ThemeContext.Context);
   const [showSidebarScroll, setState] = useState(null);
 
   const style2 = {
@@ -38,7 +39,7 @@ function SidebarWrapper() {
       bottom: "0",
       width: 250,
       zIndex: 901,
-      backgroundColor: "#f3f4f5",
+      backgroundColor: secondaryBgColor,
       overflowY: showSidebarScroll ? "scroll" : "hidden"
     },
     style3 = { paddingRight: 5, width: 240 };
@@ -62,11 +63,56 @@ function SidebarWrapper() {
   );
 }
 
-export default function() {
-  const { showSidebar, setShowSidebar } = useContext(LegacyContext);
+function SubHeaderWrapper() {
+  const { subHeader, contentStyle, hideBackButton } = useContext(LayoutContext);
   const { isMobile } = useContext(ResponsiveContext);
-  const [state] = useState({});
-  const { wrapperActive } = state;
+  const { secondaryBgColor } = useContext(ThemeContext.Context);
+  console.log("contentStyle wra"); //TRACE
+  console.log(contentStyle); //TRACE
+  let HeaderComp;
+  if (typeof subHeader === "string") {
+    const textLimit = isMobile ? 30 : 100;
+    HeaderComp = (
+      <span style={{ padding: 0, margin: 0, fontSize: "larger" }}>
+        {`  ${subHeader.substr(0, textLimit)}${
+          subHeader.length > textLimit ? "..." : ""
+        }`}
+      </span>
+    );
+  }
+
+  const style = {
+    backgroundColor: "white",
+    position: "fixed",
+    zIndex: 903,
+    padding: 5,
+    top: isMobile ? 0 : contentStyle.paddingTop - 55,
+    right: 0,
+    left: contentStyle.paddingLeft - (!isMobile ? 5 : 0),
+    height: 50,
+    borderBottom: `solid 1px ${secondaryBgColor}`
+  };
+  return (
+    <div style={style}>
+      {!hideBackButton && (
+        <Button
+          icon="reply"
+          onClick={() => {
+            window.history.back();
+          }}
+        />
+      )}
+      {HeaderComp || subHeader}
+    </div>
+  );
+}
+
+export default function() {
+  const { showSidebar, setShowSidebar, subHeader, contentStyle } = useContext(
+    LayoutContext
+  );
+  const { isMobile, stretched } = useContext(ResponsiveContext);
+
   useEffect(
     () => {
       if (!isMobile) {
@@ -75,37 +121,21 @@ export default function() {
     },
     [isMobile]
   );
+
   return (
-    <GlobalConsumer>
-      {({
-        responsive: { isMobile, stretched },
-        postView: { post, closeFn }
-      }) => {
-        const style1 = {};
-        if (!isMobile) {
-          style1.paddingLeft = 255;
-        }
-        style1.paddingTop = 55;
-        style1.paddingRight = isMobile ? 0 : 5;
-        if (wrapperActive) {
-          style1.visibility = "collapse";
-        }
-        return (
-          <div
-            className={stretched ? "content-panel" : undefined}
-            style={style1}
-          >
-            {showSidebar && <SidebarWrapper />}
-            <Router primary={false} className="content-panel">
-              <UserList path="u/*" />
-              <TagFeed path="t/:tagName" />
-              <PostFeed path="p/*" />
-              <CreatePost path="create/*" />
-              <Home exact default />
-            </Router>
-          </div>
-        );
-      }}
-    </GlobalConsumer>
+    <div
+      className={stretched ? "content-panel" : undefined}
+      style={contentStyle}
+    >
+      {showSidebar && <SidebarWrapper />}
+      {!!subHeader && <SubHeaderWrapper />}
+      <Router primary={false} className="content-panel">
+        <UserList path="u/*" />
+        <TagFeed path="t/:tagName" />
+        <PostFeed path="p/*" />
+        <CreatePost path="create/*" />
+        <Home exact default />
+      </Router>
+    </div>
   );
 }

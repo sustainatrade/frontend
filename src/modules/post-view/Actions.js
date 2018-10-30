@@ -15,14 +15,7 @@ export default class Actions extends React.Component {
         <GlobalConsumer>
           {({ user, postView }) => {
             const myPost = get(user, "user.id") === post.createdBy;
-            if (postView.editting)
-              return (
-                <Button
-                  content="Back"
-                  icon="angle left"
-                  onClick={() => postView.setEditMode(false)}
-                />
-              );
+            if (postView.editting) return null;
             return (
               <>
                 <FollowButton post={post} />
