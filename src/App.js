@@ -5,6 +5,7 @@ import { Context as ResponsiveContext } from "./contexts/Responsive";
 import { Context as LayoutContext } from "./contexts/LayoutContext";
 import { Divider, Menu, Dimmer, Header, Button, Icon } from "semantic-ui-react";
 
+import PwaStatus from "./components/pwa-status/PwaStatus";
 import CookiePopup from "./components/cookie-popup/CookiePopup";
 import loadable from "loadable-components";
 import "./App.css";
@@ -72,29 +73,27 @@ class Root extends React.Component {
     showReloader: false
   };
   async componentWillMount() {
-    addNewContentAvailableListener("app", () => {
-      console.log("new update available");
-      this.setState({ showReloader: true });
-    });
-    //check sw version from server
-    console.log("qwindow.clientSwVersion"); //TRACE
-    console.log("Client Version Is: ", window.clientSwVersion); //TRACE
-    const ret = await fetch(config.swConfigUrl, {
-      method: "post"
-    });
-    const swConfig = await ret.json();
-    console.log("swConfig"); //TRACE
-    console.log(swConfig); //TRACE
-    const serverSwVersion = get(swConfig, "version");
-    if (serverSwVersion !== window.clientSwVersion) {
-      this.setState({ showReloader: true });
-      unregister();
-    }
+    // addNewContentAvailableListener("app", () => {
+    //   console.log("new update available");
+    //   this.setState({ showReloader: true });
+    // });
+    // //check sw version from server
+    // console.log("qwindow.clientSwVersion"); //TRACE
+    // console.log("Client Version Is: ", window.clientSwVersion); //TRACE
+    // const ret = await fetch(config.swConfigUrl, {
+    //   method: "post"
+    // });
+    // const swConfig = await ret.json();
+    // console.log("swConfig"); //TRACE
+    // console.log(swConfig); //TRACE
+    // const serverSwVersion = get(swConfig, "version");
+    // if (serverSwVersion !== window.clientSwVersion) {
+    //   this.setState({ showReloader: true });
+    //   unregister();
+    // }
   }
 
   render() {
-    const { showMobileSidebar, showReloader } = this.state;
-
     return (
       <RootContextProvider>
         <React.Fragment>
@@ -104,31 +103,7 @@ class Root extends React.Component {
             <CookiePopup />
           </FacebookProvider>
         </React.Fragment>
-        <Dimmer
-          active={showReloader}
-          onClickOutside={() => this.setState({ showReloader: false })}
-          page
-        >
-          <Header as="h2" icon inverted>
-            <Icon name="info" />
-            New Update Available!
-            <Header.Subheader>
-              Close all tabs to get latest version
-            </Header.Subheader>
-            <Divider hidden />
-            <Button
-              primary
-              content="Reload"
-              onClick={() => window.location.reload()}
-            />
-            <Button
-              inverted
-              basic
-              content="Later"
-              onClick={() => this.setState({ showReloader: false })}
-            />
-          </Header>
-        </Dimmer>
+        <PwaStatus />
         <Globals />
       </RootContextProvider>
     );
