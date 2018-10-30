@@ -3,114 +3,17 @@ import WidgetBase from "./../base/WidgetBase";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
 import { MODES } from "../index";
-import { Icon, Label, Input, Dropdown } from "semantic-ui-react";
+import { Icon, Input, Dropdown, Label } from "semantic-ui-react";
+import { categoryArray, getCategory } from "./buy-item";
 
 const options = [{ key: "php", text: "Php", value: "php" }];
 
-export const categoryArray = [
-  {
-    key: 1,
-    name: "Animal Slurry",
-    icon: "paw"
-  },
-  {
-    key: 2,
-    name: "Agricultural ByProducts",
-    icon: "leaf"
-  },
-  {
-    key: 3,
-    name: "Aluminum",
-    icon: "cube"
-  },
-  {
-    key: 4,
-    name: "Batteries",
-    icon: "battery full"
-  },
-  {
-    key: 5,
-    name: "Chemicals",
-    icon: "flask"
-  },
-  {
-    key: 6,
-    name: "Electronics",
-    icon: "tv"
-  },
-  {
-    key: 7,
-    name: "Glass",
-    icon: "columns"
-  },
-  {
-    key: 8,
-    name: "Hospital Waste",
-    icon: "hospital"
-  },
-  {
-    key: 9,
-    name: "Ink Cartridges",
-    icon: "eye dropper"
-  },
-  {
-    key: 10,
-    name: "Metals",
-    icon: "cubes"
-  },
-  {
-    key: 11,
-    name: "Mixed Waste",
-    icon: "cogs"
-  },
-  {
-    key: 12,
-    name: "Paper",
-    icon: "newspaper outline"
-  },
-  {
-    key: 13,
-    name: "Plastic",
-    icon: "ticket"
-  },
-  {
-    key: 14,
-    name: "Rubber tires",
-    icon: "life ring"
-  },
-  {
-    key: 15,
-    name: "Tetra Paks",
-    icon: "shopping bag"
-  },
-  {
-    key: 16,
-    name: "Tin Cans",
-    icon: "trash"
-  },
-  {
-    key: 17,
-    name: "Used Oil",
-    icon: "tint"
-  }
-];
-
-export function getCategory(props) {
-  const cat = get(props, "values.category");
-  let category;
-  if (cat) {
-    category = categoryArray.find(c => c.key === cat);
-    return category;
-  }
-  return {};
-}
-
-const BuyItemView = props => {
+const SellItemView = props => {
   const cat = getCategory(props);
   return (
     <div>
-      <Label basic size="small" pointing="right" color="orange">
-        BUYING
+      <Label basic size="small" pointing="right" color="green">
+        SELLING
       </Label>
       |{"  "}
       <b>
@@ -130,7 +33,7 @@ const BuyItemView = props => {
   );
 };
 
-export default class BuyItem extends Component {
+export default class SellItem extends Component {
   render() {
     return (
       <WidgetBase
@@ -175,8 +78,8 @@ export default class BuyItem extends Component {
             </div>
           );
         }}
-        view={props => <BuyItemView {...props} />}
-        compact={props => <BuyItemView {...props} />}
+        view={props => <SellItemView {...props} />}
+        compact={props => <SellItemView {...props} />}
         onSave={props => {}}
         {...this.props}
       />

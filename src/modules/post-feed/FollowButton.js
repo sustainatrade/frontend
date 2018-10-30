@@ -9,7 +9,7 @@ const ACTION_BUTTON_SIZE = config.posts.actionButtonSize;
 export default class FollowButton extends Component {
   state = {};
   render() {
-    const { post, isCompact } = this.props;
+    const { post, isCompact, size } = this.props;
     return (
       <Mutation mutation={FOLLOW_POST}>
         {(followPost, { data, loading, error }) => {
@@ -59,12 +59,16 @@ export default class FollowButton extends Component {
               {!isCompact && (
                 <Button
                   as="div"
-                  size={ACTION_BUTTON_SIZE}
+                  size={size || ACTION_BUTTON_SIZE}
                   labelPosition="right"
                   title={title}
                   onClick={onClickHandler}
                 >
-                  <Button size={ACTION_BUTTON_SIZE} color={followerColor} icon>
+                  <Button
+                    size={size || ACTION_BUTTON_SIZE}
+                    color={followerColor}
+                    icon
+                  >
                     <Icon {...iconProps} />
                   </Button>
                   <Label color={followerColor} as="a" basic pointing="left">

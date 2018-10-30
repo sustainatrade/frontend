@@ -1,29 +1,14 @@
 import React from "react";
 // import PropTypes from 'prop-types';
-import {
-  Button,
-  Modal,
-  Input,
-  Label,
-  Popup,
-  Divider,
-  Image,
-  Header
-} from "semantic-ui-react";
+import { Button, Modal, Divider, Image, Header } from "semantic-ui-react";
 // import _ from 'lodash'
 import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 // import Cookie from 'tough-cookie'
 import LoginContext from "./LoginContext";
-import { cleanError } from "lib/apollo";
-import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
-import { TYPES } from "./../../errors";
-import { imageUrlToUri } from "./../../lib/image";
 import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
 // import UsernameInput from "./../user-info/UsernameInput";
 import get from "lodash/get";
-import debounce from "lodash/debounce";
-import Icon from "antd/lib/icon";
 
 export const PHOTO_DATA_URI_KEY = "photoDataUri";
 

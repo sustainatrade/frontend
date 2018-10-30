@@ -1,30 +1,32 @@
 import React from "react";
 import { Segment, Header, Item } from "semantic-ui-react";
-import PostItem, { PostItemPlaceHolder } from "./../post-feed/PostItem";
+import { PostItemPlaceHolder } from "./../post-feed/PostItem";
+import PostItem from "./../post-item";
 import { GlobalConsumer } from "./../../contexts";
 import { Link } from "@reach/router";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import { range } from "lodash";
 
 const Posts = ({ list }) => {
+  console.log("list"); //TRACE
+  console.log(list); //TRACE
   return (
     <GlobalConsumer>
-      {({ category: { categories }, responsive: { isMobile } }) => (
+      {({ responsive: { isMobile } }) => (
         <Item.Group divided unstackable={isMobile}>
           {list
             ? list.map(post => {
-                let postObj = post;
+                let postObj = post.node;
                 if (post.isRemoved) {
-                  postObj = post.post;
+                  postObj = postObj.post;
                 }
                 return (
                   <PostItem
                     isCompact={isMobile}
-                    key={post._refNo}
+                    key={postObj.id}
                     post={postObj}
-                    categories={categories}
                     basic
-                    isRemoved={post.isRemoved}
+                    isRemoved={postObj.isRemoved}
                   />
                 );
               })
@@ -39,25 +41,25 @@ const Posts = ({ list }) => {
 
 export default class SectionPosts extends React.Component {
   render() {
-    const { section, posts } = this.props;
-    const { color, displayName } = section;
+    const { content, posts } = this.props;
+    const { code, name } = content;
     return (
       <React.Fragment>
-        <Header as="h5" attached="top" color={color} style={{ width: "100%" }}>
-          Recent {displayName}
+        <Header as="h5" attached="top" color="grey" style={{ width: "100%" }}>
+          Recent {name}
           <PostFeedContext.Consumer>
             {({ setFiltersFn }) => (
               <Link
                 style={{ float: "right" }}
                 to={`/p`}
-                onClick={() => setFiltersFn({ section: section.key })}
+                onClick={() => setFiltersFn({ content: code })}
               >
                 More >>
               </Link>
             )}
           </PostFeedContext.Consumer>
         </Header>
-        <Segment attached color={color} style={{ width: "100%" }}>
+        <Segment attached color="grey" style={{ width: "100%" }}>
           <Posts list={posts} />
         </Segment>
       </React.Fragment>

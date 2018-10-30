@@ -14,7 +14,9 @@ export default class MoreButton extends Component {
     const {
       userContext: { isAdmin },
       isCompact,
-      post
+      post,
+      size,
+      ...rest
     } = this.props;
     const poProps = {
       placement: "bottomRight"
@@ -46,9 +48,10 @@ export default class MoreButton extends Component {
         ) : (
           <Button
             basic
-            size={ACTION_BUTTON_SIZE}
+            size={size || ACTION_BUTTON_SIZE}
             icon="ellipsis horizontal"
             title="More"
+            {...rest}
           />
         )}
       </Popover>

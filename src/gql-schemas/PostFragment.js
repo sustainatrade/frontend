@@ -14,9 +14,10 @@ fragment PostFragment on Post {
   isFollowing
   widgets {
     id
-    name
+    code
     values
-    types
+    postRefNo
+    name
     displayName
   }
 }

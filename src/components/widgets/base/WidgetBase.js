@@ -1,9 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Segment, Header, Label, Divider, Button } from "semantic-ui-react";
+import {
+  Segment,
+  Header,
+  Label,
+  Divider,
+  Button,
+  Message
+} from "semantic-ui-react";
 import Icon from "antd/lib/icon";
+import AntButton from "antd/lib/button";
 import { MODES } from "./../index";
-import PostWidgetContext from "../../../contexts/WidgetContext";
+import { UPDATE_POST_WIDGETS } from "../../../gql-schemas";
+import { GlobalConsumer } from "../../../contexts";
 import "./WidgetBase.css";
 
 const Preview = ({ ownProps, view: View, compact: Compact }) => (
@@ -77,29 +86,41 @@ class WidgetBase extends React.Component {
       previewData = {},
       preview,
       basic,
-      style,
+      fitted,
+      style = {},
       _refNo,
       postRefNo,
       children
     } = this.props;
     const { values, loading, saved } = this.state;
+    let fittedStyle = {};
+    if (fitted) {
+      fittedStyle = {
+        padding: 0,
+        marginTop: 5,
+        marginBottom: 5
+      };
+    }
+
     return (
-      <Segment basic={basic} key={code} style={style}>
-        {mode === MODES.COMPACT ? (
-          <Label basic style={{ float: "right" }}>
+      <Segment
+        basic={basic}
+        key={code}
+        style={Object.assign(style, fittedStyle)}
+      >
+        {mode === MODES.COMPACT && (
+          <AntButton size="small" style={{ float: "left", marginRight: 5 }}>
             <Icon {...icon} />
-            {`  ${name}`}
-          </Label>
-        ) : (
-          <Header>
+          </AntButton>
+        )}
+        {/* <Header>
             {mode === MODES.EDITOR && (
               <Icon type="edit" theme="twoTone" style={{ marginRight: 5 }} />
             )}
             <Icon {...icon} /> {name}
-          </Header>
-        )}
-        <PostWidgetContext.Consumer>
-          {context => {
+          </Header> */}
+        <GlobalConsumer>
+          {({ error, widget: context }) => {
             let RenderObj;
             switch (mode) {
               case "compact":
@@ -135,14 +156,23 @@ class WidgetBase extends React.Component {
                   >
                     {({ editValues }) => {
                       const editValuesHash = JSON.stringify(editValues);
-                      const saved = editValuesHash === oldValuesHash;
+                      const updateErrors = error[UPDATE_POST_WIDGETS.key];
+                      const saved =
+                        editValuesHash === oldValuesHash && !updateErrors;
                       return (
                         <>
+                          Preview
                           <Preview
                             ownProps={{ values: editValues }}
                             view={view}
                             compact={compact}
                           />
+                          {!!updateErrors && (
+                            <Message
+                              error
+                              content={updateErrors.map(err => err.message)}
+                            />
+                          )}
                           <Button
                             icon="trash"
                             size="small"
@@ -151,6 +181,7 @@ class WidgetBase extends React.Component {
                             loading={context.submitting}
                             basic
                             onClick={async () => {
+                              error.clear(UPDATE_POST_WIDGETS.key);
                               await context.submitWidgetsFn([
                                 {
                                   __deleted: true,
@@ -174,6 +205,7 @@ class WidgetBase extends React.Component {
                               console.log("values"); //TRACE
                               console.log(editValues); //TRACE
                               if (editValues) {
+                                error.clear(UPDATE_POST_WIDGETS.key);
                                 await context.submitWidgetsFn([
                                   {
                                     _refNo,
@@ -199,7 +231,7 @@ class WidgetBase extends React.Component {
               </>
             );
           }}
-        </PostWidgetContext.Consumer>
+        </GlobalConsumer>
       </Segment>
     );
   }
@@ -210,7 +242,7 @@ WidgetBase.propTypes = {
   editor: PropTypes.func.isRequired,
   view: PropTypes.func.isRequired,
   compact: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired
+  onSave: PropTypes.func
 };
 
 export default WidgetBase;

@@ -140,7 +140,9 @@ class Provider extends React.Component {
       Notification.info({
         message: "Post has been removed!"
       });
-    }
+    },
+    editting: false,
+    setEditMode: flag => this.setState({ editting: flag })
   };
 
   //TESTING

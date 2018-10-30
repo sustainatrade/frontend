@@ -4,7 +4,7 @@ import apolloClient from "./../lib/apollo";
 import { Query } from "react-apollo";
 import { groupBy } from "lodash";
 import USER_DETAIL_FRAGMENT from "./../gql-schemas/UserDetailFragment";
-import get from "lodash/get";
+// import get from "lodash/get";
 
 const Context = React.createContext();
 const { Consumer } = Context;

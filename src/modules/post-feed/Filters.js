@@ -14,6 +14,8 @@ import { sections } from "./../../config";
 import PostFeedContext from "./../../contexts/PostFeedContext";
 import CategoryContext from "./../../contexts/CategoryContext";
 import { GlobalConsumer } from "./../../contexts";
+import ContentDropdown from "../create-post/ContentDropdown";
+import { contents } from "../../components/widgets";
 
 const FilterTag = ({ color, text, filterKey }) => (
   <div>
@@ -65,6 +67,10 @@ const FilterContent = ({ filterValues }) => (
       if (filterValues["category"]) {
         category = categories[filterValues["category"]];
       }
+      let content;
+      if (filterValues["content"]) {
+        content = contents[filterValues["content"]];
+      }
       return (
         <React.Fragment>
           {Object.keys(filterValues).length === 0 && (
@@ -78,6 +84,7 @@ const FilterContent = ({ filterValues }) => (
             />
           )}
           {category && <FilterTag filterKey="category" text={category} />}
+          {content && <FilterTag filterKey="content" text={content.name} />}
           {isMobile ? (
             <React.Fragment>
               <div className="mobile-add-filter-filler" />
@@ -182,36 +189,16 @@ const CategoryFilter = ({ setFiltersFn, filterValues = {} }) => {
     </CategoryContext.Consumer>
   );
 };
-const SectionFilter = ({ setFiltersFn, filterValues = {} }) => {
-  const FLTR_BUYING = filterValues.section === "buy";
-  const FLTR_SELLING = filterValues.section === "sell";
-  const FLTR_DEFAULT = undefined;
+const ContentFilter = ({ setFiltersFn, filterValues = {} }) => {
   console.log("filterValues"); //TRACE
   console.log(filterValues); //TRACE
   return (
-    <Button.Group>
-      <Button
-        color={FLTR_BUYING ? "orange" : FLTR_DEFAULT}
-        onClick={() =>
-          setFiltersFn({
-            section: !FLTR_BUYING ? "buy" : undefined
-          })
-        }
-      >
-        Buying
-      </Button>
-      <Button.Or />
-      <Button
-        color={FLTR_SELLING ? "green" : FLTR_DEFAULT}
-        onClick={() =>
-          setFiltersFn({
-            section: !FLTR_SELLING ? "sell" : undefined
-          })
-        }
-      >
-        Selling
-      </Button>
-    </Button.Group>
+    <ContentDropdown
+      defaultValue={filterValues.content}
+      onChange={code => {
+        setFiltersFn({ content: code });
+      }}
+    />
   );
 };
 
@@ -221,16 +208,10 @@ export default class Filters extends React.Component {
   };
   defaultFilters = [
     {
-      key: "section",
-      title: "Section",
+      key: "content",
+      title: "Content",
       defaultActive: true,
-      content: SectionFilter
-    },
-    {
-      key: "category",
-      title: "Category",
-      defaultActive: true,
-      content: CategoryFilter
+      content: ContentFilter
     }
   ];
   setTmpFilters(newFilters) {

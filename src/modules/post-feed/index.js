@@ -20,7 +20,7 @@ export default class PostFeed extends Component {
           });
           return (
             <React.Fragment>
-              <Router primary={false}>
+              <Router primary={false} className="content-panel">
                 <PostView
                   path="/:postTitle/:postRefNo"
                   postFeedContext={postFeedContext}

@@ -5,9 +5,6 @@ import {
   Button,
   Icon,
   Modal,
-  Input,
-  Label,
-  Divider,
   Image,
   Header
 } from "semantic-ui-react";
@@ -20,9 +17,9 @@ import LoginContext from "./LoginContext";
 import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
 import { TYPES } from "./../../errors";
 import { imageUrlToUri } from "./../../lib/image";
-import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
-import get from "lodash/get";
-import debounce from "lodash/debounce";
+// import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
+// import get from "lodash/get";
+// import debounce from "lodash/debounce";
 import WelcomeModal, { PHOTO_DATA_URI_KEY } from "./WelcomeModal";
 
 const GET_ME = gql`

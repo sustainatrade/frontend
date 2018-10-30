@@ -17,7 +17,7 @@ import CreatePostContext from "./../contexts/CreatePost";
 import ResponsiveContext from "./../contexts/Responsive";
 import { UserAuth } from "../components";
 import { Menus } from "./../components/main-header/MainHeader";
-import { Router } from "@reach/router";
+import { Router, Link } from "@reach/router";
 import TagList from "./home/TagList";
 
 const UserOptions = () => <React.Fragment />;
@@ -78,14 +78,16 @@ export default class Sidebar extends Component {
         <CreatePostContext.Consumer>
           {({ key, modalOpened, closeModal, openModal }) => (
             <React.Fragment>
-              <Button
-                disabled={modalOpened}
-                fluid
-                color="green"
-                content={"Create Post"}
-                icon="pencil"
-                onClick={() => openModal()}
-              />
+              <Link to="create">
+                <Button
+                  disabled={modalOpened}
+                  fluid
+                  color="green"
+                  content={"Create Post"}
+                  icon="pencil"
+                  // onClick={() => openModal()}
+                />
+              </Link>
             </React.Fragment>
           )}
         </CreatePostContext.Consumer>

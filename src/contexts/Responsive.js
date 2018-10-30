@@ -1,10 +1,16 @@
 import React from "react";
 import { Responsive } from "semantic-ui-react";
 
-const Context = React.createContext({});
+export const Context = React.createContext({});
 
 class Provider extends React.Component {
-  state = { isMobile: true };
+  state = {
+    isMobile: true,
+    stretched: false,
+    setStretched: flag => {
+      this.setState({ stretched: flag });
+    }
+  };
 
   handleOnUpdate = (e, { width }) => {
     const { isMobile } = this.state;
