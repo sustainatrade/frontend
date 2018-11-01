@@ -37,7 +37,8 @@
     "react-props-editor": "1.0.5",
     "react-scripts": "2.1.0",
     "semantic-ui-react": "0.83.0",
-    "subscriptions-transport-ws": "0.9.15"
+    "subscriptions-transport-ws": "0.9.15",
+    "the-platform": "^0.9.3"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=./src react-scripts start",

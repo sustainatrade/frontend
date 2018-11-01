@@ -7,4 +7,6 @@
   height: 50px;
   z-index: 902;
   background-color: white !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }

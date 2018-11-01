@@ -73,7 +73,15 @@ function SubHeaderWrapper() {
   if (typeof subHeader === "string") {
     const textLimit = isMobile ? 30 : 100;
     HeaderComp = (
-      <span style={{ padding: 0, margin: 0, fontSize: "larger" }}>
+      <span
+        style={{
+          padding: 0,
+          margin: 0,
+          color: "darkgray",
+          fontWeight: "bold",
+          fontSize: "larger"
+        }}
+      >
         {`  ${subHeader.substr(0, textLimit)}${
           subHeader.length > textLimit ? "..." : ""
         }`}
@@ -82,15 +90,17 @@ function SubHeaderWrapper() {
   }
 
   const style = {
-    backgroundColor: "white",
+    backgroundColor: "snow",
     position: "fixed",
     zIndex: 903,
-    padding: 5,
-    top: isMobile ? 0 : contentStyle.paddingTop - 55,
+    padding: 6,
+    top: isMobile ? 0 : contentStyle.paddingTop - 50,
     right: 0,
-    left: contentStyle.paddingLeft - (!isMobile ? 5 : 0),
+    left: contentStyle.paddingLeft,
     height: 50,
-    borderBottom: `solid 1px ${secondaryBgColor}`
+    borderBottom: `solid 1px ${secondaryBgColor}`,
+    WebkitBoxShadow: "0 1px 5px 0 rgba(34,36,38,.15)",
+    boxShadow: "0 1px 5px 0 rgba(34,36,38,.15)"
   };
   return (
     <div style={style}>

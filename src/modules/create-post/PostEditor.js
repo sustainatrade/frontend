@@ -55,7 +55,7 @@ class ContentEditor extends Component {
       >
         {active ? (
           <>
-            <div>
+            <Segment basic>
               Create <b>{contents[contentKey].name}</b>{" "}
               <Button
                 icon="angle up"
@@ -67,32 +67,32 @@ class ContentEditor extends Component {
                   onClose && onClose(index);
                 }}
               />
-            </div>
-            {contentKey && (
-              <ErrorContext.Consumer>
-                {error => (
-                  <>
-                    <Content
-                      mode={MODES.EDITOR}
-                      basic
-                      _refNo={_refNo}
-                      postRefNo={postRefNo}
-                      defaultValues={defaultValues}
-                      style={{ padding: 0 }}
-                      onValuesChanged={values => {
-                        error.clear(PUBLISH_POST.key);
-                      }}
-                    >
-                      {rProps => {
-                        console.log("rProps"); //TRACE
-                        console.log(rProps); //TRACE
-                        return <div />;
-                      }}
-                    </Content>
-                  </>
-                )}
-              </ErrorContext.Consumer>
-            )}
+              {contentKey && (
+                <ErrorContext.Consumer>
+                  {error => (
+                    <>
+                      <Content
+                        mode={MODES.EDITOR}
+                        basic
+                        _refNo={_refNo}
+                        postRefNo={postRefNo}
+                        defaultValues={defaultValues}
+                        style={{ padding: 0 }}
+                        onValuesChanged={values => {
+                          error.clear(PUBLISH_POST.key);
+                        }}
+                      >
+                        {rProps => {
+                          console.log("rProps"); //TRACE
+                          console.log(rProps); //TRACE
+                          return <div />;
+                        }}
+                      </Content>
+                    </>
+                  )}
+                </ErrorContext.Consumer>
+              )}
+            </Segment>
           </>
         ) : (
           <Content

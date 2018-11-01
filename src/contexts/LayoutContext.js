@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context as ResponsiveCtx } from "./Responsive";
+import { useWindowSize } from "the-platform";
 
 export const Context = React.createContext({});
 
@@ -7,14 +8,15 @@ function Provider({ children }) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [subHeader, showSubHeader] = useState(null);
   const [hideBackButton, setHideBackButton] = useState(false);
+  const windowSize = useWindowSize();
   // const [contentStyle, setContentStyle] = useState({
 
   // });
   const contentStyle = {};
   const { isMobile } = useContext(ResponsiveCtx);
-  contentStyle.paddingTop = !!subHeader ? 105 : 55;
-  contentStyle.paddingLeft = isMobile ? 0 : 255;
-  contentStyle.paddingRight = isMobile ? 0 : 5;
+  contentStyle.paddingTop = !!subHeader ? 100 : 50;
+  contentStyle.paddingLeft = isMobile ? 0 : 250;
+  contentStyle.paddingRight = 0;
 
   const contextState = {
     contentStyle,
@@ -23,12 +25,15 @@ function Provider({ children }) {
     subHeader,
     showSubHeader,
     hideBackButton,
-    setHideBackButton
+    setHideBackButton,
+    contentPadding: 10,
+    windowSize
   };
   return <Context.Provider value={contextState}>{children}</Context.Provider>;
 }
 
 export default {
   Provider,
-  Consumer: Context.Consumer
+  Consumer: Context.Consumer,
+  Context
 };

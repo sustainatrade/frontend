@@ -27,11 +27,11 @@ import TagList from "./home/TagList";
 
 const UserOptions = () => <React.Fragment />;
 
-const PostViewMode = ({
+function PostViewMode({
   icon,
   viewMode,
   postViewContext: { postViewMode, setPostViewMode }
-}) => {
+}) {
   return (
     <Button
       icon
@@ -42,13 +42,17 @@ const PostViewMode = ({
       <Icon name={icon} />
     </Button>
   );
-};
+}
 
 const PostViewModes = () => (
   <PostViewContext.Consumer>
     {postViewContext => (
-      <Segment size="mini">
-        <Header floated="left" style={{ marginTop: 10, color: "grey" }}>
+      <>
+        <Header
+          floated="left"
+          size="small"
+          style={{ marginTop: 10, marginRight: 0, color: "grey" }}
+        >
           Post View
         </Header>
         <Button.Group floated="right">
@@ -69,7 +73,7 @@ const PostViewModes = () => (
           />
         </Button.Group>
         <Divider hidden fitted clearing />
-      </Segment>
+      </>
     )}
   </PostViewContext.Consumer>
 );
@@ -119,20 +123,16 @@ export default class Sidebar extends Component {
                   {user ? (
                     <List.Item>
                       <Divider hidden fitted style={{ marginTop: 5 }} />
-                      <Segment color="green" style={{ margin: 0 }}>
-                        <AccountControls />
-                      </Segment>
+                      <AccountControls />
                     </List.Item>
                   ) : (
                     <List.Item>
                       <Divider hidden fitted style={{ marginTop: 5 }} />
-                      <Segment key="login-key" style={{ margin: 0 }}>
-                        <center>
-                          Start creating your own post by logging in
-                          <Divider />
-                          <UserAuth />
-                        </center>
-                      </Segment>
+                      <center>
+                        Start creating your own post by logging in
+                        <Divider />
+                        <UserAuth />
+                      </center>
                     </List.Item>
                   )}
                   <List.Item>
@@ -144,9 +144,7 @@ export default class Sidebar extends Component {
                     </Router>
                   </List.Item>
                   <List.Item>
-                    <Segment>
-                      <TagList />
-                    </Segment>
+                    <TagList />
                   </List.Item>
                 </Transition.Group>
               );
