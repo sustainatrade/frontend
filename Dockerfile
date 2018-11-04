@@ -1,4 +1,4 @@
-FROM node:alpine as builder
+FROM node:10.13-alpine as builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ WORKDIR /app/server
 
 RUN yarn
 
-FROM node:alpine
+FROM node:10.13-alpine
 
 WORKDIR /app
 
