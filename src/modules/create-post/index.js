@@ -48,33 +48,39 @@ function PublishPostModal() {
     </Dimmer>
   );
 }
-const SubHeader = (
-  <span>
-    <span
-      style={{
-        fontWeight: "bold",
-        fontSize: "large",
-        marginLeft: "10px"
-      }}
-    >
-      Create Post
+function SubHeader({ post }) {
+  const { publishPost } = useContext(Context);
+  useSetSubHeader(
+    <span>
+      <span
+        style={{
+          fontWeight: "bold",
+          fontSize: "large",
+          marginLeft: "10px"
+        }}
+      >
+        Create Post
+      </span>
+      <Button
+        content="Publish"
+        size="large"
+        floated="right"
+        primary
+        icon="send"
+        onClick={() => {
+          publishPost({ refNo: post._refNo });
+        }}
+        style={{
+          marginTop: -2,
+          marginRight: -3
+        }}
+      />
     </span>
-    <Button
-      content="Publish"
-      size="large"
-      floated="right"
-      primary
-      icon="send"
-      style={{
-        marginTop: -2,
-        marginRight: -3
-      }}
-    />
-  </span>
-);
-export default function() {
-  useSetSubHeader(SubHeader);
+  );
 
+  return null;
+}
+export default function() {
   return (
     <Query query={LAST_DRAFT.query}>
       {({ loading, data }) => {
@@ -87,6 +93,7 @@ export default function() {
         if (!post) return <Loader inline="centered" active />;
         return (
           <>
+            <SubHeader post={post} />
             <PostEditor post={post} />
             <PublishPostModal />
           </>

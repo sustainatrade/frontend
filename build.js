@@ -23,6 +23,6 @@ webpackConfigProd.plugins.push(
   })
 );
 
-webpackConfigProd.resolve.alias["@ant-design/icons"] = "purched-antd-icons";
+// webpackConfigProd.resolve.alias["@ant-design/icons"] = "purched-antd-icons";
 
 require("react-scripts/scripts/build");
