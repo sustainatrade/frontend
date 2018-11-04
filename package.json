@@ -23,7 +23,7 @@
     "loadable-components": "2.2.3",
     "lodash": "4.17.11",
     "lscache": "1.2.0",
-    "nanoid": "1.3.1",
+    "nanoid": "1.3.4",
     "prettyjson": "1.2.1",
     "purched-antd-icons": "0.2.2",
     "react": "16.7.0-alpha.0",
