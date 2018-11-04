@@ -1,0 +1,13 @@
+
+.replies-header {
+  background-color: snow;
+  padding: 5px;
+  height: 40px;
+}
+
+.replies-header span{
+  font-weight: bold;
+  color: darkgray;
+  display: inline-block;
+  padding: 4px;
+}

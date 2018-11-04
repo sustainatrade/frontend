@@ -98,7 +98,7 @@ function SubHeaderWrapper() {
     right: 0,
     left: contentStyle.paddingLeft,
     height: 50,
-    borderBottom: `solid 1px ${secondaryBgColor}`,
+    borderBottom: `solid 1px lightgray`,
     WebkitBoxShadow: "0 1px 5px 0 rgba(34,36,38,.15)",
     boxShadow: "0 1px 5px 0 rgba(34,36,38,.15)"
   };

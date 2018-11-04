@@ -7,10 +7,10 @@ const query = gql`
       status
       widgets {
         id
-        displayName
-        types
-        values
         _refNo
+        code
+        name
+        postRefNo
       }
     }
   }

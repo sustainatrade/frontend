@@ -9,6 +9,11 @@ module.exports = Object.assign(
     sections: [],
     contents: [
       {
+        code: "text",
+        name: "Text",
+        icon: { type: "font-size", theme: "outlined" }
+      },
+      {
         code: "buy-item",
         name: "Buying Item",
         icon: { type: "shopping-cart", theme: "outlined" }
@@ -17,11 +22,6 @@ module.exports = Object.assign(
         code: "sell-item",
         name: "Selling Item",
         icon: { type: "shop", theme: "outlined" }
-      },
-      {
-        code: "text",
-        name: "Text",
-        icon: { type: "font-size", theme: "outlined" }
       }
     ],
     posts: {
@@ -30,7 +30,7 @@ module.exports = Object.assign(
     staticPages: {
       privacy: "",
       about: "https://www.sustainatrade.com",
-      terms: "https://www.sustainatrade.com",
+      terms: "https://www.sustainatrade.com"
     },
     swConfigUrl:
       process.env["NODE_ENV"] === "production"

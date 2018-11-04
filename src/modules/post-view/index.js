@@ -1,4 +1,4 @@
-import React, { Component, Suspense, useContext } from "react";
+import React, { Component, Suspense, useContext, useEffect } from "react";
 import {
   Item,
   Grid,
@@ -6,8 +6,9 @@ import {
   Image,
   Button,
   Divider,
-  Container,
+  Transition,
   List,
+  Segment,
   Header,
   Loader,
   Visibility
@@ -17,17 +18,21 @@ import { Query } from "react-apollo";
 import UserLabel from "./../user-profile/UserLabel";
 import nanoid from "nanoid";
 
-import { GlobalConsumer } from "./../../contexts";
 import { POST } from "./../../gql-schemas";
 import moment from "moment";
 import { contents, MODES } from "./../../components/widgets";
-import Actions from "./Actions";
+import UserActions from "./UserActions";
+import PostActions from "./PostActions";
 import { PostComments } from "./index.old";
+import PostReply from "./PostReply";
+import PostReplies from "./PostReplies";
 import { useSetSubHeader } from "../../hooks/SetSubHeader";
 import PostViewContext from "../../contexts/PostViewContext";
 import LayoutContext from "../../contexts/LayoutContext";
 import ResponsiveContext from "../../contexts/Responsive";
 import ThemeContext from "../../contexts/ThemeContext";
+import PostReplyContext from "../../contexts/PostReplyContext";
+import PostItem from "../post-item";
 
 const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
 
@@ -47,18 +52,35 @@ function PostEditorWrapper(props) {
 }
 
 const PostHeader = React.memo(({ post }) => {
-  useSetSubHeader(post.title);
   const { isMobile } = useContext(ResponsiveContext.Context);
   const { contentPadding } = useContext(LayoutContext.Context);
+  const isReply = !!post.parentPostRefNo;
+  useSetSubHeader(isReply ? "Post Reply" : post.title);
+  console.log("post"); //TRACE
+  console.log(post); //TRACE
   return (
     <div
       style={{
         padding: contentPadding,
         paddingBottom: 0,
-        paddingTop: isMobile ? 0 : 30
+        paddingTop: isMobile ? 0 : 15
       }}
     >
-      <Header as="h1">{post.title}</Header>
+      {isReply ? (
+        <>
+          <Segment color="blue">
+            <PostItem
+              isCompact
+              post={post.parentPost}
+              basic
+              withLabels={false}
+            />
+          </Segment>
+          <Divider horizontal>Reply</Divider>
+        </>
+      ) : (
+        <Header as="h1">{post.title}</Header>
+      )}
       <List size="tiny" horizontal={isMobile}>
         <List.Item>
           <List.Icon name="user" />
@@ -98,11 +120,40 @@ const PostContents = React.memo(({ post }) => {
     </>
   );
 });
+
+function PostFooter({ post }) {
+  const { parentPost: replyParentPost } = useContext(PostReplyContext.Context);
+  console.log("replyParentPost"); //TRACE
+  console.log(replyParentPost); //TRACE
+  return (
+    <>
+      {!replyParentPost ? (
+        <>
+          <PostActions post={post} />
+          <PostReplies post={post} />
+        </>
+      ) : (
+        <Transition
+          visible={!!replyParentPost}
+          animation="fade up"
+          duration={500}
+        >
+          <PostReply />
+        </Transition>
+      )}
+    </>
+  );
+}
+
 class PostView extends Component {
   state = { showActions: false, width: null, height: null, visibilityKey: 1 };
 
-  handleOnScreen = (e, { calculations }) =>
-    this.setState({ width: calculations.width, height: calculations.height });
+  handleOnScreen = (e, { calculations }) => {
+    const { height, width } = this.state;
+    height !== calculations.height &&
+      width !== calculations.width &&
+      this.setState({ width: calculations.width, height: calculations.height });
+  };
 
   componentDidMount = () =>
     setTimeout(() => this.setState({ visibilityKey: nanoid() }), 3000);
@@ -124,6 +175,7 @@ class PostView extends Component {
           if (loading && !post) return <Loader active inline="centered" />;
           return (
             <>
+              <ResetReply post={post} />
               <Grid
                 doubling
                 columns={2}
@@ -152,13 +204,14 @@ class PostView extends Component {
                         <PostHeader post={post} />
                         <Divider />
                         <PostContents post={post} />
+                        <PostFooter post={post} />
                       </>
                     )}
 
                     <Divider hidden />
                     <Divider hidden />
                     <Divider hidden />
-                    <Actions post={post} size={{ width }} />
+                    <UserActions post={post} size={{ width }} />
                   </Visibility>
                 </Grid.Column>
                 <Grid.Column
@@ -179,8 +232,17 @@ class PostView extends Component {
     );
   }
 }
-
-export default props => {
+function ResetReply({ post }) {
+  const { reset } = useContext(PostReplyContext.Context);
+  useEffect(
+    () => {
+      reset();
+    },
+    [post._refNo]
+  );
+  return null;
+}
+export default function PostViewWrapper(props) {
   const layoutContext = useContext(LayoutContext.Context);
   const postViewContext = useContext(PostViewContext.Context);
   const themeContext = useContext(ThemeContext.Context);
@@ -192,4 +254,4 @@ export default props => {
       themeContext={themeContext}
     />
   );
-};
+}

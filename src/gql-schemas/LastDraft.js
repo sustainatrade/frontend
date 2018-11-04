@@ -1,22 +1,17 @@
 import gql from "graphql-tag";
+import postFragment from "./PostFragment";
 
 const key = `LastDraft`;
 const query = gql`
-  query ${key} {
-    LastDraft{
+  ${postFragment}
+  query ${key} ($parentPostRefNo: String){
+    LastDraft(
+      input: {
+        parentPostRefNo: $parentPostRefNo
+      }
+    ){
       post{
-        id
-        _refNo
-        title
-        publishDate
-        createdBy
-        widgets{
-          id
-          _refNo
-          code
-          name
-          values
-        }
+        ...PostFragment
       }
     }
   }

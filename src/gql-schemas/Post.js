@@ -10,6 +10,32 @@ const query = gql`
         _refNo
         createdBy
         publishDate
+        parentPostRefNo
+        parentPost{
+          id
+          title
+          _refNo
+          createdBy
+          publishDate
+          parentPostRefNo
+          createdDate
+          createdByUser{
+            username
+          }
+          widgets{
+            id
+            _refNo
+            values
+            code
+            name
+            postRefNo
+            createdDate
+            createdByUser{
+              id
+              username
+            }
+          }
+        }
         createdByUser{
           username
         }

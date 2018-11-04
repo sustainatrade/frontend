@@ -48,7 +48,30 @@ function PublishPostModal() {
     </Dimmer>
   );
 }
-const SubHeader = <span>Create Post</span>;
+const SubHeader = (
+  <span>
+    <span
+      style={{
+        fontWeight: "bold",
+        fontSize: "large",
+        marginLeft: "10px"
+      }}
+    >
+      Create Post
+    </span>
+    <Button
+      content="Publish"
+      size="large"
+      floated="right"
+      primary
+      icon="send"
+      style={{
+        marginTop: -2,
+        marginRight: -3
+      }}
+    />
+  </span>
+);
 export default function() {
   useSetSubHeader(SubHeader);
 
@@ -64,10 +87,6 @@ export default function() {
         if (!post) return <Loader inline="centered" active />;
         return (
           <>
-            <Divider hidden />
-            <Header as="h1" dividing style={{ marginLeft: 5 }}>
-              Create Post
-            </Header>
             <PostEditor post={post} />
             <PublishPostModal />
           </>

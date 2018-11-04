@@ -1,3 +1,26 @@
-.new-post-inactive:hover {
-  background-color: floralwhite;
+.content-active {
+  background-color: lavenderblush !important;
+}
+
+.content-inactive:hover {
+  background-color: lavenderblush !important;
+}
+
+.add-content .ant-btn {
+  color: rgba(64, 169, 255, 0.7);
+  border-color: rgba(64, 169, 255, 1);
+}
+
+.reply-header {
+  background-color: #00b5ad;
+  padding: 5px;
+  height: 50px;
+}
+
+.reply-header span{
+  font-size: larger;
+  font-weight: bold;
+  color: ghostwhite;
+  display: inline-block;
+  padding: 7px;
 }

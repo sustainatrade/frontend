@@ -21,6 +21,8 @@ import "antd/lib/slider/style/css";
 import "antd/lib/timeline/style/css";
 import "antd/lib/popover/style/css";
 import "antd/lib/icon/style/css";
+import "antd/lib/tabs/style/css";
+import "antd/lib/input/style/css";
 import { FacebookProvider } from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";

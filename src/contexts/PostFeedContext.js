@@ -16,7 +16,9 @@ export function getShareUrl(post) {
 }
 
 export function getUrl(post) {
-  return `/p/${kebabCase(post.title.substring(0, 30))}/${post._refNo}`;
+  let postTitle = post.title;
+  if (!postTitle || postTitle.length === 0) postTitle = "reply";
+  return `/p/${kebabCase(postTitle.substring(0, 30))}/${post._refNo}`;
 }
 
 export function getTagUrl(tag) {
@@ -183,6 +185,7 @@ class Provider extends React.Component {
           input: {
             search: JSON.stringify(searches),
             after: afterCursor,
+            parentPostRefNo: null,
             limit,
             isFollowing,
             ...queryFilters,

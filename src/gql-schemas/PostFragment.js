@@ -12,6 +12,7 @@ fragment PostFragment on Post {
   createdDate
   followerCount
   isFollowing
+  parentPostRefNo
   widgets {
     id
     code
@@ -19,6 +20,7 @@ fragment PostFragment on Post {
     postRefNo
     name
     displayName
+    _refNo
   }
 }
 `;

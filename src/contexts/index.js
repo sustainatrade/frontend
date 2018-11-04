@@ -10,8 +10,8 @@ import UploaderContext from "./Uploader";
 import PostFeedContext from "./PostFeedContext";
 import PostViewContext from "./PostViewContext";
 import CategoryContext from "./CategoryContext";
-import WidgetContext from "./WidgetContext";
 import PostWidgetContext from "./PostWidgetContext";
+import PostReplyContext from "./PostReplyContext";
 import ErrorContext from "./ErrorContext";
 import LayoutContext from "./LayoutContext";
 import ThemeContext from "./ThemeContext";
@@ -19,8 +19,8 @@ import ThemeContext from "./ThemeContext";
 const contexts = {
   createPost: CreatePostContext,
   postFeed: PostFeedContext,
-  widget: WidgetContext,
   postWidget: PostWidgetContext,
+  postReply: PostReplyContext,
   postView: PostViewContext,
   category: CategoryContext,
   user: UserContext,

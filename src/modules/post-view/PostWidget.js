@@ -4,7 +4,6 @@ import { parseGraphData } from "./../../components/widgets/lib";
 import { manifests } from "./../../components/widgets";
 import gql from "graphql-tag";
 import apolloClient from "./../../lib/apollo";
-import WidgetContext from "../../contexts/WidgetContext";
 
 const POST_WIDGET = gql`
   query($refNo: String!) {
@@ -81,51 +80,7 @@ export default class PostWidget extends Component {
         <Dimmer
           active={showControls}
           onClickOutside={() => this.setState({ showControls: false })}
-        >
-          <WidgetContext.Consumer>
-            {({ selectWidgetFn }) => (
-              <Button.Group>
-                <Button
-                  type="button"
-                  icon
-                  title="Move"
-                  onClick={() => alert("Soon")}
-                >
-                  <Icon name="move" />
-                </Button>
-                <Button
-                  type="button"
-                  icon
-                  title="Edit"
-                  onClick={async () => {
-                    const widgetData = await selectWidgetFn(this.state);
-                    if (widgetData) onEdit && onEdit(widgetData);
-                  }}
-                >
-                  <Icon name="edit" />
-                </Button>
-                <Button
-                  type="button"
-                  icon
-                  title="Delete"
-                  onClick={() => {
-                    onDelete && onDelete();
-                  }}
-                >
-                  <Icon name="trash" />
-                </Button>
-                <Button
-                  type="button"
-                  icon
-                  title="Cancel"
-                  onClick={() => this.setState({ showControls: false })}
-                >
-                  <Icon name="ban" />
-                </Button>
-              </Button.Group>
-            )}
-          </WidgetContext.Consumer>
-        </Dimmer>
+        />
       </Dimmer.Dimmable>
     );
   }

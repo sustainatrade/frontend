@@ -1,0 +1,27 @@
+.content-editor-actions {
+  z-index: 100;
+  background-color: snow;
+  position: fixed;
+  bottom: 0px;
+  padding: 5px;
+  padding-top: 0px;
+  border-color: #d6d6d6;
+  border-width: 1px;
+  border-top-style: solid;
+}
+
+.content-editor-actions .ant-tabs-tab .anticon {
+  margin: 0;
+}
+
+.content-editor-actions .ant-tabs-tab {
+  margin-right: 10px;
+}
+
+.content-editor-actions .ant-tabs-bar {
+  margin-bottom: 0px;
+}
+
+/* .content-editor-actions .ant-tabs-content {
+  background-color: antiquewhite;
+} */

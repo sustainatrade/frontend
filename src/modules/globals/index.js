@@ -1,19 +1,15 @@
 import React from "react";
 import { GlobalConsumer } from "./../../contexts";
-import ComposePost from "./../compose-post";
 import Modal from "antd/lib/modal";
 
 const GlobalComponents = () => (
   <GlobalConsumer>
     {({
       createPost: { key, modalOpened, closeModal },
-      uploader: { upload, status, isUploading },
-      widget: { submitWidgetsFn }
+      uploader: { upload, status, isUploading }
     }) => (
       <React.Fragment>
-        <Modal visible={modalOpened} onCancel={closeModal} footer={null}>
-          <ComposePost key={key} />
-        </Modal>
+        <Modal visible={modalOpened} onCancel={closeModal} footer={null} />
       </React.Fragment>
     )}
   </GlobalConsumer>

@@ -35,5 +35,6 @@ class Provider extends React.Component {
 
 export default {
   Provider,
-  Consumer: Context.Consumer
+  Consumer: Context.Consumer,
+  Context
 };
