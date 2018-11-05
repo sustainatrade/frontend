@@ -45,38 +45,9 @@ export default class FollowButton extends Component {
             this.setState({ newFollowing: !following });
           };
           return (
-            <React.Fragment>
-              {isCompact && (
-                <Label
-                  as="a"
-                  className="actn-lbl"
-                  color={followerColor}
-                  onClick={onClickHandler}
-                >
-                  <Icon {...iconProps} /> {followers || 0}
-                </Label>
-              )}
-              {!isCompact && (
-                <Button
-                  as="div"
-                  size={size || ACTION_BUTTON_SIZE}
-                  labelPosition="right"
-                  title={title}
-                  onClick={onClickHandler}
-                >
-                  <Button
-                    size={size || ACTION_BUTTON_SIZE}
-                    color={followerColor}
-                    icon
-                  >
-                    <Icon {...iconProps} />
-                  </Button>
-                  <Label color={followerColor} as="a" basic pointing="left">
-                    {followers || 0}
-                  </Label>
-                </Button>
-              )}
-            </React.Fragment>
+            <span style={{ display: "inline-block", marginTop: 10 }}>
+              <Icon {...iconProps} /> {followers || 0}
+            </span>
           );
         }}
       </Mutation>

@@ -4,6 +4,7 @@ import apolloClient from "./../lib/apollo";
 import get from "lodash/get";
 import { navigate } from "@reach/router";
 import { getUrl } from "./PostFeedContext";
+import { useArray } from 'react-hanger'
 
 export const Context = React.createContext({});
 
@@ -13,10 +14,12 @@ function Provider({ children }) {
   });
 
   const [parentPost, setParentPost] = useState(null);
+  const activeReplyStack = useArray([]);
 
   const allState = {
     ...state,
     parentPost,
+    activeReplyStack,
     setParentPost,
     reset() {
       setState({ submitting: false });

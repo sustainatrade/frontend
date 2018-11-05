@@ -8441,6 +8441,11 @@ react-facebook@6.0.15:
     can-use-dom "^0.1.0"
     react-spinner-children "^1.0.8"
 
+react-hanger@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-hanger/-/react-hanger-1.0.8.tgz#8cdf776f7a04b0b74444e8a9dcf3f2c6d63b9b3b"
+  integrity sha512-CvxRjIuIUg3SQTGeA1WjaYyaS8jRo7od3wNEuiEzG1i6+a0jwzX21Xs5/jXBXGqdzY+j2OrC6Zq7vwEIuBilUg==
+
 react-helmet@5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-5.2.0.tgz#a81811df21313a6d55c5f058c4aeba5d6f3d97a7"

@@ -11,7 +11,8 @@ const Preview = props => (
     style={{
       textAlign: "left",
       whiteSpace: "pre-wrap",
-      wordBreak: "break-word"
+      wordBreak: "break-word",
+      fontSize: props.fontSize
     }}
   >
     {get(
@@ -66,7 +67,7 @@ export default class Text extends React.Component {
           text: "lorem ipsum dolor"
         }}
         editor={props => <TextEditor {...props} />}
-        view={props => <Preview {...props} />}
+        view={props => <Preview {...props} fontSize="larger" />}
         compact={props => <Preview {...props} />}
         {...this.props}
       />

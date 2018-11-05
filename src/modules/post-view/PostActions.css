@@ -1,7 +1,5 @@
 .post-actions {
   background-color: snow;
   padding: 5px 10px;
-  border: 1px solid gainsboro;
-  border-left: none;
-  border-right: none;
+  height: 50px;
 }

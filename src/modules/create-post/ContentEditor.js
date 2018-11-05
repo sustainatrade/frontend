@@ -7,6 +7,9 @@ import {
   Transition
 } from "semantic-ui-react";
 import Icon from "antd/lib/icon";
+import Menu from "antd/lib/menu";
+import AntButton from "antd/lib/button";
+import Dropdown from "antd/lib/dropdown";
 import "./ContentEditor.css";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
@@ -47,22 +50,19 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
   );
 });
 
-const WidgetSelector = React.memo(({ context }) => {
+const WidgetSelector = ({ context }) => {
   const {
     currentContent,
     setCurrentContent,
     defaultContentCode,
     contentKeys
   } = context;
-  // const [currentActiveTabCode, setCurrentActiveTabCode] = useState(
-  //   contentKeys[0]
-  // );
-  return (
-    <Tabs
-      activeKey={currentContent ? currentContent.code : defaultContentCode}
-      onChange={newActiveKey => {
+
+  const menu = (
+    <Menu
+      onClick={e => {
         const newCode = fromJS(currentContent)
-          .set("code", newActiveKey)
+          .set("code", e.key)
           .set("values", {})
           .toJS();
         console.log("newCode"); //TRACE
@@ -72,21 +72,35 @@ const WidgetSelector = React.memo(({ context }) => {
     >
       {contentKeys.map(cKey => {
         return (
-          <TabPane
-            tab={
-              <>
-                <Icon {...contents[cKey].icon} />
-              </>
-            }
-            key={cKey}
-          >
-            <div />
-          </TabPane>
+          <Menu.Item key={cKey}>
+            <Icon {...contents[cKey].icon} />
+            {contents[cKey].name}
+          </Menu.Item>
         );
       })}
-    </Tabs>
+    </Menu>
   );
-});
+  const code = get(currentContent, "code", defaultContentCode);
+  const selectedContent = contents[code];
+  console.log("selectedContent"); //TRACE
+  console.log(selectedContent); //TRACE
+  if (!selectedContent) return null;
+  return (
+    <>
+      <Dropdown
+        overlay={menu}
+        trigger={["click"]}
+        placement="topLeft"
+        size="large"
+      >
+        <AntButton style={{ marginTop: 5 }}>
+          <Icon {...selectedContent.icon} />
+          {selectedContent.name} <Icon type="down" />
+        </AntButton>
+      </Dropdown>
+    </>
+  );
+};
 
 export default function({ post, size, onSizeChanged }) {
   const context = useContext(PostWidgetContext.Context);

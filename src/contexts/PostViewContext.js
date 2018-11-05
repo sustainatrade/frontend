@@ -142,7 +142,13 @@ class Provider extends React.Component {
       });
     },
     editting: false,
-    setEditMode: flag => this.setState({ editting: flag })
+    editRefNo: null,
+    isEditting: refNo => {
+      const { editting, editRefNo } = this.state;
+      return editting && editRefNo === refNo;
+    },
+    setEditMode: (flag, refNo) =>
+      this.setState({ editting: flag, editRefNo: flag ? refNo : null })
   };
 
   //TESTING

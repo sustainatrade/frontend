@@ -33,6 +33,7 @@ import ResponsiveContext from "../../contexts/Responsive";
 import ThemeContext from "../../contexts/ThemeContext";
 import PostReplyContext from "../../contexts/PostReplyContext";
 import PostItem from "../post-item";
+import PostWidgetContext from "../../contexts/PostWidgetContext";
 
 const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
 
@@ -61,22 +62,27 @@ const PostHeader = React.memo(({ post }) => {
   return (
     <div
       style={{
+        backgroundColor: "snow",
         padding: contentPadding,
-        paddingBottom: 0,
+        paddingBottom: 5,
         paddingTop: isMobile ? 0 : 15
       }}
     >
       {isReply ? (
         <>
-          <Segment color="blue">
-            <PostItem
-              isCompact
-              post={post.parentPost}
-              basic
-              withLabels={false}
-            />
-          </Segment>
-          <Divider horizontal>Reply</Divider>
+          {!!post.parentPost && (
+            <>
+              <Segment color="blue">
+                <PostItem
+                  isCompact
+                  post={post.parentPost}
+                  basic
+                  withLabels={false}
+                />
+              </Segment>
+              <Divider horizontal>Reply</Divider>
+            </>
+          )}
         </>
       ) : (
         <Header as="h1">{post.title}</Header>
@@ -122,7 +128,8 @@ const PostContents = React.memo(({ post }) => {
 });
 
 function PostFooter({ post }) {
-  const { parentPost: replyParentPost } = useContext(PostReplyContext.Context);
+  const { parentPost } = useContext(PostReplyContext.Context);
+  const replyParentPost = get(parentPost, "_refNo") === post._refNo;
   console.log("replyParentPost"); //TRACE
   console.log(replyParentPost); //TRACE
   return (
@@ -161,48 +168,58 @@ class PostView extends Component {
   render() {
     const {
       postRefNo,
-      postViewContext: { editting },
+      asReply,
+      postRef,
+      postViewContext: { editting, isEditting },
       layoutContext: { windowSize, contentStyle },
       themeContext: { secondaryBgColor }
     } = this.props;
     const { visibilityKey, width, height } = this.state;
     console.log("height"); //TRACE
     console.log(height); //TRACE
+    let sizeWrapperProps = {},
+      SizeWrapper = React.Fragment;
+    if (!asReply) {
+      SizeWrapper = Visibility;
+      sizeWrapperProps = {
+        key: visibilityKey,
+        fireOnMount: true,
+        onUpdate: this.handleOnScreen
+      };
+    }
+
     return (
-      <Query query={POST.query} variables={{ _refNo: postRefNo }}>
+      <Query
+        query={POST.query}
+        skip={!!postRef}
+        variables={{ _refNo: postRefNo }}
+      >
         {({ data, loading }) => {
-          const post = get(data, "Post.post");
+          const post = get(data, "Post.post", postRef);
+          console.log("postRef"); //TRACE
+          console.log(postRef); //TRACE
           if (loading && !post) return <Loader active inline="centered" />;
           return (
             <>
               <ResetReply post={post} />
               <Grid
-                doubling
-                columns={2}
                 className="content-panel"
-                style={{ margin: 0 }}
+                style={{ margin: "0 auto", maxWidth: 768 }}
               >
                 <Grid.Column
-                  width={10}
                   style={{
                     padding: 0,
-                    minHeight: windowSize.height - contentStyle.paddingTop,
-                    borderRight: "#00000017 solid 1px"
+                    minHeight: windowSize.height - contentStyle.paddingTop
                   }}
                 >
-                  <Visibility
-                    key={visibilityKey}
-                    fireOnMount
-                    onUpdate={this.handleOnScreen}
-                  >
-                    {editting ? (
+                  <SizeWrapper {...sizeWrapperProps}>
+                    {isEditting(post._refNo) ? (
                       <Suspense fallback={<Loader active inline="centered" />}>
                         <PostEditorWrapper post={post} />
                       </Suspense>
                     ) : (
                       <>
                         <PostHeader post={post} />
-                        <Divider />
                         <PostContents post={post} />
                         <PostFooter post={post} />
                       </>
@@ -211,10 +228,10 @@ class PostView extends Component {
                     <Divider hidden />
                     <Divider hidden />
                     <Divider hidden />
-                    <UserActions post={post} size={{ width }} />
-                  </Visibility>
+                    {/* <UserActions post={post} size={{ width }} /> */}
+                  </SizeWrapper>
                 </Grid.Column>
-                <Grid.Column
+                {/* <Grid.Column
                   width={6}
                   style={{
                     padding: 5,
@@ -223,7 +240,7 @@ class PostView extends Component {
                   }}
                 >
                   <PostComments post={post} />
-                </Grid.Column>
+                </Grid.Column> */}
               </Grid>
             </>
           );
@@ -233,10 +250,12 @@ class PostView extends Component {
   }
 }
 function ResetReply({ post }) {
-  const { reset } = useContext(PostReplyContext.Context);
+  const { reset: resetPostReply } = useContext(PostReplyContext.Context);
+  const { reset: resetPostWidget } = useContext(PostWidgetContext.Context);
   useEffect(
     () => {
-      reset();
+      resetPostReply();
+      resetPostWidget();
     },
     [post._refNo]
   );

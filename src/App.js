@@ -15,11 +15,14 @@ import get from "lodash/get";
 // Antd component styles here
 import "antd/lib/drawer/style/css";
 import "antd/lib/upload/style/css";
+import "antd/lib/menu/style/css";
+import "antd/lib/dropdown/style/css";
 import "antd/lib/modal/style/css";
 import "antd/lib/notification/style/css";
 import "antd/lib/slider/style/css";
 import "antd/lib/timeline/style/css";
 import "antd/lib/popover/style/css";
+import "antd/lib/button/style/css";
 import "antd/lib/icon/style/css";
 import "antd/lib/tabs/style/css";
 import "antd/lib/input/style/css";
@@ -70,7 +73,6 @@ function HeaderWrapper() {
 }
 
 class Root extends React.Component {
-
   render() {
     return (
       <RootContextProvider>

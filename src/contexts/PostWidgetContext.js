@@ -32,6 +32,9 @@ function Provider({ children }) {
     setContentKeys,
     contentEditorHeight,
     setContentEditorHeight,
+    reset() {
+      setCurrentContent(null);
+    },
     submitWidgetsFn: async (widgetArray, { newWidget } = {}) => {
       setState({ submitting: true });
       let hasDelete, hasCreate;

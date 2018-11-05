@@ -39,21 +39,13 @@ export default class MoreButton extends Component {
         onVisibleChange={showMore => this.setState({ showMore })}
         {...poProps}
       >
-        {isCompact ? (
-          <Label basic as="a" className="actn-lbl">
-            <center>
-              <Icon name="ellipsis horizontal" />
-            </center>
-          </Label>
-        ) : (
-          <Button
-            basic
-            size={size || ACTION_BUTTON_SIZE}
-            icon="ellipsis horizontal"
-            title="More"
-            {...rest}
-          />
-        )}
+        <Button
+          basic
+          size={size || ACTION_BUTTON_SIZE}
+          icon="ellipsis horizontal"
+          title="More"
+          {...rest}
+        />
       </Popover>
     );
   }
