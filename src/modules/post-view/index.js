@@ -22,6 +22,7 @@ import { POST } from "./../../gql-schemas";
 import moment from "moment";
 import { contents, MODES } from "./../../components/widgets";
 import UserActions from "./UserActions";
+import IconScroller from "../../components/icon-scroller/IconScroller";
 import PostActions from "./PostActions";
 import { PostComments } from "./index.old";
 import PostReply from "./PostReply";
@@ -123,6 +124,7 @@ const PostContents = React.memo(({ post }) => {
           </div>
         );
       })}
+      <PostActions post={post} />
     </>
   );
 });
@@ -136,7 +138,6 @@ function PostFooter({ post }) {
     <>
       {!replyParentPost ? (
         <>
-          <PostActions post={post} />
           <PostReplies post={post} />
         </>
       ) : (
@@ -178,7 +179,7 @@ class PostView extends Component {
     console.log("height"); //TRACE
     console.log(height); //TRACE
     let sizeWrapperProps = {},
-      SizeWrapper = React.Fragment;
+      SizeWrapper = wprops => <div>{wprops.children}</div>;
     if (!asReply) {
       SizeWrapper = Visibility;
       sizeWrapperProps = {
@@ -198,29 +199,55 @@ class PostView extends Component {
           const post = get(data, "Post.post", postRef);
           console.log("postRef"); //TRACE
           console.log(postRef); //TRACE
+          const gridHeight = windowSize.height - contentStyle.paddingTop;
+          const scrollerWidth = 50;
           if (loading && !post) return <Loader active inline="centered" />;
           return (
             <>
               <ResetReply post={post} />
               <Grid
                 className="content-panel"
-                style={{ margin: "0 auto", maxWidth: 768 }}
+                style={{
+                  margin: "0 auto",
+                  maxWidth: 768
+                }}
               >
                 <Grid.Column
                   style={{
                     padding: 0,
-                    minHeight: windowSize.height - contentStyle.paddingTop
+                    minHeight: gridHeight
                   }}
                 >
-                  <SizeWrapper {...sizeWrapperProps}>
+                  {!asReply && (
+                    <>
+                      <IconScroller height={gridHeight} width={scrollerWidth} />
+                      <div
+                        style={{
+                          position: "relative",
+                          backgroundColor: "white"
+                        }}
+                      >
+                        <PostHeader post={post} />
+                        <PostContents post={post} />
+                      </div>
+                    </>
+                  )}
+                  <SizeWrapper
+                    {...sizeWrapperProps}
+                    style={{ marginLeft: scrollerWidth }}
+                  >
                     {isEditting(post._refNo) ? (
                       <Suspense fallback={<Loader active inline="centered" />}>
                         <PostEditorWrapper post={post} />
                       </Suspense>
                     ) : (
                       <>
-                        <PostHeader post={post} />
-                        <PostContents post={post} />
+                        {asReply && (
+                          <>
+                            <PostHeader post={post} />
+                            <PostContents post={post} />
+                          </>
+                        )}
                         <PostFooter post={post} />
                       </>
                     )}
