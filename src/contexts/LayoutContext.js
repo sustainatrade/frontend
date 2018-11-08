@@ -15,7 +15,7 @@ function Provider({ children }) {
   const contentStyle = {};
   const { isMobile } = useContext(ResponsiveCtx);
   // contentStyle.paddingTop = !!subHeader ? 100 : 50;
-  contentStyle.paddingTop = 50;
+  contentStyle.paddingTop = !!subHeader ? 100 : 50;
   contentStyle.paddingLeft = isMobile ? 0 : 250;
   contentStyle.paddingRight = 0;
 

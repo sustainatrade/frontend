@@ -154,7 +154,13 @@ function PostFooter({ post }) {
 }
 
 class PostView extends Component {
-  state = { showActions: false, width: null, height: null, visibilityKey: 1 };
+  state = {
+    showActions: false,
+    width: null,
+    pixelsPassed: 0,
+    height: null,
+    visibilityKey: 1
+  };
 
   handleOnScreen = (e, { calculations }) => {
     const { height, width } = this.state;

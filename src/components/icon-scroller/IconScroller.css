@@ -3,3 +3,8 @@
   text-align: center;
   padding: 5px;
 }
+
+.icon-button {
+  float: right;
+  position: relative;
+}
