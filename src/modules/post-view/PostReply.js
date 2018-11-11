@@ -4,6 +4,7 @@ import { Loader, Button } from "semantic-ui-react";
 import { Query, Mutation } from "react-apollo";
 import { LAST_DRAFT } from "../../gql-schemas";
 import get from "lodash/get";
+import "./PostReply.css";
 // import Modal from "antd/lib/modal";
 
 const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
@@ -28,8 +29,8 @@ export default function PostReply() {
 
             if (loading) return <Loader active inline="centered" />;
             return (
-              <>
-                <div className="reply-header">
+              <div className="create-reply">
+                <div className="create-reply-header">
                   <span>Reply</span>
                   <Button
                     size="large"
@@ -56,7 +57,7 @@ export default function PostReply() {
                   />
                 </div>
                 <PostEditor post={reply} />
-              </>
+              </div>
             );
           }}
         </Query>

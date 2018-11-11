@@ -7,7 +7,8 @@ function Provider({ children }) {
   // const [subHeader, showSubHeader] = useState(null);
 
   const contextState = {
-    secondaryBgColor: "#f3f4f5"
+    secondaryBgColor: "#f3f4f5",
+    mainBgColor: "seagreen"
   };
   return <Context.Provider value={contextState}>{children}</Context.Provider>;
 }

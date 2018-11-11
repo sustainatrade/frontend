@@ -3,7 +3,7 @@ import WidgetBase from "./../base/WidgetBase";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
 import { MODES } from "../index";
-import { Icon, Input, Dropdown, Label } from "semantic-ui-react";
+import { Icon, Input, Dropdown, Label, Segment } from "semantic-ui-react";
 import { categoryArray, getCategory } from "./buy-item";
 
 const options = [{ key: "php", text: "Php", value: "php" }];
@@ -11,7 +11,7 @@ const options = [{ key: "php", text: "Php", value: "php" }];
 const SellItemView = props => {
   const cat = getCategory(props);
   return (
-    <div>
+    <Segment basic secondary>
       <Label basic size="small" pointing="right" color="green">
         SELLING
       </Label>
@@ -29,7 +29,7 @@ const SellItemView = props => {
           </a>
         </>
       )}
-    </div>
+    </Segment>
   );
 };
 

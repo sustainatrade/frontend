@@ -1,10 +1,20 @@
-.icon-scoller {
+.icon-scroller {
+  background-color: snow;
   position: fixed;
   text-align: center;
-  padding: 5px;
+  padding: 2px;
+  z-index: 1;
+}
+
+.icon-scroller .edge {
+  position: fixed;
+  width: 5px;
+  border-left-width: 5px;
+  margin-left: 15px;
 }
 
 .icon-button {
   float: right;
-  position: relative;
+  position: fixed;
+  margin-left: -9px;
 }

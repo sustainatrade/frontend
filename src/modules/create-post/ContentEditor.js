@@ -19,6 +19,7 @@ import Tabs from "antd/lib/tabs";
 import PostWidgetContext from "../../contexts/PostWidgetContext";
 import { fromJS } from "immutable";
 import nanoid from "nanoid";
+import Responsive from "../../contexts/Responsive";
 
 const TabPane = Tabs.TabPane;
 
@@ -86,7 +87,7 @@ const WidgetSelector = ({ context }) => {
   console.log(selectedContent); //TRACE
   if (!selectedContent) return null;
   return (
-    <>
+    <div className="widget-selector">
       <Dropdown
         overlay={menu}
         trigger={["click"]}
@@ -98,12 +99,13 @@ const WidgetSelector = ({ context }) => {
           {selectedContent.name} <Icon type="down" />
         </AntButton>
       </Dropdown>
-    </>
+    </div>
   );
 };
 
 export default function({ post, size, onSizeChanged }) {
   const context = useContext(PostWidgetContext.Context);
+  const { isMobile } = useContext(Responsive.Context);
   const { currentContent } = context;
   const [vKey, setVKey] = useState(null);
   // if (!currentContent) return null;
@@ -112,6 +114,11 @@ export default function({ post, size, onSizeChanged }) {
     onSizeChanged && onSizeChanged(calculations);
   }, 500);
 
+  const ceActionStyles = { width: size.width - 2, minHeight: size.height };
+  if (isMobile) {
+    ceActionStyles.width = "100%";
+    ceActionStyles.left = 0;
+  }
   return (
     <Transition
       visible={!!currentContent}
@@ -121,10 +128,7 @@ export default function({ post, size, onSizeChanged }) {
         setVKey(nanoid());
       }}
     >
-      <div
-        className="content-editor-actions"
-        style={{ width: size.width - 2, minHeight: size.height }}
-      >
+      <div className="content-editor-actions" style={ceActionStyles}>
         <Visibility
           key={vKey}
           fireOnMount
@@ -133,7 +137,9 @@ export default function({ post, size, onSizeChanged }) {
           onUpdate={handleOnScreen}
         >
           <WidgetSelector context={context} />
-          <WidgetEditor postRefNo={post._refNo} context={context} />
+          <div className="content-editor-controls">
+            <WidgetEditor postRefNo={post._refNo} context={context} />
+          </div>
         </Visibility>
       </div>
     </Transition>

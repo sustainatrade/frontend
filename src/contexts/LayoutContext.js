@@ -8,6 +8,7 @@ function Provider({ children }) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [subHeader, showSubHeader] = useState(null);
   const [hideBackButton, setHideBackButton] = useState(false);
+  const [showIconScroller, setShowIconScroller] = useState(false);
   const windowSize = useWindowSize();
   // const [contentStyle, setContentStyle] = useState({
 
@@ -27,6 +28,9 @@ function Provider({ children }) {
     showSubHeader,
     hideBackButton,
     setHideBackButton,
+    showIconScroller,
+    setShowIconScroller,
+    iconScrollWidth: 18,
     contentPadding: 10,
     windowSize
   };

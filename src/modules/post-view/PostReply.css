@@ -1,0 +1,11 @@
+.create-reply {
+  border: solid 1px darkcyan;
+}
+.create-reply-header {
+  height: 52px;
+  background-color: darkcyan;
+  padding: 5px;
+  color: powderblue;
+  font-size: x-large;
+  font-weight: bold;
+}

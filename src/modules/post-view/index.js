@@ -178,7 +178,12 @@ class PostView extends Component {
       asReply,
       postRef,
       postViewContext: { editting, isEditting },
-      layoutContext: { windowSize, contentStyle },
+      layoutContext: {
+        windowSize,
+        contentStyle,
+        showIconScroller,
+        iconScrollWidth
+      },
       themeContext: { secondaryBgColor }
     } = this.props;
     const { visibilityKey, width, height } = this.state;
@@ -203,11 +208,10 @@ class PostView extends Component {
       >
         {({ data, loading }) => {
           const post = get(data, "Post.post", postRef);
-          console.log("postRef"); //TRACE
-          console.log(postRef); //TRACE
+
           const gridHeight = windowSize.height - contentStyle.paddingTop;
-          const scrollerWidth = 50;
           if (loading && !post) return <Loader active inline="centered" />;
+
           return (
             <>
               <ResetReply post={post} />
@@ -226,11 +230,17 @@ class PostView extends Component {
                 >
                   {!asReply && (
                     <>
-                      <IconScroller height={gridHeight} width={scrollerWidth} />
+                      {showIconScroller && (
+                        <IconScroller
+                          height={gridHeight}
+                          width={iconScrollWidth}
+                        />
+                      )}
                       <div
                         style={{
                           position: "relative",
-                          backgroundColor: "white"
+                          backgroundColor: "white",
+                          zIndex: 2
                         }}
                       >
                         <PostHeader post={post} />
@@ -240,7 +250,7 @@ class PostView extends Component {
                   )}
                   <SizeWrapper
                     {...sizeWrapperProps}
-                    style={{ marginLeft: scrollerWidth }}
+                    // style={{ marginLeft: scrollerWidth }}
                   >
                     {isEditting(post._refNo) ? (
                       <Suspense fallback={<Loader active inline="centered" />}>
@@ -298,6 +308,17 @@ export default function PostViewWrapper(props) {
   const layoutContext = useContext(LayoutContext.Context);
   const postViewContext = useContext(PostViewContext.Context);
   const themeContext = useContext(ThemeContext.Context);
+  const postReply = useContext(PostReplyContext.Context);
+  const showScroller = get(postReply, "parentPost._refNo") !== props.postRefNo;
+  useEffect(
+    () => {
+      const { setShowIconScroller, showIconScroller } = layoutContext;
+      if (showIconScroller !== showScroller) {
+        setShowIconScroller(showScroller);
+      }
+    },
+    [showScroller]
+  );
   return (
     <PostView
       {...props}
