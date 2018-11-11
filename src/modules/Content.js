@@ -106,7 +106,7 @@ function SubHeaderWrapper() {
     <div style={style}>
       {!hideBackButton && (
         <Button
-          icon="reply"
+          icon="arrow left"
           onClick={() => {
             window.history.back();
           }}
@@ -122,6 +122,7 @@ export default function() {
     LayoutContext
   );
   const { isMobile, stretched } = useContext(ResponsiveContext);
+  const { mainBgColor } = useContext(ThemeContext.Context);
 
   useEffect(
     () => {
@@ -135,7 +136,7 @@ export default function() {
   return (
     <div
       className={stretched ? "content-panel" : undefined}
-      style={contentStyle}
+      style={{ ...contentStyle }}
     >
       {showSidebar && <SidebarWrapper />}
       {!!subHeader && <SubHeaderWrapper />}

@@ -12,6 +12,7 @@ import PostViewContext from "./PostViewContext";
 import CategoryContext from "./CategoryContext";
 import PostWidgetContext from "./PostWidgetContext";
 import PostReplyContext from "./PostReplyContext";
+import PostStackContext from "./PostStackContext";
 import ErrorContext from "./ErrorContext";
 import LayoutContext from "./LayoutContext";
 import ThemeContext from "./ThemeContext";
@@ -22,6 +23,7 @@ const contexts = {
   postWidget: PostWidgetContext,
   postReply: PostReplyContext,
   postView: PostViewContext,
+  postStack: PostStackContext,
   category: CategoryContext,
   user: UserContext,
   layout: LayoutContext,

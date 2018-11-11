@@ -22,6 +22,7 @@ import { POST } from "./../../gql-schemas";
 import moment from "moment";
 import { contents, MODES } from "./../../components/widgets";
 import UserActions from "./UserActions";
+import IconScroller from "../../components/icon-scroller/IconScroller";
 import PostActions from "./PostActions";
 import { PostComments } from "./index.old";
 import PostReply from "./PostReply";
@@ -123,6 +124,7 @@ const PostContents = React.memo(({ post }) => {
           </div>
         );
       })}
+      <PostActions post={post} />
     </>
   );
 });
@@ -136,7 +138,6 @@ function PostFooter({ post }) {
     <>
       {!replyParentPost ? (
         <>
-          <PostActions post={post} />
           <PostReplies post={post} />
         </>
       ) : (
@@ -153,7 +154,13 @@ function PostFooter({ post }) {
 }
 
 class PostView extends Component {
-  state = { showActions: false, width: null, height: null, visibilityKey: 1 };
+  state = {
+    showActions: false,
+    width: null,
+    pixelsPassed: 0,
+    height: null,
+    visibilityKey: 1
+  };
 
   handleOnScreen = (e, { calculations }) => {
     const { height, width } = this.state;
@@ -171,14 +178,19 @@ class PostView extends Component {
       asReply,
       postRef,
       postViewContext: { editting, isEditting },
-      layoutContext: { windowSize, contentStyle },
+      layoutContext: {
+        windowSize,
+        contentStyle,
+        showIconScroller,
+        iconScrollWidth
+      },
       themeContext: { secondaryBgColor }
     } = this.props;
     const { visibilityKey, width, height } = this.state;
     console.log("height"); //TRACE
     console.log(height); //TRACE
     let sizeWrapperProps = {},
-      SizeWrapper = React.Fragment;
+      SizeWrapper = wprops => <div>{wprops.children}</div>;
     if (!asReply) {
       SizeWrapper = Visibility;
       sizeWrapperProps = {
@@ -196,31 +208,62 @@ class PostView extends Component {
       >
         {({ data, loading }) => {
           const post = get(data, "Post.post", postRef);
-          console.log("postRef"); //TRACE
-          console.log(postRef); //TRACE
+
+          const gridHeight = windowSize.height - contentStyle.paddingTop;
           if (loading && !post) return <Loader active inline="centered" />;
+
           return (
             <>
               <ResetReply post={post} />
               <Grid
                 className="content-panel"
-                style={{ margin: "0 auto", maxWidth: 768 }}
+                style={{
+                  margin: "0 auto",
+                  maxWidth: 768
+                }}
               >
                 <Grid.Column
                   style={{
                     padding: 0,
-                    minHeight: windowSize.height - contentStyle.paddingTop
+                    minHeight: gridHeight
                   }}
                 >
-                  <SizeWrapper {...sizeWrapperProps}>
+                  {!asReply && (
+                    <>
+                      {showIconScroller && (
+                        <IconScroller
+                          height={gridHeight}
+                          width={iconScrollWidth}
+                        />
+                      )}
+                      <div
+                        style={{
+                          position: "relative",
+                          backgroundColor: "white",
+                          zIndex: 2
+                        }}
+                      >
+                        <PostHeader post={post} />
+                        <PostContents post={post} />
+                      </div>
+                    </>
+                  )}
+                  <SizeWrapper
+                    {...sizeWrapperProps}
+                    // style={{ marginLeft: scrollerWidth }}
+                  >
                     {isEditting(post._refNo) ? (
                       <Suspense fallback={<Loader active inline="centered" />}>
                         <PostEditorWrapper post={post} />
                       </Suspense>
                     ) : (
                       <>
-                        <PostHeader post={post} />
-                        <PostContents post={post} />
+                        {asReply && (
+                          <>
+                            <PostHeader post={post} />
+                            <PostContents post={post} />
+                          </>
+                        )}
                         <PostFooter post={post} />
                       </>
                     )}
@@ -265,6 +308,17 @@ export default function PostViewWrapper(props) {
   const layoutContext = useContext(LayoutContext.Context);
   const postViewContext = useContext(PostViewContext.Context);
   const themeContext = useContext(ThemeContext.Context);
+  const postReply = useContext(PostReplyContext.Context);
+  const showScroller = get(postReply, "parentPost._refNo") !== props.postRefNo;
+  useEffect(
+    () => {
+      const { setShowIconScroller, showIconScroller } = layoutContext;
+      if (showIconScroller !== showScroller) {
+        setShowIconScroller(showScroller);
+      }
+    },
+    [showScroller]
+  );
   return (
     <PostView
       {...props}

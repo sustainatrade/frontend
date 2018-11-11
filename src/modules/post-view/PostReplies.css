@@ -1,7 +1,14 @@
-.replies-header {
+.replies {
   background-color: snow;
+}
+
+.replies .segment {
+  border: none;
+}
+.replies-header {
   padding: 5px;
   height: 40px;
+  position: relative;
 }
 
 .replies-header span {
@@ -16,8 +23,20 @@
 }
 
 .reply .reply-header {
-  height: 40px;
+  height: 30px;
   background-color: white;
+}
+
+.reply .reply-header .name a {
+  color: darkgray !important;
+  font-weight: bold;
+}
+.reply .reply-header .name a:hover {
+  color: inherit !important;
+}
+
+.reply .extra {
+  color: darkgray !important;
 }
 
 .reply > div {

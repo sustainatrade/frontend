@@ -172,7 +172,7 @@ function WidgetBase(props) {
                     content={
                       <>
                         <Icon {...icon} />
-                        {saved ? " Saved" : ` Save ${name}`}
+                        {saved ? " Saved" : ` Preview ${name}`}
                       </>
                     }
                     size="large"
