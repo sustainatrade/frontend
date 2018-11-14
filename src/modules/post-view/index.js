@@ -138,7 +138,7 @@ function PostFooter({ post }) {
     <>
       {!replyParentPost ? (
         <>
-          <PostReplies post={post} />
+          <PostReplies post={post} expanded isRoot />
         </>
       ) : (
         <Transition

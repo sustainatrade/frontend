@@ -16,7 +16,7 @@ function Provider({ children }) {
   const contentStyle = {};
   const { isMobile } = useContext(ResponsiveCtx);
   // contentStyle.paddingTop = !!subHeader ? 100 : 50;
-  contentStyle.paddingTop = !!subHeader ? 100 : 50;
+  contentStyle.paddingTop = !!subHeader && !isMobile ? 100 : 50;
   contentStyle.paddingLeft = isMobile ? 0 : 250;
   contentStyle.paddingRight = 0;
 
@@ -30,7 +30,7 @@ function Provider({ children }) {
     setHideBackButton,
     showIconScroller,
     setShowIconScroller,
-    iconScrollWidth: 18,
+    iconScrollWidth: 5,
     contentPadding: 10,
     windowSize
   };
