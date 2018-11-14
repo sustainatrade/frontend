@@ -9,7 +9,7 @@ import { List } from "immutable";
 export const Context = React.createContext({});
 
 function Provider({ children }) {
-  const [postStack, setStack] = useState(List([]));
+  const [postStack, setStack] = useState(List([])); //current posts visible to screen
 
   function get(stack, id) {
     return stack.findIndex(post => post.id === id);

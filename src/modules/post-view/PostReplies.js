@@ -86,10 +86,16 @@ function ReplyItem({ reply, showDivider }) {
           continuous
           offset={[0, 200]}
           onOnScreen={useCallback(() => {
-            !onScreen && setOnScreen(true);
+            if (!onScreen) {
+              // console.log("on " + reply.id);
+              setOnScreen(true);
+            }
           })}
           onOffScreen={useCallback(() => {
-            onScreen && setOnScreen(false);
+            if (onScreen) {
+              // console.log("off " + reply.id);
+              setOnScreen(false);
+            }
           })}
         >
           <div className="reply">
