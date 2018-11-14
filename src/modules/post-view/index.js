@@ -228,51 +228,49 @@ class PostView extends Component {
                     minHeight: gridHeight
                   }}
                 >
-                  {!asReply && (
-                    <>
-                      {showIconScroller && (
-                        <IconScroller
-                          height={gridHeight}
-                          width={iconScrollWidth}
-                        />
-                      )}
-                      <div
-                        style={{
-                          position: "relative",
-                          backgroundColor: "white",
-                          zIndex: 2
-                        }}
-                      >
-                        <PostHeader post={post} />
-                        <PostContents post={post} />
-                      </div>
-                    </>
-                  )}
-                  <SizeWrapper
-                    {...sizeWrapperProps}
-                    // style={{ marginLeft: scrollerWidth }}
-                  >
-                    {isEditting(post._refNo) ? (
-                      <Suspense fallback={<Loader active inline="centered" />}>
-                        <PostEditorWrapper post={post} />
-                      </Suspense>
-                    ) : (
+                  {!asReply &&
+                    !isEditting(post._refNo) && (
                       <>
-                        {asReply && (
-                          <>
-                            <PostHeader post={post} />
-                            <PostContents post={post} />
-                          </>
+                        {showIconScroller && (
+                          <IconScroller
+                            height={gridHeight}
+                            width={iconScrollWidth}
+                          />
                         )}
-                        <PostFooter post={post} />
+                        <div
+                          style={{
+                            position: "relative",
+                            backgroundColor: "white",
+                            zIndex: 2
+                          }}
+                        >
+                          <PostHeader post={post} />
+                          <PostContents post={post} />
+                        </div>
                       </>
                     )}
-
-                    <Divider hidden />
-                    <Divider hidden />
-                    <Divider hidden />
-                    {/* <UserActions post={post} size={{ width }} /> */}
-                  </SizeWrapper>
+                  {isEditting(post._refNo) ? (
+                    <Suspense fallback={<Loader active inline="centered" />}>
+                      <PostEditorWrapper post={post} />
+                    </Suspense>
+                  ) : (
+                    <SizeWrapper
+                      {...sizeWrapperProps}
+                      // style={{ marginLeft: scrollerWidth }}
+                    >
+                      {asReply && (
+                        <>
+                          <PostHeader post={post} />
+                          <PostContents post={post} />
+                        </>
+                      )}
+                      <PostFooter post={post} />
+                      <Divider hidden />
+                      <Divider hidden />
+                      <Divider hidden />
+                      {/* <UserActions post={post} size={{ width }} /> */}
+                    </SizeWrapper>
+                  )}
                 </Grid.Column>
                 {/* <Grid.Column
                   width={6}

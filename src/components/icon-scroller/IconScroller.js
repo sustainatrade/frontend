@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import "./IconScroller.css";
 import Button from "antd/lib/button";
 import Icon from "antd/lib/icon";
@@ -19,12 +19,25 @@ function Edges({ edges }) {
   return (
     <>
       <div className="edge" style={defaultEdgeStyle} />
-      {edges.map(edge => {
-        const edgeY = EDGE_OFFSET + edge.offsetY;
+      {edges.map((edge, ii) => {
+        let edgeY = EDGE_OFFSET + edge.offsetY;
         const border = {
           borderLeftColor: "gainsboro",
-          borderLeftStyle: "solid"
+          borderLeftStyle: "dashed"
         };
+        // if (edge)
+        const nextEdge = get(edges, [ii + 1]);
+        if (nextEdge) {
+          console.log("nextEdge"); //TRACE
+          console.log(edge, nextEdge); //TRACE
+          if (nextEdge.parentRefNo === edge.refNo) {
+            border.borderLeftColor = "darkblue";
+            border.borderLeftStyle = "solid";
+          } else if (nextEdge.parentRefNo === edge.parentRefNo) {
+            border.borderLeftColor = "gainsboro";
+            border.borderLeftStyle = "solid";
+          }
+        }
         return (
           <div
             key={edge.id}
@@ -41,34 +54,39 @@ export default function IconScroller({ height, width }) {
   const { postStack } = useContext(PostStackContext.Context);
   const { y: scrollY } = useWindowScrollPosition();
   const { contentStyle } = useContext(LayoutContext.Context);
+  const ctrlRef = useRef(null);
+  let edges = [];
 
-  const edges = [];
-
-  postStack.map(post => {
-    const curEl = get(post, "ref.current");
+  const ctrlOffsetY = contentStyle.paddingTop;
+  postStack.map(postObj => {
+    const curEl = get(postObj, "ref.current");
     const { y: offsetTop } = curEl.getBoundingClientRect();
     // console.log("mount parents", parentEl, parentEl.parentElement);
-
     offsetTop &&
       edges.push({
-        id: post.id,
-        parentId: post.parentPostRefNo,
+        id: postObj.id,
+        refNo: postObj.post._refNo,
+        parentRefNo: postObj.post.parentPostRefNo,
         offsetY: offsetTop - contentStyle.paddingTop
       });
   });
+  edges = edges.sort((e1, e2) => e1.offsetY - e2.offsetY);
   return (
-    <div className="icon-scroller" style={{ height, width }}>
+    <div ref={ctrlRef} className="icon-scroller" style={{ height, width }}>
       <Edges edges={edges} />
-      {edges.map((iconBtn, i) => {
-        const iconTop = EDGE_OFFSET + iconBtn.offsetY;
+      {edges.map((edge, i) => {
+        let iconTop = EDGE_OFFSET + edge.offsetY;
+        if (iconTop < ctrlOffsetY) {
+          iconTop = ctrlOffsetY;
+        }
         return (
           <Button
-            key={iconBtn.id}
+            key={edge.id}
             shape="circle"
             size="large"
             className="icon-button"
             style={{ top: iconTop }}
-            title={iconBtn.id}
+            title={edge.id}
           >
             <Icon type="up-circle" theme="outlined" />
           </Button>
