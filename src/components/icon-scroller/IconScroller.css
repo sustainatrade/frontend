@@ -1,5 +1,5 @@
 .icon-scroller {
-  background-color: snow;
+  background-color: transparent;
   position: fixed;
   text-align: center;
   padding: 2px;
@@ -13,6 +13,9 @@
   margin-left: 15px;
 }
 
+.icon-scroller .reply-head {
+  
+}
 .icon-button {
   float: right;
   position: fixed;
