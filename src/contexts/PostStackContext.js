@@ -9,7 +9,7 @@ import { List } from "immutable";
 export const Context = React.createContext({});
 
 function Provider({ children }) {
-  const [postStack, setStack] = useState(List([]));
+  const [postStack, setStack] = useState(List([])); //current posts visible to screen
 
   function get(stack, id) {
     return stack.findIndex(post => post.id === id);
@@ -19,10 +19,16 @@ function Provider({ children }) {
     get,
     add({ post, ...rest }) {
       setStack(stack => {
-        if (get(stack, post.id) < 0) {
-          return stack.push({ id: post.id, post, ...rest });
+        const idx = get(stack, post.id);
+        const obj = { id: post.id, post, ...rest };
+        if (idx < 0) {
+          return stack.push(obj);
+        } else {
+          const mutatedObj = Object.assign(stack.get(idx), obj);
+          console.log("mutatedObj"); //TRACE
+          console.log(mutatedObj); //TRACE
+          return stack.set(idx, mutatedObj);
         }
-        return stack;
       });
     },
     update(id, { post, ...rest }) {

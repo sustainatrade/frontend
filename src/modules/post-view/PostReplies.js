@@ -9,7 +9,10 @@ import {
   Dimmer,
   Visibility,
   Button,
+  List,
   Divider,
+  Transition,
+  Icon,
   Segment
 } from "semantic-ui-react";
 import { Query } from "react-apollo";
@@ -27,14 +30,29 @@ import PostView from "./index";
 import { useOnMount, useOnUnmount } from "react-hanger";
 import LayoutContext from "../../contexts/LayoutContext";
 
-function IconController({ post }) {
+// const DEPTH_INDENT = 50;
+
+function IconController({ post, head, tail }) {
   const itemEl = useRef(null);
   const { add, remove } = useContext(PostStackContext.Context);
+  // const { contentStyle } = useContext(LayoutContext.Context);
+  // const ctrlOffsetY = contentStyle.paddingTop;
 
   useOnMount(() => {
-    add({ post, offset: {}, ref: itemEl });
+    const obj = { post, offset: {} };
+    head && (obj.headEl = itemEl);
+    tail && (obj.tailEl = itemEl);
+    add(obj);
   });
   useOnUnmount(() => {
+    // const curEl = get(itemEl, "ref.current");
+    // const { y: offsetTop } = curEl.getBoundingClientRect();
+    // if (head && offsetTop > ctrlOffsetY) {
+    //   remove(post.id);
+    // }
+    // if (tail && offsetTop < ctrlOffsetY) {
+    //   remove(post.id);
+    // }
     remove(post.id);
   });
 
@@ -73,25 +91,37 @@ function ReplyItem({ reply, showDivider }) {
   const [expanded, setExpanded] = useState(false);
   const [onScreen, setOnScreen] = useState(false);
   const dimmed = false;
-  const { showIconScroller, setShowIconScroller, iconScrollWidth } = useContext(
-    LayoutContext.Context
-  );
+  const { contentStyle, iconScrollWidth } = useContext(LayoutContext.Context);
+  const ctrlOffsetY = contentStyle.paddingTop;
   // !onScreen && calculations.onScreen && this.setState({ onScreen: true });
+  let vStyle = { marginBottom: 15 };
+  if (expanded) {
+    vStyle.borderLeft = "solid 5px steelblue";
+  }
   return (
     <React.Fragment>
-      <Segment style={{ marginLeft: iconScrollWidth }}>
-        {onScreen && <IconController onScreen={onScreen} post={reply} />}
-        <Visibility
-          fireOnMount
-          continuous
-          offset={[0, 200]}
-          onOnScreen={useCallback(() => {
-            !onScreen && setOnScreen(true);
-          })}
-          onOffScreen={useCallback(() => {
-            onScreen && setOnScreen(false);
-          })}
-        >
+      {expanded &&
+        onScreen && <IconController head onScreen={onScreen} post={reply} />}
+
+      <Visibility
+        fireOnMount
+        continuous
+        style={vStyle}
+        offset={[0, ctrlOffsetY]}
+        onOnScreen={useCallback(() => {
+          if (!onScreen) {
+            // console.log("on " + reply.id);
+            setOnScreen(true);
+          }
+        })}
+        onOffScreen={useCallback(() => {
+          if (onScreen) {
+            // console.log("off " + reply.id);
+            setOnScreen(false);
+          }
+        })}
+      >
+        <Segment style={{ marginLeft: iconScrollWidth, marginBottom: 0 }}>
           <div className="reply">
             <div className="reply-header">
               <span className="name">
@@ -103,37 +133,47 @@ function ReplyItem({ reply, showDivider }) {
                 <PostItemDetailed
                   reply={reply}
                   onContentClick={useCallback(() => {
-                    console.log("content clicked"); //TRACE
+                    setExpanded(false);
                   })}
                 />
               ) : (
                 <PostItemCompact
                   reply={reply}
                   onContentClick={useCallback(() => {
-                    console.log("content clicked"); //TRACE
                     setExpanded(true);
                   })}
                 />
               )}
             </div>
           </div>
-        </Visibility>
-      </Segment>
+        </Segment>
+        <PostReplies post={reply} expanded={expanded} />
+      </Visibility>
+      {expanded &&
+        onScreen && <IconController tail onScreen={onScreen} post={reply} />}
     </React.Fragment>
   );
 }
 
-function ReplyHeader({ edges, limit }) {
+function ReplyHeader({ edges, limit, large }) {
   const { iconScrollWidth } = useContext(LayoutContext.Context);
   const totalReply = edges.length >= limit ? `${limit}+` : edges.length;
+  if (totalReply === 0) return <div />;
   return (
-    <div className="replies-header" style={{ marginLeft: iconScrollWidth }}>
+    <div
+      className="replies-header"
+      style={{
+        marginLeft: iconScrollWidth,
+        fontSize: large ? "large" : "small"
+      }}
+    >
+      <Icon name="level up alternate" rotated="clockwise" />
       <span>Replies ({totalReply})</span>
     </div>
   );
 }
 
-export default function PostReplies({ post }) {
+export default function PostReplies({ post, expanded, isRoot }) {
   const limit = 10;
   return (
     <Query
@@ -150,20 +190,22 @@ export default function PostReplies({ post }) {
 
         return (
           <div className="replies">
-            <ReplyHeader edges={edges} limit={limit} />
-            {edges.map((edge, ii) => {
-              const reply = edge.node;
-              return (
-                <React.Fragment key={edge.cursor}>
-                  <ReplyItem
-                    key={edge.cursor}
-                    showDivider={ii > 0}
-                    reply={reply}
-                  />
-                  <PostReplies post={reply} />
-                </React.Fragment>
-              );
-            })}
+            <ReplyHeader edges={edges} limit={limit} large={isRoot} />
+            <Transition.Group as={List} duration={200}>
+              {expanded &&
+                edges.map((edge, ii) => {
+                  const reply = edge.node;
+                  return (
+                    <List.Item key={edge.cursor}>
+                      <ReplyItem
+                        key={edge.cursor}
+                        showDivider={ii > 0}
+                        reply={reply}
+                      />
+                    </List.Item>
+                  );
+                })}
+            </Transition.Group>
           </div>
         );
       }}
