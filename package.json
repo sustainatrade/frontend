@@ -18,7 +18,7 @@
     "graphql": "14.0.2",
     "graphql-tag": "2.10.0",
     "history": "4.7.2",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "4.0.0-rc.12",
     "ioredis": "4.2.0",
     "loadable-components": "2.2.3",
     "lodash": "4.17.11",
@@ -32,14 +32,14 @@
     "react-content-loader": "3.2.0",
     "react-dom": "16.7.0-alpha.0",
     "react-facebook": "6.0.15",
-    "react-hanger": "^1.0.8",
+    "react-hanger": "1.0.8",
     "react-helmet": "5.2.0",
     "react-loadable": "5.5.0",
     "react-props-editor": "1.0.5",
     "react-scripts": "2.1.0",
     "semantic-ui-react": "0.83.0",
     "subscriptions-transport-ws": "0.9.15",
-    "the-platform": "^0.9.3"
+    "the-platform": "0.9.3"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=./src react-scripts start",
