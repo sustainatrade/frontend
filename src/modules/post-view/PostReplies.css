@@ -25,6 +25,8 @@
 .reply .reply-header {
   height: 30px;
   background-color: white;
+  border-bottom: solid 1px lavenderblush;
+  padding: 5px;
 }
 
 .reply .reply-header .name a {
@@ -40,9 +42,9 @@
 }
 
 .reply > div {
-  padding: 5px;
+  /* padding: 5px; */
 }
 
 .reply-content > .post-item {
-  padding-top: 0px !important;
+  padding-top: 20px !important;
 }

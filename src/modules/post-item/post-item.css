@@ -7,3 +7,8 @@
   padding-bottom: 5px !important;
   cursor: pointer;
 }
+
+.post-item-actions {
+  padding: 5px;
+  border-top: solid 1px lavenderblush;
+}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import nanoid from "nanoid";
+import get from "lodash/get";
 import { Dimmer, Button, Header, Divider, Icon } from "semantic-ui-react";
 
 function usePwaUpdateChecker(props) {
   let [updated, setUpdated] = useState(false);
   const [checked, setChecked] = useState(false);
 
-  useEffect(async () => {
+  async function checkStatus() {
     if (checked) return;
     try {
       const serverRequest = "/?t=" + nanoid();
@@ -20,7 +21,7 @@ function usePwaUpdateChecker(props) {
         serverRoot.text(),
         clientRoot.text()
       ]);
-      if (serverHtml === clientHtml) {
+      if (serverHtml === clientHtml || get(clientHtml, "length", 0) === 0) {
         console.log("no update needed");
         setChecked(true);
         return;
@@ -40,6 +41,10 @@ function usePwaUpdateChecker(props) {
       console.error(err);
       setChecked(true);
     }
+  }
+
+  useEffect(() => {
+    checkStatus();
   });
 
   return { updated };

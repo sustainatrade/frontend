@@ -12,6 +12,7 @@ const Preview = props => (
       textAlign: "left",
       whiteSpace: "pre-wrap",
       wordBreak: "break-word",
+      padding: "5px 15px",
       fontSize: props.fontSize
     }}
   >

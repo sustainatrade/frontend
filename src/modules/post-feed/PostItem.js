@@ -71,7 +71,7 @@ export const PostActions = ({
       const float = isDetailed ? "left" : "right";
       const dividerStyle = isDetailed ? {} : { margin: "4px 0px" };
       return (
-        <React.Fragment>
+        <div style={{ padding: 5 }}>
           {isDetailed && <Divider style={dividerStyle} />}
           <div style={{ float }}>
             <FollowButton post={post} isCompact={isCompact} />
@@ -88,15 +88,14 @@ export const PostActions = ({
             hidden={!isDetailed}
             style={dividerStyle}
           />
-          {!noLabels &&
-            !isCompact && (
-              <PostTags
-                post={post}
-                floated={float}
-                postFeedContext={postFeedContext}
-              />
-            )}
-        </React.Fragment>
+          {!noLabels && !isCompact && (
+            <PostTags
+              post={post}
+              floated={float}
+              postFeedContext={postFeedContext}
+            />
+          )}
+        </div>
       );
     }}
   </GlobalConsumer>
@@ -210,15 +209,11 @@ export default class PostItem extends Component {
             <Item className="post">
               {this.renderImage()}
               <Item.Content>
-                {!isCompact &&
-                  !detailed && (
-                    <div style={{ float: "right" }}>
-                      <PostActions
-                        isDetailed={this.props.detailed}
-                        post={post}
-                      />
-                    </div>
-                  )}
+                {!isCompact && !detailed && (
+                  <div style={{ float: "right" }}>
+                    <PostActions isDetailed={this.props.detailed} post={post} />
+                  </div>
+                )}
                 <Item.Header className="title" as={Link} to={getUrl(post)}>
                   {detailed ? (
                     <h1>{post.title}</h1>

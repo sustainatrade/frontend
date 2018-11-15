@@ -296,7 +296,7 @@ export default function PostEditor({ post }) {
     // contentEditorSize.height = pageContentHeight - 150 - size.height;
   }
   return (
-    <Container>
+    <div>
       <Visibility
         fireOnMount
         onUpdate={
@@ -326,6 +326,6 @@ export default function PostEditor({ post }) {
           />
         </div>
       </Visibility>
-    </Container>
+    </div>
   );
 }

@@ -100,9 +100,9 @@ function ReplyItem({ reply, showDivider }) {
   }
   return (
     <React.Fragment>
-      {expanded &&
-        onScreen && <IconController head onScreen={onScreen} post={reply} />}
-
+      {expanded && onScreen && (
+        <IconController head onScreen={onScreen} post={reply} />
+      )}
       <Visibility
         fireOnMount
         continuous
@@ -121,7 +121,9 @@ function ReplyItem({ reply, showDivider }) {
           }
         })}
       >
-        <Segment style={{ marginLeft: iconScrollWidth, marginBottom: 0 }}>
+        <Segment
+          style={{ marginLeft: iconScrollWidth, marginBottom: 0, padding: 0 }}
+        >
           <div className="reply">
             <div className="reply-header">
               <span className="name">
@@ -149,8 +151,9 @@ function ReplyItem({ reply, showDivider }) {
         </Segment>
         <PostReplies post={reply} expanded={expanded} />
       </Visibility>
-      {expanded &&
-        onScreen && <IconController tail onScreen={onScreen} post={reply} />}
+      {expanded && onScreen && (
+        <IconController tail onScreen={onScreen} post={reply} />
+      )}
     </React.Fragment>
   );
 }

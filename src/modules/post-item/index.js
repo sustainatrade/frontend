@@ -11,6 +11,7 @@ import FollowButton from "../post-feed/FollowButton";
 import { GlobalConsumer } from "../../contexts";
 import "./post-item.css";
 import PostReplyContext from "../../contexts/PostReplyContext";
+import BasicButton from "../../components/basic-button/BasicButton";
 console.log("contents"); //TRACE
 console.log(contents); //TRACE
 
@@ -36,7 +37,7 @@ const Actions = React.memo(({ post, canReply }) => {
       ) : (
         <GlobalConsumer>
           {({ user }) => (
-            <>
+            <div className="post-item-actions">
               <FollowButton post={post} size="mini" />
               <MoreButton
                 post={post}
@@ -45,16 +46,14 @@ const Actions = React.memo(({ post, canReply }) => {
                 floated="right"
               />
               {canReply && (
-                <Button
-                  basic
-                  size="mini"
+                <BasicButton
                   content="Reply"
-                  icon="reply"
+                  name="reply"
                   floated="right"
                   onClick={() => setParentPost(post)}
                 />
               )}
-            </>
+            </div>
           )}
         </GlobalConsumer>
       )}

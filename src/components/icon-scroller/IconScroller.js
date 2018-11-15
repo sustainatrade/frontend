@@ -9,7 +9,8 @@ import LayoutContext from "../../contexts/LayoutContext";
 
 // const ICON_HEIGHT = 24;
 const EDGE_OFFSET = 100;
-const BUTTON_OFFSET_X = 50;
+const BUTTON_OFFSET_Y = 35;
+const BUTTON_OFFSET_X = 18;
 function Edges({ edges }) {
   const defaultEdgeStyle = {
     borderLeftColor: "gainsboro",
@@ -94,13 +95,14 @@ export default function IconScroller({ height, width }) {
         if (iconTop < ctrlOffsetY) {
           const displayStyle = { width };
           displayStyle.top = ctrlOffsetY;
+          displayStyle.marginTop = BUTTON_OFFSET_Y * i;
           displayStyle.marginLeft = BUTTON_OFFSET_X * i;
-          const isLast = i === edges.length - 1;
+          // const isLast = i === edges.length - 1;
+          const isLast = true;
           return (
             <div key={edge.id} className="reply-head" style={displayStyle}>
               <Button
                 type={isLast ? "primary" : "dashed"}
-                size="large"
                 className="icon-button"
                 title={edge.id}
               >

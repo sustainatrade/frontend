@@ -5,6 +5,7 @@ import Popover from "antd/lib/popover";
 import MoreProps from "./MoreProps";
 
 import config from "config";
+import BasicButton from "../../components/basic-button/BasicButton";
 
 const ACTION_BUTTON_SIZE = config.posts.actionButtonSize;
 
@@ -39,10 +40,9 @@ export default class MoreButton extends Component {
         onVisibleChange={showMore => this.setState({ showMore })}
         {...poProps}
       >
-        <Button
-          basic
-          size={size || ACTION_BUTTON_SIZE}
-          icon="ellipsis horizontal"
+        <BasicButton
+          name="ellipsis horizontal"
+          floated="right"
           title="More"
           {...rest}
         />
