@@ -30,8 +30,6 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
 
   const ContentComponent = contents[currentContent.code].component;
   const currentRefNo = get(currentContent, "_refNo");
-  console.log("currentContent.values"); //TRACE
-  console.log(typeof currentContent.values, currentContent.values); //TRACE
   return (
     <div>
       <ContentComponent
@@ -45,7 +43,7 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
           // error.clear(PUBLISH_POST.key);
         }}
       >
-        {() => <div />}
+        {() => <div>x</div>}
       </ContentComponent>
     </div>
   );
@@ -83,8 +81,6 @@ const WidgetSelector = ({ context }) => {
   );
   const code = get(currentContent, "code", defaultContentCode);
   const selectedContent = contents[code];
-  console.log("selectedContent"); //TRACE
-  console.log(selectedContent); //TRACE
   if (!selectedContent) return null;
   return (
     <div className="widget-selector">

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import WidgetBase from "./../base/WidgetBase";
+import Content from "./../base/Content";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
 // import { TextArea } from "semantic-ui-react";
@@ -63,7 +63,7 @@ const TextEditor = React.memo(props => {
 export default class Text extends React.Component {
   render() {
     return (
-      <WidgetBase
+      <Content
         previewData={{
           text: "lorem ipsum dolor"
         }}

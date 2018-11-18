@@ -40,20 +40,16 @@ class Editor extends React.Component {
       values,
       editor: EditorComponent,
       onValuesChanged,
+      _refNo,
       children
     } = this.props;
     const { editValues } = this.state;
     return (
       <>
         <EditorComponent
+          _refNo={_refNo}
           defaultValues={values}
           updateValues={newValues => {
-            // const newEditValues = Object.assign(
-            //   {},
-            //   values || {},
-            //   editValues,
-            //   newValues
-            // );
             const newEditValues = fromJS(values || {})
               .mergeDeep(fromJS(editValues))
               .mergeDeep(fromJS(newValues))
@@ -109,7 +105,6 @@ function WidgetBase(props) {
       marginBottom: 5
     };
   }
-
   console.log("renditring");
 
   let RenderObj;
@@ -128,6 +123,7 @@ function WidgetBase(props) {
   }
   const ownProps = {
     context,
+    _refNo,
     values: values ? values : defaultValues
   };
   if (preview) {
@@ -139,7 +135,7 @@ function WidgetBase(props) {
     <Segment basic={basic} key={code} style={Object.assign(style, fittedStyle)}>
       <>
         {mode !== "editor" && <RenderObj {...ownProps} />}
-        {mode === "editor" && children ? (
+        {mode === "editor" ? (
           <Editor
             {...ownProps}
             editor={editor}
@@ -215,7 +211,6 @@ function WidgetBase(props) {
                       ]);
                     }}
                   />
-                  {children({ save: () => this.save(), hello: "haha" })}
                   <Divider hidden />
                 </>
               );

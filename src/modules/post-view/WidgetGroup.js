@@ -5,10 +5,9 @@ import {
   // Container
 } from "semantic-ui-react";
 import "./WidgetGroup.css";
-import { manifests } from "./../../components/widgets/";
 // import config from "./../../config";
 import { get, compact, sortBy } from "lodash";
-
+const manifests = {};
 export default class WidgetGroup extends Component {
   state = { activeWidgetIdx: 0 };
   render() {

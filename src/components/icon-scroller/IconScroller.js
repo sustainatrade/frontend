@@ -1,10 +1,17 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  useEffect
+} from "react";
 import "./IconScroller.css";
 import Button from "antd/lib/button";
 import Icon from "antd/lib/icon";
 import PostStackContext from "../../contexts/PostStackContext";
 import { useWindowScrollPosition } from "the-platform";
 import get from "lodash/get";
+import forEach from "lodash/forEach";
 import LayoutContext from "../../contexts/LayoutContext";
 
 // const ICON_HEIGHT = 24;
@@ -62,31 +69,36 @@ function Edges({ edges }) {
 
 export default function IconScroller({ height, width }) {
   const { postStack } = useContext(PostStackContext.Context);
-  const { y: scrollY } = useWindowScrollPosition();
   const { contentStyle } = useContext(LayoutContext.Context);
   const ctrlRef = useRef(null);
-  let edges = [];
+  const [edges, setEdges] = useState([]);
+  const { y: scrollY } = useWindowScrollPosition();
 
   const ctrlOffsetY = contentStyle.paddingTop;
-  postStack.map(postObj => {
-    const curEl = get(postObj, "headEl.current");
-    const { y: offsetTop } = curEl.getBoundingClientRect();
-    let tailOffsetY;
-    const tailEl = get(postObj, "tailEl.current");
-    if (tailEl) {
-      const { y: tailOffsetTop } = tailEl.getBoundingClientRect();
-      tailOffsetY = tailOffsetTop - contentStyle.paddingTop;
-    }
-    offsetTop &&
-      edges.push({
-        id: postObj.id,
-        refNo: postObj.post._refNo,
-        parentRefNo: postObj.post.parentPostRefNo,
-        offsetY: offsetTop - contentStyle.paddingTop,
-        tailOffsetY
-      });
+  useEffect(() => {
+    let newEdges = [];
+    postStack.forEach(postObj => {
+      const curEl = get(postObj, "headEl.current");
+      if (!curEl) return;
+      const { y: offsetTop } = curEl.getBoundingClientRect();
+      let tailOffsetY;
+      const tailEl = get(postObj, "tailEl.current");
+      if (tailEl) {
+        const { y: tailOffsetTop } = tailEl.getBoundingClientRect();
+        tailOffsetY = tailOffsetTop - contentStyle.paddingTop;
+      }
+      offsetTop &&
+        newEdges.push({
+          id: postObj.id,
+          refNo: postObj.post._refNo,
+          parentRefNo: postObj.post.parentPostRefNo,
+          offsetY: offsetTop - contentStyle.paddingTop,
+          tailOffsetY
+        });
+    });
+    newEdges = newEdges.sort((e1, e2) => e1.offsetY - e2.offsetY);
+    setEdges(newEdges);
   });
-  edges = edges.sort((e1, e2) => e1.offsetY - e2.offsetY);
   return (
     <div ref={ctrlRef} className="icon-scroller" style={{ height, width }}>
       {/* <Edges edges={edges} /> */}
@@ -105,6 +117,12 @@ export default function IconScroller({ height, width }) {
                 type={isLast ? "primary" : "dashed"}
                 className="icon-button"
                 title={edge.id}
+                onClick={() => {
+                  window.scrollTo({
+                    top: scrollY - EDGE_OFFSET + edge.offsetY,
+                    behavior: "smooth"
+                  });
+                }}
               >
                 <Icon type="up-circle" theme="outlined" />
               </Button>

@@ -92,71 +92,6 @@ const TitleEditor = React.memo(({ title, refNo }) => {
   );
 });
 
-function useContentSelector(post) {
-  const {
-    currentContent,
-    defaultContentCode,
-    setCurrentContent,
-    submitWidgetsFn
-  } = useContext(PostWidgetContext.Context);
-  const hasSelectedContent = useMemo(() => {
-    post.widgets.find(widget => {
-      return widget.code === get(currentContent, "code");
-    });
-  }, post.widgets);
-  console.log("hasSelectedContent"); //TRACE
-  console.log(hasSelectedContent); //TRACE
-  useEffect(
-    () => {
-      if (!hasSelectedContent) {
-        console.log("need select");
-        const lastWidget = last(post.widgets);
-        if (!lastWidget) {
-          // if (defaultContentCode)
-          //   submitWidgetsFn(
-          //     [
-          //       {
-          //         code: get(currentContent, "code", defaultContentCode),
-          //         postRefNo: post._refNo,
-          //         values: {}
-          //       }
-          //     ],
-          //     { newWidget: true }
-          //   );
-        } else {
-          console.log("setting last current", lastWidget);
-          setCurrentContent(lastWidget);
-        }
-      }
-    },
-    [post]
-  );
-  useEffect(
-    () => {
-      console.log("postwww"); //TRACE
-      console.log(post); //TRACE
-      const lastWidget = last(post.widgets);
-      if (!lastWidget) {
-        if (defaultContentCode)
-          submitWidgetsFn(
-            [
-              {
-                code: get(currentContent, "code", defaultContentCode),
-                postRefNo: post._refNo,
-                values: {}
-              }
-            ],
-            { newWidget: true }
-          );
-      } else {
-        console.log("setting last current", lastWidget);
-        setCurrentContent(lastWidget);
-      }
-    },
-    [!hasSelectedContent]
-  );
-}
-
 const ContentList = React.memo(({ post }) => {
   const { isMobile } = useContext(Responsive.Context);
   const {
@@ -166,10 +101,41 @@ const ContentList = React.memo(({ post }) => {
     submitWidgetsFn,
     submitting
   } = useContext(PostWidgetContext.Context);
-  useContentSelector(post);
+
+  const selectedContent = post.widgets.find(widget => {
+    return widget._refNo === get(currentContent, "_refNo");
+  });
+
+  useEffect(
+    () => {
+      if (!currentContent) {
+        console.log("need select");
+        const lastWidget = last(post.widgets);
+        if (!lastWidget) {
+        } else {
+          console.log("setting last current", lastWidget);
+          setCurrentContent(lastWidget);
+        }
+      }
+    },
+    [post]
+  );
+
+  useEffect(
+    () => {
+      if (selectedContent) {
+        setCurrentContent(selectedContent);
+        return;
+      }
+
+      const lastWidget = last(post.widgets);
+      console.log("setting last widget");
+      setCurrentContent(lastWidget);
+    },
+    [selectedContent]
+  );
+
   const contents = post.widgets || [];
-  console.log("currentContent"); //TRACE
-  console.log(currentContent); //TRACE
 
   return (
     <>
@@ -188,17 +154,6 @@ const ContentList = React.memo(({ post }) => {
           onClick={() => setCurrentContent(content)}
         />
       ))}
-      {/* {contents &&
-        contents.length === 0 &&
-        submitting && (
-          <Message icon compact style={{ marginTop: 0 }}>
-            <SemIcon name="circle notched" loading />
-            <Message.Content>
-              <Message.Header>Just one second</Message.Header>
-              Generating your content..
-            </Message.Content>
-          </Message>
-        )} */}
     </>
   );
 });
@@ -285,8 +240,6 @@ export default function PostEditor({ post }) {
       return;
     setSize({ width: calculations.width, height: calculations.height });
   }
-  console.log("post"); //TRACE
-  console.log(post); //TRACE
   console.log("renderall");
 
   const isReply = !!post.parentPostRefNo;

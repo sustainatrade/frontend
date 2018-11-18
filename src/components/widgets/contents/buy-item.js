@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import WidgetBase from "./../base/WidgetBase";
+import Content from "./../base/Content";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
 import { MODES } from "../index";
@@ -133,7 +133,7 @@ const BuyItemView = props => {
 export default class BuyItem extends Component {
   render() {
     return (
-      <WidgetBase
+      <Content
         previewData={{
           test: "haha",
           price: { currency: "Php", amount: 100000 },

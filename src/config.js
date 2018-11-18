@@ -14,6 +14,11 @@ module.exports = Object.assign(
         icon: { type: "font-size", theme: "outlined" }
       },
       {
+        code: "photo",
+        name: "Photo",
+        icon: { type: "picture", theme: "outlined" }
+      },
+      {
         code: "buy-item",
         name: "Buying Item",
         icon: { type: "shopping-cart", theme: "outlined" }
@@ -22,6 +27,11 @@ module.exports = Object.assign(
         code: "sell-item",
         name: "Selling Item",
         icon: { type: "shop", theme: "outlined" }
+      },
+      {
+        code: "offer",
+        name: "Offer",
+        icon: { type: "tag", theme: "outlined" }
       }
     ],
     posts: {

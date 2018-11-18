@@ -1,10 +1,10 @@
 import React from "react";
-import WidgetBase from "./../base/WidgetBase";
+import Content from "./../base/Content";
 
 export default class Text extends React.Component {
   render() {
     return (
-      <WidgetBase
+      <Content
         previewData={{
           test: "haha"
         }}

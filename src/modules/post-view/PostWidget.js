@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Segment, Icon, Label, Button, Dimmer } from "semantic-ui-react";
 import { parseGraphData } from "./../../components/widgets/lib";
-import { manifests } from "./../../components/widgets";
+// import { manifests } from "./../../components/widgets";
 import gql from "graphql-tag";
 import apolloClient from "./../../lib/apollo";
 
@@ -54,7 +54,7 @@ export default class PostWidget extends Component {
 
     if (!name) return <div>loading...</div>;
 
-    const Widget = manifests[name].component;
+    const Widget = null;
     return (
       <Dimmer.Dimmable
         as={Segment}

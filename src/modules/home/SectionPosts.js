@@ -20,7 +20,7 @@ const Posts = ({ list }) => {
                 }
                 return (
                   <PostItem
-                    isCompact={isMobile}
+                    isCompact
                     key={postObj.id}
                     post={postObj}
                     basic

@@ -152,5 +152,6 @@ class Provider extends React.Component {
 
 export default {
   Provider,
+  Context,
   Consumer: Context.Consumer
 };

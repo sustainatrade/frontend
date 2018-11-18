@@ -93,6 +93,8 @@ function ReplyItem({ reply, showDivider }) {
   const dimmed = false;
   const { contentStyle, iconScrollWidth } = useContext(LayoutContext.Context);
   const ctrlOffsetY = contentStyle.paddingTop;
+
+
   // !onScreen && calculations.onScreen && this.setState({ onScreen: true });
   let vStyle = { marginBottom: 15 };
   if (expanded) {
@@ -108,18 +110,18 @@ function ReplyItem({ reply, showDivider }) {
         continuous
         style={vStyle}
         offset={[0, ctrlOffsetY]}
-        onOnScreen={useCallback(() => {
+        onOnScreen={() => {
           if (!onScreen) {
             // console.log("on " + reply.id);
             setOnScreen(true);
           }
-        })}
-        onOffScreen={useCallback(() => {
+        }}
+        onOffScreen={() => {
           if (onScreen) {
             // console.log("off " + reply.id);
             setOnScreen(false);
           }
-        })}
+        }}
       >
         <Segment
           style={{ marginLeft: iconScrollWidth, marginBottom: 0, padding: 0 }}
