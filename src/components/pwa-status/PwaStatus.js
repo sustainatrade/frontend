@@ -69,11 +69,7 @@ export default function PwaStatus() {
     sleep(10000).then(() => setTimeoutReached(true));
   });
   return (
-    <Dimmer
-      active={!checked}
-      //  onClickOutside={() => setReloadLater(true)}
-      page
-    >
+    <Dimmer active={!checked} page>
       <Header as="h2" icon inverted>
         <Loader indeterminate size="large" />
         {timeoutReached && (
