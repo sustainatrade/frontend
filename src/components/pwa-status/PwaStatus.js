@@ -63,7 +63,7 @@ function usePwaUpdateChecker(props) {
 
 export default function PwaStatus() {
   const { updated, checked } = usePwaUpdateChecker();
-  const [reloadLater, setReloadLater] = useState(false);
+  // const [reloadLater, setReloadLater] = useState(false);
   const [timeoutReached, setTimeoutReached] = useState(false);
   useEffect(() => {
     sleep(10000).then(() => setTimeoutReached(true));
