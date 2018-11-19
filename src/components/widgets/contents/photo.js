@@ -37,6 +37,7 @@ class UploadPhoto extends Component {
     const { previewVisible, previewImage } = this.state;
     const { photos = [], onChange } = this.props;
     const hasSelectedPhoto = photos.length > 0;
+    console.log("hasSelectedPhoto", hasSelectedPhoto); //TRACE
     return (
       <React.Fragment>
         <Upload
@@ -55,7 +56,14 @@ class UploadPhoto extends Component {
             {hasSelectedPhoto ? (
               <span>Selected Photo</span>
             ) : (
-              <Button fluid color="blue" basic>
+              <Button
+                fluid
+                color="blue"
+                basic
+                onClick={() => {
+                  console.log("clinging");
+                }}
+              >
                 <Icon.Group size="huge">
                   <Icon name="image" />
                   <Icon corner name="add" />
@@ -84,8 +92,10 @@ function Editor(props) {
   const uploading = isUploading(UPLOAD_NAME);
   const uploaded = get(status, `${UPLOAD_NAME}.0`);
   const uploadedName = get(uploaded, `data.name`);
+
   useEffect(
     () => {
+      console.log("uploadedName", uploadedName); //TRACE
       if (!uploaded) return;
       if (uploaded.progress === 100) {
         const values = {
@@ -101,7 +111,7 @@ function Editor(props) {
   );
   useEffect(
     () => {
-      if (uploading) return;
+      if (uploading || photos === null) return;
       if (photos && photos.length > 0) {
         const path = localStorage.getItem("postPhotoPath");
         upload({
@@ -124,6 +134,9 @@ function Editor(props) {
   );
   console.log("status", status); //TRACE
   console.log("props", props); //TRACE
+  // useEffect(() => {
+
+  // }, [props.defaultValues]);
   const defaultFileList = [];
   const defaultPhotoUrl = get(props, "defaultValues.photoUrl");
   const defaultPhotoName = get(props, "defaultValues.originalName");

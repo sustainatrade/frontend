@@ -16,7 +16,7 @@ const PlaceHolder = props => (
   </ContentLoader>
 );
 
-export default class MsImage extends Component {
+export class MsImage extends Component {
   state = {
     loaded: false
   };
@@ -63,4 +63,20 @@ export default class MsImage extends Component {
       </Comp>
     );
   }
+}
+
+export default function MImage(props) {
+  const { src, width, style: oldStyle = {}, height, block } = props;
+  const style = {
+    ...oldStyle,
+    display: !!block ? "block" : "inline-block"
+  };
+  let newSrc;
+  if (src.startsWith("data:image")) {
+    newSrc = src;
+  } else {
+    newSrc = src + `?width=${width}&height=${height}`;
+  }
+
+  return <Image style={style} src={newSrc} />;
 }

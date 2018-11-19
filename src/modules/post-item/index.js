@@ -25,13 +25,7 @@ const Actions = React.memo(({ post, canReply }) => {
   const { parentPost, setParentPost } = useContext(PostReplyContext.Context);
   const replyMode = get(parentPost, "_refNo") === post._refNo;
   return (
-    <div
-      style={{ cursor: "default" }}
-      onClick={e => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
+    <div style={{ cursor: "default" }}>
       {replyMode ? (
         <PostReply />
       ) : (
@@ -66,19 +60,20 @@ export default class PostItem extends React.Component {
     const { post, onContentClick, isCompact } = this.props;
     const mode = isCompact ? MODES.COMPACT : MODES.VIEW;
     return (
-      <Item
-        className="post-item"
-        onClick={() => {
-          onContentClick && onContentClick(post);
-        }}
-      >
+      <Item className="post-item">
         <Item.Content>
           <Item.Header as="h4">
             <Link to={getUrl(post)}>{post.title}</Link>
           </Item.Header>
-          {post.widgets.map((widget, ii) => (
-            <WidgetMeta widget={widget} mode={mode} key={ii} />
-          ))}
+          <div
+            onClick={() => {
+              onContentClick && onContentClick(post);
+            }}
+          >
+            {post.widgets.map((widget, ii) => (
+              <WidgetMeta widget={widget} mode={mode} key={ii} />
+            ))}
+          </div>
           <Item.Extra>
             <Actions post={post} canReply />
           </Item.Extra>

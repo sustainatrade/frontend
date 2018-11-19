@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import nanoid from "nanoid";
 import get from "lodash/get";
-import { Dimmer, Button, Header, Divider, Icon } from "semantic-ui-react";
+import {
+  Dimmer,
+  Button,
+  Header,
+  Divider,
+  Icon,
+  Loader
+} from "semantic-ui-react";
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function usePwaUpdateChecker(props) {
   let [updated, setUpdated] = useState(false);
@@ -35,7 +46,7 @@ function usePwaUpdateChecker(props) {
         cache.put("/index.html", newRoot.clone());
       }
       setChecked(true);
-      setUpdated(true);
+      window.location.reload();
     } catch (err) {
       console.log("Error occurred while checking for updates..");
       console.error(err);
@@ -47,36 +58,37 @@ function usePwaUpdateChecker(props) {
     checkStatus();
   });
 
-  return { updated };
+  return { updated, checked };
 }
 
 export default function PwaStatus() {
-  const { updated } = usePwaUpdateChecker();
+  const { updated, checked } = usePwaUpdateChecker();
   const [reloadLater, setReloadLater] = useState(false);
+  const [timeoutReached, setTimeoutReached] = useState(false);
+  useEffect(() => {
+    sleep(10000).then(() => setTimeoutReached(true));
+  });
   return (
     <Dimmer
-      active={updated && !reloadLater}
-      onClickOutside={() => setReloadLater(true)}
+      active={!checked}
+      //  onClickOutside={() => setReloadLater(true)}
       page
     >
       <Header as="h2" icon inverted>
-        <Icon name="info" />
-        New Update Available!
-        <Header.Subheader>
-          Close all tabs to get latest version
-        </Header.Subheader>
-        <Divider hidden />
-        <Button
-          primary
-          content="Reload"
-          onClick={() => window.location.reload()}
-        />
-        <Button
-          inverted
-          basic
-          content="Later"
-          onClick={() => setReloadLater(true)}
-        />
+        <Loader indeterminate size="large" />
+        {timeoutReached && (
+          <>
+            <Divider hidden style={{ marginBottom: 150 }} />
+            Update is taking too long
+            <div>
+              <Button
+                primary
+                content="Reload"
+                onClick={() => window.location.reload()}
+              />
+            </div>
+          </>
+        )}
       </Header>
     </Dimmer>
   );

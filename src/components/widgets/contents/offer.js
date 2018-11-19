@@ -36,7 +36,13 @@ export default class Text extends React.Component {
             </Label>
           </div>
         )}
-        compact={props => <div />}
+        compact={props => (
+          <div>
+            <Label color="teal" tag size="tiny">
+              Offer | <strong>{get(props, "values.price")}</strong>
+            </Label>
+          </div>
+        )}
         {...this.props}
       />
     );

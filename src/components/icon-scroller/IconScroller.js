@@ -72,33 +72,36 @@ export default function IconScroller({ height, width }) {
   const { contentStyle } = useContext(LayoutContext.Context);
   const ctrlRef = useRef(null);
   const [edges, setEdges] = useState([]);
-  const { y: scrollY } = useWindowScrollPosition();
+  const { y: scrollY } = useWindowScrollPosition({ throttleMs: 500 });
 
   const ctrlOffsetY = contentStyle.paddingTop;
-  useEffect(() => {
-    let newEdges = [];
-    postStack.forEach(postObj => {
-      const curEl = get(postObj, "headEl.current");
-      if (!curEl) return;
-      const { y: offsetTop } = curEl.getBoundingClientRect();
-      let tailOffsetY;
-      const tailEl = get(postObj, "tailEl.current");
-      if (tailEl) {
-        const { y: tailOffsetTop } = tailEl.getBoundingClientRect();
-        tailOffsetY = tailOffsetTop - contentStyle.paddingTop;
-      }
-      offsetTop &&
-        newEdges.push({
-          id: postObj.id,
-          refNo: postObj.post._refNo,
-          parentRefNo: postObj.post.parentPostRefNo,
-          offsetY: offsetTop - contentStyle.paddingTop,
-          tailOffsetY
-        });
-    });
-    newEdges = newEdges.sort((e1, e2) => e1.offsetY - e2.offsetY);
-    setEdges(newEdges);
-  });
+  useEffect(
+    () => {
+      let newEdges = [];
+      postStack.forEach(postObj => {
+        const curEl = get(postObj, "headEl.current");
+        if (!curEl) return;
+        const { y: offsetTop } = curEl.getBoundingClientRect();
+        let tailOffsetY;
+        const tailEl = get(postObj, "tailEl.current");
+        if (tailEl) {
+          const { y: tailOffsetTop } = tailEl.getBoundingClientRect();
+          tailOffsetY = tailOffsetTop - contentStyle.paddingTop;
+        }
+        offsetTop &&
+          newEdges.push({
+            id: postObj.id,
+            refNo: postObj.post._refNo,
+            parentRefNo: postObj.post.parentPostRefNo,
+            offsetY: offsetTop - contentStyle.paddingTop,
+            tailOffsetY
+          });
+      });
+      newEdges = newEdges.sort((e1, e2) => e1.offsetY - e2.offsetY);
+      setEdges(newEdges);
+    },
+    [postStack, scrollY]
+  );
   return (
     <div ref={ctrlRef} className="icon-scroller" style={{ height, width }}>
       {/* <Edges edges={edges} /> */}

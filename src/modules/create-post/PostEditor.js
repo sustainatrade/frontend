@@ -102,9 +102,9 @@ const ContentList = React.memo(({ post }) => {
     submitting
   } = useContext(PostWidgetContext.Context);
 
-  const selectedContent = post.widgets.find(widget => {
-    return widget._refNo === get(currentContent, "_refNo");
-  });
+  // const selectedContent = post.widgets.find(widget => {
+  //   return widget._refNo === get(currentContent, "_refNo");
+  // });
 
   useEffect(
     () => {
@@ -121,19 +121,19 @@ const ContentList = React.memo(({ post }) => {
     [post]
   );
 
-  useEffect(
-    () => {
-      if (selectedContent) {
-        setCurrentContent(selectedContent);
-        return;
-      }
+  // useEffect(
+  //   () => {
+  //     if (selectedContent) {
+  //       setCurrentContent(selectedContent);
+  //       return;
+  //     }
 
-      const lastWidget = last(post.widgets);
-      console.log("setting last widget");
-      setCurrentContent(lastWidget);
-    },
-    [selectedContent]
-  );
+  //     const lastWidget = last(post.widgets);
+  //     console.log("setting last widget");
+  //     setCurrentContent(lastWidget);
+  //   },
+  //   [selectedContent]
+  // );
 
   const contents = post.widgets || [];
 
@@ -161,6 +161,7 @@ const ContentList = React.memo(({ post }) => {
 function NewContent({ post }) {
   const {
     currentContent,
+    setCurrentContent,
     defaultContentCode,
     submitting,
     contentKeys,
@@ -175,8 +176,8 @@ function NewContent({ post }) {
           size="large"
           type="dashed"
           loading={submitting}
-          onClick={() => {
-            submitWidgetsFn(
+          onClick={async () => {
+            await submitWidgetsFn(
               [
                 {
                   code: get(
@@ -190,6 +191,7 @@ function NewContent({ post }) {
               ],
               { newWidget: true }
             );
+            setCurrentContent(null);
           }}
         >
           {`Add ${currentContent ? "More" : ""} Content`}
