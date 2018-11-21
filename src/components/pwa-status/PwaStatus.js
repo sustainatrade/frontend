@@ -24,7 +24,6 @@ function usePwaUpdateChecker(props) {
 
   useOnMount(() => {
     addNewContentAvailableListener("pwa-status", () => setUpdated(true));
-    // setTimeout(() => setUpdated(true), 5000);
   });
 
   return {
@@ -37,15 +36,12 @@ function usePwaUpdateChecker(props) {
 
 export default function PwaStatus() {
   const { updated, later } = usePwaUpdateChecker();
-  // const [reloadLater, setReloadLater] = useState(false);
   return (
     <Dimmer active={updated} page>
       <Header as="h2" icon inverted>
         <Icon name="info" />
         New Update Available!
-        <Header.Subheader>
-          Close all tabs to get latest version
-        </Header.Subheader>
+        <Header.Subheader>Reload to apply the updates</Header.Subheader>
         <Divider hidden />
         <Button
           primary

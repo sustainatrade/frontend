@@ -29,11 +29,6 @@ import "antd/lib/input/style/css";
 import { FacebookProvider } from "react-facebook";
 import Modal from "antd/lib/modal";
 import Globals from "./modules/globals";
-// Service worker
-import {
-  addNewContentAvailableListener,
-  unregister
-} from "./registerServiceWorker";
 
 const EmptyHeader = () => (
   <Menu className="top-header">
