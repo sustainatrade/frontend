@@ -1,0 +1,2 @@
+
+workbox.skipWaiting();

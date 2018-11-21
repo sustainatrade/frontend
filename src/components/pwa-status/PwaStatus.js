@@ -9,6 +9,11 @@ import {
   Icon,
   Loader
 } from "semantic-ui-react";
+import {
+  addNewContentAvailableListener,
+  removeContentAvailableListener
+} from "../../registerServiceWorker";
+import { useOnMount } from "react-hanger";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -16,75 +21,38 @@ function sleep(ms) {
 
 function usePwaUpdateChecker(props) {
   let [updated, setUpdated] = useState(false);
-  const [checked, setChecked] = useState(false);
 
-  async function checkStatus() {
-    if (checked) return;
-    try {
-      const serverRequest = "/?t=" + nanoid();
-      const [serverRoot, clientRoot] = await Promise.all([
-        fetch(serverRequest),
-        fetch("/index.html")
-      ]);
-      if (!serverRoot || serverRoot.status !== 200)
-        throw new Error("Error could not connect to server");
-      const [serverHtml, clientHtml] = await Promise.all([
-        serverRoot.text(),
-        clientRoot.text()
-      ]);
-      if (serverHtml === clientHtml || get(clientHtml, "length", 0) === 0) {
-        console.log("no update needed");
-        setChecked(true);
-        return;
-      }
-      console.log("updating server caches...");
-      const cacheNames = await caches.keys();
-      for (const cacheName of cacheNames) {
-        console.log(`updating index cache for ${cacheName}`);
-        const cache = await caches.open(cacheName);
-        const newRoot = await fetch(serverRequest);
-        cache.put("/index.html", newRoot.clone());
-      }
-      setChecked(true);
-      window.location.reload();
-    } catch (err) {
-      console.log("Error occurred while checking for updates..");
-      console.error(err);
-      setChecked(true);
-    }
-  }
-
-  useEffect(() => {
-    checkStatus();
+  useOnMount(() => {
+    addNewContentAvailableListener("pwa-status", () => setUpdated(true));
+    // setTimeout(() => setUpdated(true), 5000);
   });
 
-  return { updated, checked };
+  return {
+    updated,
+    later() {
+      setUpdated(false);
+    }
+  };
 }
 
 export default function PwaStatus() {
-  const { updated, checked } = usePwaUpdateChecker();
+  const { updated, later } = usePwaUpdateChecker();
   // const [reloadLater, setReloadLater] = useState(false);
-  const [timeoutReached, setTimeoutReached] = useState(false);
-  useEffect(() => {
-    sleep(10000).then(() => setTimeoutReached(true));
-  });
   return (
-    <Dimmer active={!checked} page>
+    <Dimmer active={updated} page>
       <Header as="h2" icon inverted>
-        <Loader indeterminate size="large" />
-        {timeoutReached && (
-          <>
-            <Divider hidden style={{ marginBottom: 150 }} />
-            Update is taking too long
-            <div>
-              <Button
-                primary
-                content="Reload"
-                onClick={() => window.location.reload()}
-              />
-            </div>
-          </>
-        )}
+        <Icon name="info" />
+        New Update Available!
+        <Header.Subheader>
+          Close all tabs to get latest version
+        </Header.Subheader>
+        <Divider hidden />
+        <Button
+          primary
+          content="Reload"
+          onClick={() => window.location.reload()}
+        />
+        <Button inverted basic content="Later" onClick={() => later()} />
       </Header>
     </Dimmer>
   );

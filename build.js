@@ -1,5 +1,5 @@
 const nanoid = require("nanoid");
-const { echo } = require("async-shelljs");
+const { echo, asyncExec, cat } = require("async-shelljs");
 
 const swConfig = {
   version: nanoid()
@@ -25,4 +25,8 @@ webpackConfigProd.plugins.push(
 
 // webpackConfigProd.resolve.alias["@ant-design/icons"] = "purched-antd-icons";
 
-require("react-scripts/scripts/build");
+asyncExec("cross-env NODE_PATH=./src react-scripts build").then(() => {
+  console.log("---injecting .sw-inject.js");
+  cat(".sw-inject.js").toEnd("build/service-worker.js");
+  console.log("---done injecting");
+});

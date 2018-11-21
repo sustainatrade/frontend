@@ -63,6 +63,9 @@ export default function register() {
   }
 }
 const newContentAvailableListeners = {};
+export function removeContentAvailableListener(key) {
+  delete newContentAvailableListeners[key];
+}
 export function addNewContentAvailableListener(key, listener) {
   newContentAvailableListeners[key] = listener;
 }
