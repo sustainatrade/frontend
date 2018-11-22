@@ -57,7 +57,7 @@ class Router extends DataLoader {
         "photos[0]",
         "3482c4ee454c07d84ec56238494f15427c842f3e.png"
       );
-      const imageUrl = `${storageServer}${postPhotoPath}/${image}?width=75&height=75`;
+      const imageUrl = `${storageServer}${postPhotoPath}/${image}?width=1200&height=630`;
       return {
         OG_TITLE: post.title,
         OG_IMAGE: imageUrl,
