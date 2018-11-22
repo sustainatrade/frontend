@@ -62,7 +62,7 @@ class Router extends DataLoader {
         OG_TITLE: post.title,
         OG_IMAGE: imageUrl,
         OG_DESCRIPTION: post.description,
-        OG_KEYWORDS: post.tags.join(",")
+        OG_KEYWORDS: get(post, "tags", []).join(",")
       };
     }
   }
