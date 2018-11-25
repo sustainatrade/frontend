@@ -8,6 +8,7 @@ import { Icon, Button, Divider, Image } from "semantic-ui-react";
 import Uploader from "../../../contexts/Uploader";
 import get from "lodash/get";
 import MsImage from "../../ms-image/MsImage";
+import { DefaultSaveButton } from "./_template";
 
 const UPLOAD_NAME = "Post Image Upload";
 
@@ -158,6 +159,7 @@ function Editor(props) {
           setPhotos(files);
         }}
       />
+      {photos && photos.length > 0 && <DefaultSaveButton {...props} />}
       {/* <Divider /> */}
       {/* <Button.Group>
         <Button>Fit</Button>

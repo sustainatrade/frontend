@@ -4,6 +4,7 @@ import get from "lodash/get";
 import debounce from "lodash/debounce";
 import { MODES } from "../index";
 import { Icon, Label, Input, Dropdown, Segment } from "semantic-ui-react";
+import { DefaultSaveButton } from "./_template";
 
 const options = [{ key: "php", text: "Php", value: "php" }];
 
@@ -172,6 +173,7 @@ export default class BuyItem extends Component {
                   label: { basic: true, icon, circular: true }
                 }))}
               />
+              <DefaultSaveButton {...props} />
             </div>
           );
         }}

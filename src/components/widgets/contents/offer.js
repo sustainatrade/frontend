@@ -3,6 +3,7 @@ import Content from "./../base/Content";
 import { Input, Icon, Segment, Label } from "semantic-ui-react";
 import debounce from "lodash/debounce";
 import get from "lodash/get";
+import { DefaultSaveButton } from "./_template";
 
 export default class Text extends React.Component {
   render() {
@@ -13,7 +14,7 @@ export default class Text extends React.Component {
         }}
         editor={props => {
           return (
-            <div style={{ marginBottom: 10 }}>
+            <div>
               <Input
                 size="big"
                 focus
@@ -26,6 +27,7 @@ export default class Text extends React.Component {
                   });
                 }, 200)}
               />
+              <DefaultSaveButton {...props} />
             </div>
           );
         }}
