@@ -4,11 +4,14 @@ import {
   Icon,
   Loader,
   Button,
+  Segment,
+  Message,
+  Container,
   Divider,
   Dimmer
 } from "semantic-ui-react";
 import { Query } from "react-apollo";
-import { LAST_DRAFT } from "../../gql-schemas";
+import { LAST_DRAFT, PUBLISH_POST } from "../../gql-schemas";
 import get from "lodash/get";
 import "./create-post.css";
 import PostEditor from "./PostEditor";
@@ -16,6 +19,7 @@ import { Context } from "./../../contexts/CreatePost";
 import { Context as LayoutContext } from "./../../contexts/LayoutContext";
 import { navigate } from "@reach/router";
 import { useSetSubHeader } from "../../hooks/SetSubHeader";
+import ErrorContext from "../../contexts/ErrorContext";
 
 function PublishPostModal() {
   const { publishedPost, reset } = useContext(Context);
@@ -80,6 +84,39 @@ function SubHeader({ post }) {
 
   return null;
 }
+
+function PostEditorWrapper({ post }) {
+  //
+  const { publishPost, publishedPost } = useContext(Context);
+  const error = useContext(ErrorContext.Context);
+  console.log("error", error); //TRACE
+  const publishErrors = error[PUBLISH_POST.key];
+  if (publishedPost) return null;
+  return (
+    <PostEditor
+      post={post}
+      onSubmit={async post => {
+        error.clear(PUBLISH_POST.key);
+        await publishPost({ refNo: post._refNo });
+      }}
+      onCancel={() => {
+        if (window.history.length > 0) {
+          window.history.back();
+        } else {
+          navigate("/");
+        }
+      }}
+      extras={
+        !!publishErrors && (
+          <Segment basic>
+            <Message error content={publishErrors.map(err => err.message)} />
+          </Segment>
+        )
+      }
+    />
+  );
+}
+
 export default function() {
   return (
     <Query query={LAST_DRAFT.query}>
@@ -94,7 +131,14 @@ export default function() {
         return (
           <>
             <SubHeader post={post} />
-            <PostEditor post={post} />
+            <div
+              style={{
+                margin: "0 auto",
+                maxWidth: 768
+              }}
+            >
+              <PostEditorWrapper post={post} />
+            </div>
             <PublishPostModal />
           </>
         );

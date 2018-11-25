@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import Content from "./../base/Content";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
-// import { TextArea } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import Input from "antd/lib/input";
 const { TextArea } = Input;
 
@@ -26,6 +26,7 @@ const Preview = props => (
 
 const TextEditor = React.memo(props => {
   const inputEl = useRef(null);
+  console.log("props", props); //TRACE
   useEffect(
     () => {
       console.log("mounted");
@@ -46,17 +47,37 @@ const TextEditor = React.memo(props => {
     });
   }, 200);
   return (
-    <TextArea
-      ref={inputEl}
-      disabled={props.submitting}
-      style={{ width: "100%", marginBottom: 5 }}
-      defaultValue={get(props, "defaultValues.text")}
-      autosize={{ minRows: 2, maxRows: 6 }}
-      placeholder="Enter Text..."
-      onChange={e => {
-        debounceUpdate(e.target.value);
-      }}
-    />
+    <div>
+      <Button
+        primary
+        icon="chevron circle right"
+        floated="right"
+        size="large"
+        circular
+        disabled={props.submitting}
+        onClick={() => {
+          props.actions.save();
+        }}
+      />
+      <div style={{ marginRight: 50 }}>
+        <TextArea
+          ref={inputEl}
+          disabled={props.submitting}
+          style={{
+            width: "100%",
+            marginBottom: 5,
+            fontSize: "large",
+            height: 50
+          }}
+          defaultValue={get(props, "defaultValues.text")}
+          autosize={{ minRows: 1, maxRows: 6 }}
+          placeholder="Enter Text..."
+          onChange={e => {
+            debounceUpdate(e.target.value);
+          }}
+        />
+      </div>
+    </div>
   );
 });
 

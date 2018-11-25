@@ -7,6 +7,10 @@ class Provider extends React.Component {
   state = {
     clear: key => {
       this.setState({ [key]: undefined });
+    },
+    emit: type => {
+      const typeKey = get(type, "eventName", type);
+      emitter.emit(typeKey);
     }
   };
 

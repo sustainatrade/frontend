@@ -12,6 +12,9 @@ import { GlobalConsumer } from "../../contexts";
 import "./post-item.css";
 import PostReplyContext from "../../contexts/PostReplyContext";
 import BasicButton from "../../components/basic-button/BasicButton";
+import UserContext from "../../contexts/UserContext";
+import ErrorContext from "../../contexts/ErrorContext";
+import { TYPES } from "../../errors";
 console.log("contents"); //TRACE
 console.log(contents); //TRACE
 
@@ -23,6 +26,10 @@ const WidgetMeta = ({ widget, mode }) => {
 };
 const Actions = React.memo(({ post, canReply }) => {
   const { parentPost, setParentPost } = useContext(PostReplyContext.Context);
+  const user = useContext(UserContext.Context);
+  const error = useContext(ErrorContext.Context);
+
+  const currentUserId = get(user, "user.id");
   const replyMode = get(parentPost, "_refNo") === post._refNo;
   return (
     <div style={{ cursor: "default" }}>
@@ -44,7 +51,13 @@ const Actions = React.memo(({ post, canReply }) => {
                   content="Reply"
                   name="reply"
                   floated="right"
-                  onClick={() => setParentPost(post)}
+                  onClick={() => {
+                    if (!currentUserId) {
+                      error.emit(TYPES.NOT_LOGGED_IN);
+                      return;
+                    }
+                    setParentPost(post);
+                  }}
                 />
               )}
             </div>
@@ -57,7 +70,7 @@ const Actions = React.memo(({ post, canReply }) => {
 
 export default class PostItem extends React.Component {
   render() {
-    const { post, onContentClick, isCompact } = this.props;
+    const { post, onContentClick, isCompact, withActions = true } = this.props;
     const mode = isCompact ? MODES.COMPACT : MODES.VIEW;
     return (
       <Item className="post-item">
@@ -75,7 +88,7 @@ export default class PostItem extends React.Component {
             ))}
           </div>
           <Item.Extra>
-            <Actions post={post} canReply />
+            {withActions && <Actions post={post} canReply />}
           </Item.Extra>
         </Item.Content>
       </Item>

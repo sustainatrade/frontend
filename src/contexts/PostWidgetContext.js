@@ -81,12 +81,13 @@ function Provider({ children }) {
         //   console.log(wdgt); //TRACE
         // });
 
-        if (hasDelete) {
-          setCurrentContent(null);
-        }
-        if (hasCreate)
-          setCurrentContent(get(ret, "data.UpdatePostWidgets.widgets.0"));
+        // if (hasDelete) {
+        //   setCurrentContent(null);
+        // }
+        // if (hasCreate)
+        //   setCurrentContent(get(ret, "data.UpdatePostWidgets.widgets.0"));
         setState(newState);
+        setCurrentContent(null);
         return ret.data.UpdatePostWidgets.widgets;
       } catch (err) {
         setState({ submitting: false });

@@ -8,13 +8,17 @@ import FollowButton from "./../post-feed/FollowButton";
 import PostViewContext from "../../contexts/PostViewContext";
 import UserContext from "../../contexts/UserContext";
 import PostReplyContext from "../../contexts/PostReplyContext";
+import ErrorContext from "../../contexts/ErrorContext";
+import { TYPES } from "../../errors";
 
 export default function({ post }) {
   const { editting, setEditMode } = useContext(PostViewContext.Context);
   const { setParentPost, parentPost } = useContext(PostReplyContext.Context);
   const user = useContext(UserContext.Context);
+  const error = useContext(ErrorContext.Context);
 
-  const myPost = get(user, "user.id") === post.createdBy;
+  const currentUserId = get(user, "user.id");
+  const myPost = currentUserId === post.createdBy;
   if (editting) return null;
   return (
     <div className="post-actions">
@@ -24,6 +28,10 @@ export default function({ post }) {
           content="Reply"
           icon="comment"
           onClick={useCallback(() => {
+            if (!currentUserId) {
+              error.emit(TYPES.NOT_LOGGED_IN);
+              return;
+            }
             setParentPost(post);
           })}
         />

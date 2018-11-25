@@ -4,7 +4,6 @@ import {
   Loader,
   Label,
   Visibility,
-  Divider,
   Transition
 } from "semantic-ui-react";
 import Icon from "antd/lib/icon";
@@ -50,7 +49,7 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
   );
 });
 
-const WidgetHeader = ({ context }) => {
+const WidgetSelector = ({ context }) => {
   const {
     currentContent,
     setCurrentContent,
@@ -85,23 +84,7 @@ const WidgetHeader = ({ context }) => {
   if (!selectedContent) return null;
   return (
     <div className="widget-selector">
-      <Button
-        floated="right"
-        size="mini"
-        content="CLOSE"
-        basic
-        icon="caret down"
-        onClick={() => setCurrentContent(null)}
-      />
-      <span
-        style={{
-          fontSize: "x-large",
-          color: "white"
-        }}
-      >
-        {selectedContent.name}
-      </span>
-      {/* <Dropdown
+      <Dropdown
         overlay={menu}
         trigger={["click"]}
         placement="topLeft"
@@ -111,13 +94,12 @@ const WidgetHeader = ({ context }) => {
           <Icon {...selectedContent.icon} />
           {selectedContent.name} <Icon type="down" />
         </AntButton>
-      </Dropdown> */}
-      <Divider clearing fitted hidden />
+      </Dropdown>
     </div>
   );
 };
 
-export default function({ post, size, onSizeChanged }) {
+export default function({ post, size, onSizeChanged, content }) {
   const context = useContext(PostWidgetContext.Context);
   const { isMobile } = useContext(Responsive.Context);
   const { currentContent } = context;
@@ -128,12 +110,11 @@ export default function({ post, size, onSizeChanged }) {
     onSizeChanged && onSizeChanged(calculations);
   }, 500);
 
-  const ceActionStyles = {};
-  // const ceActionStyles = { width: size.width, minHeight: size.height };
-  // if (isMobile) {
-  //   ceActionStyles.width = "100%";
-  //   ceActionStyles.left = 0;
-  // }
+  const ceActionStyles = { width: size.width, minHeight: size.height };
+  if (isMobile) {
+    ceActionStyles.width = "100%";
+    ceActionStyles.left = 0;
+  }
   return (
     <Transition
       visible
@@ -144,6 +125,7 @@ export default function({ post, size, onSizeChanged }) {
       }}
     >
       <div className="content-editor-actions" style={ceActionStyles}>
+        {content}
         <Visibility
           key={vKey}
           fireOnMount
@@ -151,7 +133,7 @@ export default function({ post, size, onSizeChanged }) {
           updateOn="repaint"
           onUpdate={handleOnScreen}
         >
-          <WidgetHeader context={context} />
+          <WidgetSelector context={context} />
           <div className="content-editor-controls">
             <WidgetEditor postRefNo={post._refNo} context={context} />
           </div>

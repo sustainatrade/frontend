@@ -1,17 +1,7 @@
 .content-editor-actions {
-  z-index: 100;
-  background-color: snow;
-  position: fixed;
-  bottom: 0px;
-  padding-top: 0px;
-  border: solid 1px darkcyan;
-  border-radius: 5px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom: none;
 }
 .content-editor-controls {
-  padding: 5px;
+  padding: 15px;
 }
 .content-editor-actions .ant-tabs-tab .anticon {
   margin: 0;
@@ -26,9 +16,14 @@
 }
 
 .content-editor-actions .widget-selector {
-  background-color: darkcyan;
-  padding: 5px;
-  padding-top: 0px;
+  background-color: gainsboro;
+  padding: 5px 15px;
+  font-weight: bolder;
+}
+
+.content-editor-actions .widget-selector .button {
+  background-color: whitesmoke !important;
+  font-weight: bolder;
 }
 
 /* .content-editor-actions .ant-tabs-content {

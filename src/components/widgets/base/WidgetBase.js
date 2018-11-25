@@ -41,27 +41,52 @@ class Editor extends React.Component {
       editor: EditorComponent,
       onValuesChanged,
       _refNo,
+      context,
+      error,
+      code,
+      name,
+      postRefNo,
       children
     } = this.props;
     const { editValues } = this.state;
+    const editValuesMap = fromJS(values || {}).mergeDeep(editValues || {});
+    const actions = {
+      save: async () => {
+        if (context.submitting) return;
+        const editValuesObj = editValuesMap.toJS();
+        if (editValuesObj) {
+          error.clear(UPDATE_POST_WIDGETS.key);
+          const ret = await context.submitWidgetsFn([
+            {
+              _refNo,
+              code,
+              name,
+              values: editValuesObj,
+              postRefNo
+            }
+          ]);
+          return ret;
+        }
+      }
+    };
     return (
       <>
         <EditorComponent
           _refNo={_refNo}
           defaultValues={values}
           updateValues={newValues => {
-            const newEditValues = fromJS(values || {})
-              .mergeDeep(fromJS(editValues))
+            const newEditValues = editValuesMap
               .mergeDeep(fromJS(newValues))
               .toJS();
             this.setState({ editValues: newEditValues });
             onValuesChanged && onValuesChanged(newEditValues);
           }}
+          error={error}
+          actions={actions}
+          submitting={context.submitting}
         />
         {children({
-          editValues: fromJS(values || {})
-            .mergeDeep(editValues || {})
-            .toJS(),
+          editValues: editValuesMap.toJS(),
           hello: "haha"
         })}
       </>
@@ -121,10 +146,15 @@ function WidgetBase(props) {
     default:
       RenderObj = () => <span>Empty</span>;
   }
+
   const ownProps = {
     context,
     _refNo,
-    values: values ? values : defaultValues
+    values: values ? values : defaultValues,
+    code,
+    name,
+    icon,
+    postRefNo
   };
   if (preview) {
     ownProps.values = previewData;
@@ -140,6 +170,7 @@ function WidgetBase(props) {
             {...ownProps}
             editor={editor}
             submitting={context.submitting}
+            error={error}
             // onValuesChanged={onValuesChanged}
           >
             {({ editValues }) => {
@@ -164,7 +195,7 @@ function WidgetBase(props) {
                       content={updateErrors.map(err => err.message)}
                     />
                   )}
-                  <Button
+                  {/* <Button
                     content={
                       <>
                         <Icon {...icon} />
@@ -211,7 +242,7 @@ function WidgetBase(props) {
                       ]);
                     }}
                   />
-                  <Divider hidden />
+                  <Divider hidden /> */}
                 </>
               );
             }}

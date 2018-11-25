@@ -50,7 +50,17 @@ function PostEditorWrapper(props) {
     />
   );
   useSetSubHeader(PostHeader, { hideBackButton: true });
-  return <PostEditor {...props} />;
+  return (
+    <PostEditor
+      {...props}
+      onSubmit={() => {
+        setEditMode(false);
+      }}
+      onCancel={() => {
+        setEditMode(false);
+      }}
+    />
+  );
 }
 
 const PostHeader = React.memo(({ post }) => {
@@ -130,6 +140,7 @@ const PostContents = React.memo(({ post }) => {
 });
 
 function PostFooter({ post }) {
+  // return <PostReplies post={post} expanded isRoot />;
   const { parentPost } = useContext(PostReplyContext.Context);
   const replyParentPost = get(parentPost, "_refNo") === post._refNo;
   console.log("replyParentPost"); //TRACE
@@ -228,27 +239,26 @@ class PostView extends Component {
                     minHeight: gridHeight
                   }}
                 >
-                  {!asReply &&
-                    !isEditting(post._refNo) && (
-                      <>
-                        {showIconScroller && (
-                          <IconScroller
-                            height={gridHeight}
-                            width={iconScrollWidth}
-                          />
-                        )}
-                        <div
-                          style={{
-                            position: "relative",
-                            backgroundColor: "white",
-                            zIndex: 2
-                          }}
-                        >
-                          <PostHeader post={post} />
-                          <PostContents post={post} />
-                        </div>
-                      </>
-                    )}
+                  {!asReply && !isEditting(post._refNo) && (
+                    <>
+                      {showIconScroller && (
+                        <IconScroller
+                          height={gridHeight}
+                          width={iconScrollWidth}
+                        />
+                      )}
+                      <div
+                        style={{
+                          position: "relative",
+                          backgroundColor: "white",
+                          zIndex: 2
+                        }}
+                      >
+                        <PostHeader post={post} />
+                        <PostContents post={post} />
+                      </div>
+                    </>
+                  )}
                   {isEditting(post._refNo) ? (
                     <Suspense fallback={<Loader active inline="centered" />}>
                       <PostEditorWrapper post={post} />

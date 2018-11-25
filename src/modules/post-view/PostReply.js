@@ -38,7 +38,7 @@ export default function PostReply() {
                     icon="send"
                     color="teal"
                     loading={submitting}
-                    disabled={reply.widgets.length === 0}
+                    disabled={get(reply, "widgets", []).length === 0}
                     floated="right"
                     onClick={() => {
                       postReply({ refNo: reply._refNo });
@@ -56,7 +56,15 @@ export default function PostReply() {
                     }}
                   />
                 </div>
-                <PostEditor post={reply} />
+                <PostEditor
+                  post={{ ...reply, parentPost }}
+                  onSubmit={() => {
+                    postReply({ refNo: reply._refNo });
+                  }}
+                  onCancel={() => {
+                    reset();
+                  }}
+                />
               </div>
             );
           }}

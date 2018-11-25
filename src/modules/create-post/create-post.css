@@ -2,6 +2,9 @@
   background-color: lavenderblush !important;
 }
 
+/* .content-inactive {
+} */
+
 .content-inactive:hover {
   background-color: lavenderblush !important;
 }
@@ -17,10 +20,49 @@
   height: 50px;
 }
 
-.reply-header span{
+.reply-header span {
   font-size: larger;
   font-weight: bold;
   color: ghostwhite;
   display: inline-block;
   padding: 7px;
+}
+
+.post-editor-modal .content-selector .card {
+  cursor: pointer;
+}
+
+.post-editor-modal .content-selector .card:hover {
+  cursor: pointer;
+  background-color: ivory;
+}
+
+.post-editor-modal .modal .content {
+  padding: 0px !important;
+}
+
+.post-editor-modal .content-actions {
+  float: right;
+  height: 30px;
+  margin-top: -20px;
+}
+
+.post-editor-modal .content-actions .button {
+  margin-left: 7px;
+}
+
+.post-editor-modal .reply-parent-post-item {
+  background-color: white;
+  padding: 5px;
+  margin-top: 5px;
+}
+.post-editor-modal .reply-parent-post {
+  padding-top: 5px;
+  margin-bottom: 0px;
+}
+
+.post-editor-modal .new-reply-header {
+  margin-top: 0px;
+  font-weight: bold;
+  border-radius: 0;
 }

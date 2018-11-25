@@ -112,7 +112,7 @@ const MainHeader = ({
       })()}
     >
       <GlobalSearch fluid={isMobile} />
-      <UserAuth compact={isMobile} />
+      <UserAuth compact={isMobile} open />
     </Menu.Menu>
   </Menu>
 );
