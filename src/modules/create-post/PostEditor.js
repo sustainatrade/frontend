@@ -13,7 +13,6 @@ import {
   Segment,
   Label,
   Loader,
-  Modal,
   Divider,
   Popup,
   Visibility,
@@ -40,6 +39,8 @@ import get from "lodash/get";
 import last from "lodash/last";
 import debounce from "lodash/debounce";
 import Icon from "antd/lib/icon";
+import Modal from "antd/lib/modal";
+import Drawer from "antd/lib/drawer";
 import ContentDropdown from "./ContentDropdown";
 import ContentEditor from "./ContentEditor";
 import { navigate } from "@reach/router";
@@ -412,6 +413,70 @@ function PostHeader({ post }) {
   );
 }
 
+function InlineWrapper({ children, ...rest }) {
+  return (
+    <div {...rest} style={{ marginTop: 10 }}>
+      {children}
+    </div>
+  );
+}
+
+function ModalWrapper({ children, ...rest }) {
+  return (
+    <Modal
+      visible
+      footer={null}
+      closable={false}
+      bodyStyle={{ padding: 0 }}
+      {...rest}
+      // centered={false}
+    >
+      {children}
+    </Modal>
+  );
+}
+
+function DrawerWrapper({
+  children,
+  onCloseConfirm,
+  closing,
+  setClosing,
+  isReply,
+  isEditting,
+  ...rest
+}) {
+  //FIXME: Improve this
+  useEffect(
+    () => {
+      if (closing) {
+        setTimeout(() => {
+          onCloseConfirm();
+        }, 300);
+      }
+    },
+    [closing]
+  );
+  return (
+    <Drawer
+      title={
+        <>
+          <Button icon="arrow left" onClick={() => setClosing(true)} />
+          {isReply ? "Create Reply" : `${isEditting ? "Edit" : "Create"} Post`}
+        </>
+      }
+      placement="right"
+      closable={false}
+      width="100%"
+      style={{ padding: 0 }}
+      visible={!closing}
+      onClose={onCloseConfirm}
+      {...rest}
+    >
+      {children}
+    </Drawer>
+  );
+}
+
 export default function PostEditor({
   post,
   inline,
@@ -425,6 +490,8 @@ export default function PostEditor({
   const actionsRef = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [contentMaxHeight, setContentMaxHeight] = useState(null);
+  const [closing, setClosing] = useState(false);
+  const { isMobile } = useContext(Responsive.Context);
   const { windowSize, contentStyle } = useContext(LayoutContext.Context);
   function handleOnScreen(e, { calculations }) {
     if (
@@ -443,80 +510,48 @@ export default function PostEditor({
     // contentEditorSize.height = pageContentHeight - 150 - size.height;
   }
 
-  const hasContent = get(post, "widgets", []).length > 0;
-  const modalStyle = {};
-  if (hasContent) {
-    // modalStyle.bottom = 0;
-    // modalStyle.borderBottomLeftRadius = 0;
-    // modalStyle.borderBottomRightRadius = 0;
+  // const hasContent = get(post, "widgets", []).length > 0;
+
+  let Wrapper;
+
+  if (isMobile) {
+    Wrapper = DrawerWrapper;
+  } else if (isReply) {
+    Wrapper = ModalWrapper;
+  } else {
+    Wrapper = InlineWrapper;
   }
-
-  useEffect(
-    () => {
-      //   console.log("headerRef", headerRef); //TRACE
-      const parentNode = get(contentRef, "current.parentNode");
-      if (parentNode) {
-        parentNode.classList.remove("content");
-      }
-    },
-    [contentRef]
-  );
-
-  useEffect(
-    () => {
-      const parentNode = get(actionsRef, "current.parentNode");
-      if (parentNode) {
-        parentNode.classList.remove("actions");
-      }
-    },
-    [actionsRef]
-  );
-
-  useEffect(
-    () => {
-      const parentNode = get(headerRef, "current.parentNode");
-      if (parentNode) {
-        parentNode.classList.remove("header");
-      }
-    },
-    [headerRef]
-  );
-
+  console.log("post", post); //TRACE
   return (
     <div>
-      <Modal
+      <Wrapper
         className="post-editor-modal"
-        open
-        style={modalStyle}
-        // centered={false}
+        isReply={isReply}
+        isEditting={!!post.publishDate}
+        closing={closing}
+        setClosing={setClosing}
+        onCloseConfirm={onCancel}
       >
-        <Modal.Header>
-          <div ref={headerRef}>
-            <PostHeader post={post} />
-          </div>
-        </Modal.Header>
-        <Modal.Content
-          image
-          scrolling
-          className="post-editor-content"
-          style={{ maxHeight: contentMaxHeight }}
-        >
-          <div ref={contentRef} style={{ width: "100%" }}>
-            <ContentList post={post} />
-          </div>
-        </Modal.Content>
-        <Modal.Actions style={{ textAlign: "inherit" }}>
-          <div ref={actionsRef} style={{ width: "100%" }}>
-            <PostActions post={post} onSubmit={onSubmit} onCancel={onCancel} />
-            {extras}
-            <ContentEditorWrapper
-              post={post}
-              inline={inline}
-              contentEditorSize={contentEditorSize}
-            />
-          </div>
-        </Modal.Actions>
-      </Modal>
+        <div ref={headerRef}>
+          <PostHeader post={post} />
+        </div>
+        <div ref={contentRef} style={{ width: "100%" }}>
+          <ContentList post={post} />
+        </div>
+        <div ref={actionsRef} style={{ width: "100%" }}>
+          <PostActions
+            post={post}
+            onSubmit={onSubmit}
+            onCancel={() => setClosing(true)}
+          />
+          {extras}
+          <ContentEditorWrapper
+            post={post}
+            inline={inline}
+            contentEditorSize={contentEditorSize}
+          />
+        </div>
+      </Wrapper>
     </div>
   );
 }
