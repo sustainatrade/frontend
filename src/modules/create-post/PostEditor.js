@@ -44,6 +44,7 @@ import Drawer from "antd/lib/drawer";
 import ContentDropdown from "./ContentDropdown";
 import ContentEditor from "./ContentEditor";
 import { navigate } from "@reach/router";
+import { Spring, animated } from "react-spring";
 
 import "./create-post.css";
 import { useOnUnmount } from "react-hanger";
@@ -353,7 +354,18 @@ function PostActions({ post, onSubmit, onCancel }) {
           }}
         />
       </Segment>
-      {showSelector && <ContentSelector post={post} />}
+      <Spring
+        native
+        force
+        from={{ height: 0, overflowY: "hidden" }}
+        to={{ height: showSelector ? "auto" : 0 }}
+      >
+        {props => (
+          <animated.div style={props}>
+            <ContentSelector post={post} />
+          </animated.div>
+        )}
+      </Spring>
     </>
   );
 }
@@ -413,7 +425,13 @@ function PostHeader({ post }) {
   );
 }
 
-function InlineWrapper({ children, ...rest }) {
+function InlineWrapper({ children, onCloseConfirm, closing, ...rest }) {
+  useEffect(
+    () => {
+      closing && onCloseConfirm();
+    },
+    [closing]
+  );
   return (
     <div {...rest} style={{ marginTop: 10 }}>
       {children}
@@ -421,15 +439,24 @@ function InlineWrapper({ children, ...rest }) {
   );
 }
 
-function ModalWrapper({ children, ...rest }) {
+function ModalWrapper({
+  children,
+  setClosing,
+  onCloseConfirm,
+  closing,
+  ...rest
+}) {
   return (
     <Modal
-      visible
+      visible={!closing}
+      afterClose={() => {
+        closing && onCloseConfirm();
+      }}
+      onCancel={() => setClosing(true)}
       footer={null}
       closable={false}
       bodyStyle={{ padding: 0 }}
       {...rest}
-      // centered={false}
     >
       {children}
     </Modal>
@@ -438,6 +465,7 @@ function ModalWrapper({ children, ...rest }) {
 
 function DrawerWrapper({
   children,
+  className,
   onCloseConfirm,
   closing,
   setClosing,
@@ -458,21 +486,23 @@ function DrawerWrapper({
   );
   return (
     <Drawer
-      title={
-        <>
-          <Button icon="arrow left" onClick={() => setClosing(true)} />
-          {isReply ? "Create Reply" : `${isEditting ? "Edit" : "Create"} Post`}
-        </>
-      }
       placement="right"
+      className={className}
       closable={false}
       width="100%"
+      height="100%"
       style={{ padding: 0 }}
       visible={!closing}
       onClose={onCloseConfirm}
       {...rest}
     >
-      {children}
+      <div className="reply-wrap-drawer">
+        <div className="reply-wrap-header">
+          <Button icon="arrow left" onClick={() => setClosing(true)} />
+          {isReply ? "Create Reply" : `${isEditting ? "Edit" : "Create"} Post`}
+        </div>
+        {children}
+      </div>
     </Drawer>
   );
 }
@@ -532,13 +562,22 @@ export default function PostEditor({
         setClosing={setClosing}
         onCloseConfirm={onCancel}
       >
-        <div ref={headerRef}>
+        {/* <div ref={headerRef} className="reply-wrap-header">
+          
+        </div> */}
+        <div
+          ref={contentRef}
+          style={{ width: "100%" }}
+          className="reply-wrap-body"
+        >
           <PostHeader post={post} />
-        </div>
-        <div ref={contentRef} style={{ width: "100%" }}>
           <ContentList post={post} />
         </div>
-        <div ref={actionsRef} style={{ width: "100%" }}>
+        <div
+          ref={actionsRef}
+          style={{ width: "100%" }}
+          className="reply-wrap-actions"
+        >
           <PostActions
             post={post}
             onSubmit={onSubmit}

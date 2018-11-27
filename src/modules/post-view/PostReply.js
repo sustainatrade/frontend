@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, Suspense } from "react";
 import PostReplyContext from "../../contexts/PostReplyContext";
-import { Loader, Button } from "semantic-ui-react";
+import { Loader, Dimmer } from "semantic-ui-react";
 import { Query, Mutation } from "react-apollo";
 import { LAST_DRAFT } from "../../gql-schemas";
 import get from "lodash/get";
@@ -8,7 +8,7 @@ import "./PostReply.css";
 // import Modal from "antd/lib/modal";
 
 const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
-
+const PageLoader = () => <div />;
 export default function PostReply() {
   const { parentPost, postReply, submitting, reset } = useContext(
     PostReplyContext.Context
@@ -17,7 +17,7 @@ export default function PostReply() {
   console.log(submitting, parentPost); //TRACE
   return (
     <div>
-      <Suspense fallback={<Loader active inline="centered" />}>
+      <Suspense fallback={<PageLoader />}>
         <Query
           query={LAST_DRAFT.query}
           variables={{
@@ -27,10 +27,10 @@ export default function PostReply() {
           {({ loading, data }) => {
             const reply = get(data, "LastDraft.post");
 
-            if (loading) return <Loader active inline="centered" />;
+            if (loading) return null;
             return (
               <div className="create-reply">
-                <div className="create-reply-header">
+                {/* <div className="create-reply-header">
                   <span>Reply</span>
                   <Button
                     size="large"
@@ -55,7 +55,7 @@ export default function PostReply() {
                       reset();
                     }}
                   />
-                </div>
+                </div> */}
                 <PostEditor
                   post={{ ...reply, parentPost }}
                   onSubmit={() => {

@@ -147,19 +147,8 @@ function PostFooter({ post }) {
   console.log(replyParentPost); //TRACE
   return (
     <>
-      {!replyParentPost ? (
-        <>
-          <PostReplies post={post} expanded isRoot />
-        </>
-      ) : (
-        <Transition
-          visible={!!replyParentPost}
-          animation="fade up"
-          duration={500}
-        >
-          <PostReply />
-        </Transition>
-      )}
+      <PostReplies post={post} expanded isRoot />
+      {replyParentPost && <PostReply />}
     </>
   );
 }

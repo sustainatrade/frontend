@@ -33,37 +33,34 @@ const Actions = React.memo(({ post, canReply }) => {
   const replyMode = get(parentPost, "_refNo") === post._refNo;
   return (
     <div style={{ cursor: "default" }}>
-      {replyMode ? (
-        <PostReply />
-      ) : (
-        <GlobalConsumer>
-          {({ user }) => (
-            <div className="post-item-actions">
-              <FollowButton post={post} size="mini" />
-              <MoreButton
-                post={post}
-                userContext={user}
-                size="mini"
+      <GlobalConsumer>
+        {({ user }) => (
+          <div className="post-item-actions">
+            <FollowButton post={post} size="mini" />
+            <MoreButton
+              post={post}
+              userContext={user}
+              size="mini"
+              floated="right"
+            />
+            {canReply && (
+              <BasicButton
+                content="Reply"
+                name="reply"
                 floated="right"
+                onClick={() => {
+                  if (!currentUserId) {
+                    error.emit(TYPES.NOT_LOGGED_IN);
+                    return;
+                  }
+                  setParentPost(post);
+                }}
               />
-              {canReply && (
-                <BasicButton
-                  content="Reply"
-                  name="reply"
-                  floated="right"
-                  onClick={() => {
-                    if (!currentUserId) {
-                      error.emit(TYPES.NOT_LOGGED_IN);
-                      return;
-                    }
-                    setParentPost(post);
-                  }}
-                />
-              )}
-            </div>
-          )}
-        </GlobalConsumer>
-      )}
+            )}
+          </div>
+        )}
+      </GlobalConsumer>
+      {replyMode && <PostReply />}
     </div>
   );
 });

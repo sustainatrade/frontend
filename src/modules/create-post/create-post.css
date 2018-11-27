@@ -2,9 +2,6 @@
   background-color: lavenderblush !important;
 }
 
-/* .content-inactive {
-} */
-
 .content-inactive:hover {
   background-color: lavenderblush !important;
 }
@@ -14,19 +11,6 @@
   border-color: rgba(64, 169, 255, 1);
 }
 
-.reply-header {
-  background-color: #00b5ad;
-  padding: 5px;
-  height: 50px;
-}
-
-.reply-header span {
-  font-size: larger;
-  font-weight: bold;
-  color: ghostwhite;
-  display: inline-block;
-  padding: 7px;
-}
 
 .post-editor-modal .content-selector .card {
   cursor: pointer;
@@ -65,4 +49,39 @@
   margin-top: 0px;
   font-weight: bold;
   border-radius: 0;
+}
+
+.post-editor-modal .ant-drawer-body {
+  height: 100%;
+}
+
+.reply-wrap-drawer {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-content: center;
+  align-items: stretch;
+  height: 100%
+}
+.reply-wrap-drawer .reply-wrap-header {
+  /* font-size: large;
+  font-weight: bold; */
+  color: darkgray;
+  padding: 5px;
+  order: 1;
+  flex: 0 1 auto;
+  align-self: auto;
+}
+.reply-wrap-drawer .reply-wrap-body {
+  order: 2;
+  flex: 5 1 auto;
+  align-self: auto;
+  overflow-y: auto;
+  
+}
+.reply-wrap-drawer .reply-wrap-actions {
+  order: 3;
+  overflow-y: auto;
+  flex: 0 0 auto;
+  align-self: auto;
 }
