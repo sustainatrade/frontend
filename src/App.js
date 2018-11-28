@@ -1,34 +1,34 @@
-import React, { useContext } from "react";
-import EcoContent from "./modules/Content";
-import RootContextProvider from "./contexts";
-import { Context as ResponsiveContext } from "./contexts/Responsive";
-import { Context as LayoutContext } from "./contexts/LayoutContext";
-import { Divider, Menu, Dimmer, Header, Button, Icon } from "semantic-ui-react";
+import React, { useContext } from 'react';
+import EcoContent from './modules/Content';
+import RootContextProvider from './contexts';
+import { Context as ResponsiveContext } from './contexts/Responsive';
+import { Context as LayoutContext } from './contexts/LayoutContext';
+import { Divider, Menu, Dimmer, Header, Button, Icon } from 'semantic-ui-react';
 
-import PwaStatus from "./components/pwa-status/PwaStatus";
-import CookiePopup from "./components/cookie-popup/CookiePopup";
-import loadable from "loadable-components";
-import "./App.css";
-import config from "config";
-import get from "lodash/get";
+import PwaStatus from './components/pwa-status/PwaStatus';
+import IconProvider from './components/icon-provider/IconProvider';
+import CookiePopup from './components/cookie-popup/CookiePopup';
+import loadable from 'loadable-components';
+import './App.css';
+import config from 'config';
+import get from 'lodash/get';
 
 // Antd component styles here
-import "antd/lib/drawer/style/css";
-import "antd/lib/upload/style/css";
-import "antd/lib/menu/style/css";
-import "antd/lib/dropdown/style/css";
-import "antd/lib/modal/style/css";
-import "antd/lib/notification/style/css";
-import "antd/lib/slider/style/css";
-import "antd/lib/timeline/style/css";
-import "antd/lib/popover/style/css";
-import "antd/lib/button/style/css";
-import "antd/lib/icon/style/css";
-import "antd/lib/tabs/style/css";
-import "antd/lib/input/style/css";
-import { FacebookProvider } from "react-facebook";
-import Modal from "antd/lib/modal";
-import Globals from "./modules/globals";
+import 'antd/lib/drawer/style/css';
+import 'antd/lib/upload/style/css';
+import 'antd/lib/menu/style/css';
+import 'antd/lib/dropdown/style/css';
+import 'antd/lib/modal/style/css';
+import 'antd/lib/notification/style/css';
+import 'antd/lib/slider/style/css';
+import 'antd/lib/timeline/style/css';
+import 'antd/lib/popover/style/css';
+import 'antd/lib/button/style/css';
+import 'antd/lib/tabs/style/css';
+import 'antd/lib/input/style/css';
+import { FacebookProvider } from 'react-facebook';
+import Modal from 'antd/lib/modal';
+import Globals from './modules/globals';
 
 const EmptyHeader = () => (
   <Menu className="top-header">
@@ -36,12 +36,9 @@ const EmptyHeader = () => (
   </Menu>
 );
 
-const MainHeader = loadable(
-  () => import(`./components/main-header/MainHeader`),
-  {
-    LoadingComponent: () => <EmptyHeader />
-  }
-);
+const MainHeader = loadable(() => import(`./components/main-header/MainHeader`), {
+  LoadingComponent: () => <EmptyHeader />
+});
 
 function HeaderWrapper() {
   const { isMobile, ...rest } = useContext(ResponsiveContext);
@@ -59,7 +56,7 @@ function HeaderWrapper() {
           zIndex={900}
           onCancel={() => setShowSidebar(false)}
           width={10}
-          style={{ top: 0, left: 0, display: "none" }}
+          style={{ top: 0, left: 0, display: 'none' }}
           footer={null}
         />
       )}
@@ -80,6 +77,7 @@ class Root extends React.Component {
         </React.Fragment>
         <PwaStatus />
         <Globals />
+        <IconProvider />
       </RootContextProvider>
     );
   }

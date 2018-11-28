@@ -8,7 +8,6 @@ import {
   Button,
   Message
 } from "semantic-ui-react";
-import Icon from "antd/lib/icon";
 import AntButton from "antd/lib/button";
 import { MODES } from "./../index";
 import { UPDATE_POST_WIDGETS } from "../../../gql-schemas";

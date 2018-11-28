@@ -1,7 +1,7 @@
-import React from "react";
-import { Dropdown, Button } from "semantic-ui-react";
-import Icon from "antd/lib/icon";
-import { contents } from "../../components/widgets";
+import React from 'react';
+import { Dropdown, Button } from 'semantic-ui-react';
+import Icon from 'components/icon-provider/Icon';
+import { contents } from '../../components/widgets';
 
 export default class ContentDropdown extends React.Component {
   state = { selectedCode: null };
@@ -32,12 +32,7 @@ export default class ContentDropdown extends React.Component {
             <Icon {...selectedContent.icon} />
             {!compact && ` ${selectedContent.name}`}
           </Button>
-          <Button
-            icon="angle down"
-            color="green"
-            basic
-            style={{ marginRight: 5 }}
-          />
+          <Button icon="angle down" color="green" basic style={{ marginRight: 5 }} />
         </Button.Group>
       );
     } else Trigger = <Button basic icon="plus" content="Add Content" />;
@@ -52,7 +47,7 @@ export default class ContentDropdown extends React.Component {
               const content = contents[code];
               const style = {};
               const active = selectedCode === code;
-              if (active) style.backgroundColor = "whitesmoke";
+              if (active) style.backgroundColor = 'whitesmoke';
               return (
                 <Dropdown.Item
                   key={code}

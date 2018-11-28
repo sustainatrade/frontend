@@ -1,15 +1,15 @@
-import React, { useContext, useCallback } from "react";
-import { Button } from "semantic-ui-react";
-import Icon from "antd/lib/icon";
-import "./PostActions.css";
-import get from "lodash/get";
-import MoreButton from "./../post-feed/MoreButton";
-import FollowButton from "./../post-feed/FollowButton";
-import PostViewContext from "../../contexts/PostViewContext";
-import UserContext from "../../contexts/UserContext";
-import PostReplyContext from "../../contexts/PostReplyContext";
-import ErrorContext from "../../contexts/ErrorContext";
-import { TYPES } from "../../errors";
+import React, { useContext, useCallback } from 'react';
+import { Button } from 'semantic-ui-react';
+import Icon from 'components/icon-provider/Icon';
+import './PostActions.css';
+import get from 'lodash/get';
+import MoreButton from './../post-feed/MoreButton';
+import FollowButton from './../post-feed/FollowButton';
+import PostViewContext from '../../contexts/PostViewContext';
+import UserContext from '../../contexts/UserContext';
+import PostReplyContext from '../../contexts/PostReplyContext';
+import ErrorContext from '../../contexts/ErrorContext';
+import { TYPES } from '../../errors';
 
 export default function({ post }) {
   const { editting, setEditMode } = useContext(PostViewContext.Context);
@@ -17,7 +17,7 @@ export default function({ post }) {
   const user = useContext(UserContext.Context);
   const error = useContext(ErrorContext.Context);
 
-  const currentUserId = get(user, "user.id");
+  const currentUserId = get(user, 'user.id');
   const myPost = currentUserId === post.createdBy;
   if (editting) return null;
   return (
@@ -37,7 +37,7 @@ export default function({ post }) {
         />
         {myPost && (
           <Button onClick={() => setEditMode(true, post._refNo)}>
-            <Icon type="edit" theme="outlined" /> Edit
+            <Icon type="bytesize:edit" theme="outlined" /> Edit
           </Button>
         )}
         <MoreButton post={post} userContext={user} floated="right" />

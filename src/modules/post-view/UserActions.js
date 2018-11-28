@@ -1,12 +1,11 @@
-import React, { useContext, useCallback, useEffect } from "react";
-import { Button } from "semantic-ui-react";
-import Icon from "antd/lib/icon";
-import "./UserActions.css";
-import get from "lodash/get";
-import PostReplyContext from "../../contexts/PostReplyContext";
-import PostViewContext from "../../contexts/PostViewContext";
+import React, { useContext, useCallback, useEffect } from 'react';
+import { Button } from 'semantic-ui-react';
+import './UserActions.css';
+import get from 'lodash/get';
+import PostReplyContext from '../../contexts/PostReplyContext';
+import PostViewContext from '../../contexts/PostViewContext';
 
-const BUTTON_SIZE = "huge";
+const BUTTON_SIZE = 'huge';
 
 export default function(props) {
   const { post, size } = props;

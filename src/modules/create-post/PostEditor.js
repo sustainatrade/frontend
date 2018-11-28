@@ -1,12 +1,4 @@
-import React, {
-  Component,
-  useState,
-  useContext,
-  useCallback,
-  useRef,
-  useEffect,
-  useMemo
-} from "react";
+import React, { Component, useState, useContext, useCallback, useRef, useEffect, useMemo } from 'react';
 import {
   Header,
   Container,
@@ -21,41 +13,38 @@ import {
   Message,
   Card,
   Input
-} from "semantic-ui-react";
-import { Query } from "react-apollo";
-import { contents, MODES } from "./../../components/widgets";
-import AntButton from "antd/lib/button";
-import {
-  LAST_DRAFT,
-  PUBLISH_POST,
-  UPDATE_POST_WIDGETS
-} from "../../gql-schemas";
-import CreatePostContext from "../../contexts/CreatePost";
-import ErrorContext from "../../contexts/ErrorContext";
-import Responsive from "../../contexts/Responsive";
-import PostWidgetContext from "../../contexts/PostWidgetContext";
-import LayoutContext from "./../../contexts/LayoutContext";
-import get from "lodash/get";
-import last from "lodash/last";
-import debounce from "lodash/debounce";
-import Icon from "antd/lib/icon";
-import Modal from "antd/lib/modal";
-import Drawer from "antd/lib/drawer";
-import ContentDropdown from "./ContentDropdown";
-import ContentEditor from "./ContentEditor";
-import { navigate } from "@reach/router";
-import { Spring, animated } from "react-spring";
+} from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import { contents, MODES } from './../../components/widgets';
+import AntButton from 'antd/lib/button';
+import { LAST_DRAFT, PUBLISH_POST, UPDATE_POST_WIDGETS } from '../../gql-schemas';
+import CreatePostContext from '../../contexts/CreatePost';
+import ErrorContext from '../../contexts/ErrorContext';
+import Responsive from '../../contexts/Responsive';
+import PostWidgetContext from '../../contexts/PostWidgetContext';
+import LayoutContext from './../../contexts/LayoutContext';
+import get from 'lodash/get';
+import last from 'lodash/last';
+import debounce from 'lodash/debounce';
+import Icon from 'components/icon-provider/Icon';
+import Modal from 'antd/lib/modal';
+import Drawer from 'antd/lib/drawer';
+import ContentDropdown from './ContentDropdown';
+import ContentEditor from './ContentEditor';
+import { navigate } from '@reach/router';
+import { Spring, animated } from 'react-spring';
 
-import "./create-post.css";
-import { useOnUnmount } from "react-hanger";
-import PostItem from "../post-item";
+import './create-post.css';
+import { useOnUnmount } from 'react-hanger';
+import PostItem from '../post-item';
+import ThemeContext from '../../contexts/ThemeContext';
 
 function ContentActions({ contentData }) {
   const { _refNo, code, postRefNo } = contentData;
   const context = useContext(PostWidgetContext.Context);
   const error = useContext(ErrorContext.Context);
   const btnProps = {
-    size: "mini",
+    size: 'mini',
     disabled: context.submitting
   };
 
@@ -104,15 +93,10 @@ function ContentBlock(props) {
   const Content = contents[contentKey].component;
   const style = { paddingLeft: 15, paddingRight: 15, margin: 0 };
   if (!active) {
-    style.cursor = "pointer";
+    style.cursor = 'pointer';
   }
   return (
-    <Segment
-      basic
-      onClick={onClick}
-      style={style}
-      className={active ? "content-active" : "content-inactive"}
-    >
+    <Segment basic onClick={onClick} style={style} className={active ? 'content-active' : 'content-inactive'}>
       {active && <ContentActions {...props} />}
       <Content mode={MODES.VIEW} defaultValues={defaultValues} basic fitted />
     </Segment>
@@ -122,7 +106,7 @@ function ContentBlock(props) {
 const TitleEditor = React.memo(({ title, refNo }) => {
   const { editPost } = useContext(CreatePostContext.Context);
   const error = useContext(ErrorContext.Context);
-  console.log("render title");
+  console.log('render title');
 
   return (
     <Input
@@ -130,7 +114,7 @@ const TitleEditor = React.memo(({ title, refNo }) => {
       size="big"
       fluid
       defaultValue={title}
-      label={{ basic: true, content: "Title" }}
+      label={{ basic: true, content: 'Title' }}
       placeholder="What is this about?"
       onChange={debounce((_, { value }) => {
         error.clear(PUBLISH_POST.key);
@@ -142,13 +126,9 @@ const TitleEditor = React.memo(({ title, refNo }) => {
 
 const ContentList = React.memo(({ post }) => {
   const { isMobile } = useContext(Responsive.Context);
-  const {
-    currentContent,
-    defaultContentCode,
-    setCurrentContent,
-    submitWidgetsFn,
-    submitting
-  } = useContext(PostWidgetContext.Context);
+  const { currentContent, defaultContentCode, setCurrentContent, submitWidgetsFn, submitting } = useContext(
+    PostWidgetContext.Context
+  );
 
   // const selectedContent = post.widgets.find(widget => {
   //   return widget._refNo === get(currentContent, "_refNo");
@@ -197,7 +177,7 @@ const ContentList = React.memo(({ post }) => {
           contentKey={content.code}
           defaultValues={content.values}
           contentData={content}
-          active={get(currentContent, "_refNo") === content._refNo}
+          active={get(currentContent, '_refNo') === content._refNo}
           onUpdated={values => {}}
           // onClose={() => setActiveIndex(null)}
           onClick={() => setCurrentContent(content)}
@@ -209,12 +189,9 @@ const ContentList = React.memo(({ post }) => {
 
 function ContentSelector({ post }) {
   const [selectedKey, setSelectedKey] = useState(null);
-  const {
-    currentContent,
-    setCurrentContent,
-    submitWidgetsFn,
-    defaultContentCode
-  } = useContext(PostWidgetContext.Context);
+  const { currentContent, setCurrentContent, submitWidgetsFn, defaultContentCode } = useContext(
+    PostWidgetContext.Context
+  );
 
   async function createNewContent() {
     const newAdded = await submitWidgetsFn(
@@ -227,7 +204,7 @@ function ContentSelector({ post }) {
       ],
       { newWidget: true }
     );
-    setCurrentContent(get(newAdded, "0"));
+    setCurrentContent(get(newAdded, '0'));
   }
 
   useEffect(
@@ -258,7 +235,7 @@ function ContentSelector({ post }) {
                 <Card.Content>
                   <Card.Header>
                     <Icon {...contentData.icon} />
-                    {"  "}
+                    {'  '}
                     {contentData.name}
                   </Card.Header>
                   <Card.Meta>{cKey}</Card.Meta>
@@ -299,17 +276,13 @@ function PostActions({ post, onSubmit, onCancel }) {
 
   if (currentContent) return null;
 
-  console.log("contents", contents); //TRACE
+  console.log('contents', contents); //TRACE
 
   return (
     <>
-      <Segment
-        basic
-        className="add-content"
-        style={{ padding: 10, borderTop: "solid 1px gainsboro" }}
-      >
+      <Segment basic className="add-content" style={{ padding: 10, borderTop: 'solid 1px gainsboro' }}>
         <AntButton
-          icon={showSelector ? "minus-circle" : "plus"}
+          icon={showSelector ? 'minus-circle' : 'plus'}
           size="large"
           type="dashed"
           loading={updating}
@@ -317,13 +290,7 @@ function PostActions({ post, onSubmit, onCancel }) {
             setShowSelector(!showSelector);
           }}
         >
-          {isMobile
-            ? showSelector
-              ? `Close`
-              : `Add`
-            : showSelector
-            ? `Close Selector`
-            : `Add Content`}
+          {isMobile ? (showSelector ? `Close` : `Add`) : showSelector ? `Close Selector` : `Add Content`}
         </AntButton>
         <Button
           size="large"
@@ -331,7 +298,7 @@ function PostActions({ post, onSubmit, onCancel }) {
           floated="right"
           primary
           loading={submitting}
-          disabled={submitting || get(post, "widgets", []).length === 0}
+          disabled={submitting || get(post, 'widgets', []).length === 0}
           content="Post"
           onClick={async () => {
             if (submitting) return;
@@ -347,7 +314,7 @@ function PostActions({ post, onSubmit, onCancel }) {
           size="large"
           icon="cancel"
           floated="right"
-          content={isMobile ? null : "Cancel"}
+          content={isMobile ? null : 'Cancel'}
           basic
           onClick={() => {
             onCancel && onCancel();
@@ -357,8 +324,8 @@ function PostActions({ post, onSubmit, onCancel }) {
       <Spring
         native
         force
-        from={{ height: 0, overflowY: "hidden" }}
-        to={{ height: showSelector ? "auto" : 0 }}
+        from={{ height: 0, overflowY: 'hidden' }}
+        to={{ height: showSelector ? 'auto' : 0 }}
       >
         {props => (
           <animated.div style={props}>
@@ -383,13 +350,7 @@ function ContentEditorWrapper({ post, contentEditorSize, inline }) {
         lastUpdate: curTime
       });
   });
-  return (
-    <ContentEditor
-      post={post}
-      size={contentEditorSize}
-      onSizeChanged={sizeChanged}
-    />
-  );
+  return <ContentEditor post={post} size={contentEditorSize} onSizeChanged={sizeChanged} />;
 }
 
 function ParentPost({ refNo }) {
@@ -397,7 +358,7 @@ function ParentPost({ refNo }) {
 }
 
 function PostHeader({ post }) {
-  console.log("postPheader", post); //TRACE
+  console.log('postPheader', post); //TRACE
   const hasParent = !!post.parentPost;
   return hasParent ? (
     <>
@@ -407,13 +368,7 @@ function PostHeader({ post }) {
           Post
         </Label>
         <Segment className="reply-parent-post-item" raised>
-          <PostItem
-            isCompact
-            post={post.parentPost}
-            basic
-            withLabels={false}
-            withActions={false}
-          />
+          <PostItem isCompact post={post.parentPost} basic withLabels={false} withActions={false} />
         </Segment>
       </Segment>
       <Segment inverted color="teal" className="new-reply-header">
@@ -425,7 +380,7 @@ function PostHeader({ post }) {
   );
 }
 
-function InlineWrapper({ children, onCloseConfirm, closing, ...rest }) {
+function InlineWrapper({ children, onCloseConfirm, closing, isReply, isEditting, setClosing, ...rest }) {
   useEffect(
     () => {
       closing && onCloseConfirm();
@@ -439,13 +394,7 @@ function InlineWrapper({ children, onCloseConfirm, closing, ...rest }) {
   );
 }
 
-function ModalWrapper({
-  children,
-  setClosing,
-  onCloseConfirm,
-  closing,
-  ...rest
-}) {
+function ModalWrapper({ children, setClosing, onCloseConfirm, closing, ...rest }) {
   return (
     <Modal
       visible={!closing}
@@ -499,7 +448,7 @@ function DrawerWrapper({
       <div className="reply-wrap-drawer">
         <div className="reply-wrap-header">
           <Button icon="arrow left" onClick={() => setClosing(true)} />
-          {isReply ? "Create Reply" : `${isEditting ? "Edit" : "Create"} Post`}
+          {isReply ? 'Create Reply' : `${isEditting ? 'Edit' : 'Create'} Post`}
         </div>
         {children}
       </div>
@@ -507,13 +456,7 @@ function DrawerWrapper({
   );
 }
 
-export default function PostEditor({
-  post,
-  inline,
-  extras,
-  onSubmit,
-  onCancel
-}) {
+export default function PostEditor({ post, inline, extras, onSubmit, onCancel }) {
   // const { activeIndex, setActiveIndex } = useState(getLastWidgetIndex(post));
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -523,15 +466,12 @@ export default function PostEditor({
   const [closing, setClosing] = useState(false);
   const { isMobile } = useContext(Responsive.Context);
   const { windowSize, contentStyle } = useContext(LayoutContext.Context);
+  const { mainBgColor } = useContext(ThemeContext.Context);
   function handleOnScreen(e, { calculations }) {
-    if (
-      calculations.height === size.height &&
-      calculations.width === size.width
-    )
-      return;
+    if (calculations.height === size.height && calculations.width === size.width) return;
     setSize({ width: calculations.width, height: calculations.height });
   }
-  console.log("renderall");
+  console.log('renderall');
 
   const isReply = !!post.parentPostRefNo;
   const contentEditorSize = { width: size.width };
@@ -551,9 +491,9 @@ export default function PostEditor({
   } else {
     Wrapper = InlineWrapper;
   }
-  console.log("post", post); //TRACE
+  console.log('post', post); //TRACE
   return (
-    <div>
+    <div style={{ backgroundColor: mainBgColor }}>
       <Wrapper
         className="post-editor-modal"
         isReply={isReply}
@@ -565,30 +505,14 @@ export default function PostEditor({
         {/* <div ref={headerRef} className="reply-wrap-header">
           
         </div> */}
-        <div
-          ref={contentRef}
-          style={{ width: "100%" }}
-          className="reply-wrap-body"
-        >
+        <div ref={contentRef} style={{ width: '100%' }} className="reply-wrap-body">
           <PostHeader post={post} />
           <ContentList post={post} />
         </div>
-        <div
-          ref={actionsRef}
-          style={{ width: "100%" }}
-          className="reply-wrap-actions"
-        >
-          <PostActions
-            post={post}
-            onSubmit={onSubmit}
-            onCancel={() => setClosing(true)}
-          />
+        <div ref={actionsRef} style={{ width: '100%' }} className="reply-wrap-actions">
+          <PostActions post={post} onSubmit={onSubmit} onCancel={() => setClosing(true)} />
           {extras}
-          <ContentEditorWrapper
-            post={post}
-            inline={inline}
-            contentEditorSize={contentEditorSize}
-          />
+          <ContentEditorWrapper post={post} inline={inline} contentEditorSize={contentEditorSize} />
         </div>
       </Wrapper>
     </div>

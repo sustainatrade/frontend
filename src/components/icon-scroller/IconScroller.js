@@ -1,18 +1,12 @@
-import React, {
-  useContext,
-  useRef,
-  useState,
-  useCallback,
-  useEffect
-} from "react";
-import "./IconScroller.css";
-import Button from "antd/lib/button";
-import Icon from "antd/lib/icon";
-import PostStackContext from "../../contexts/PostStackContext";
-import { useWindowScrollPosition } from "the-platform";
-import get from "lodash/get";
-import forEach from "lodash/forEach";
-import LayoutContext from "../../contexts/LayoutContext";
+import React, { useContext, useRef, useState, useCallback, useEffect } from 'react';
+import './IconScroller.css';
+import Button from 'antd/lib/button';
+import PostStackContext from '../../contexts/PostStackContext';
+import { useWindowScrollPosition } from 'the-platform';
+import get from 'lodash/get';
+import forEach from 'lodash/forEach';
+import LayoutContext from '../../contexts/LayoutContext';
+import Icon from '../../components/icon-provider/Icon';
 
 // const ICON_HEIGHT = 24;
 const EDGE_OFFSET = 100;
@@ -20,8 +14,8 @@ const BUTTON_OFFSET_Y = 35;
 const BUTTON_OFFSET_X = 18;
 function Edges({ edges }) {
   const defaultEdgeStyle = {
-    borderLeftColor: "gainsboro",
-    borderLeftStyle: "solid",
+    borderLeftColor: 'gainsboro',
+    borderLeftStyle: 'solid',
     top: 0,
     bottom: 0
   };
@@ -33,10 +27,10 @@ function Edges({ edges }) {
         let tailEdgeY = edge.tailOffsetY;
         const headVisible = edgeY + EDGE_OFFSET > 0;
         const border = {
-          borderLeftColor: "blue",
-          borderLeftStyle: "solid"
+          borderLeftColor: 'blue',
+          borderLeftStyle: 'solid'
         };
-        console.log("edge"); //TRACE
+        console.log('edge'); //TRACE
         console.log(edge); //TRACE
         // if (edge)
         // const nextEdge = get(edges, [ii + 1]);
@@ -79,11 +73,11 @@ export default function IconScroller({ height, width }) {
     () => {
       let newEdges = [];
       postStack.forEach(postObj => {
-        const curEl = get(postObj, "headEl.current");
+        const curEl = get(postObj, 'headEl.current');
         if (!curEl) return;
         const { y: offsetTop } = curEl.getBoundingClientRect();
         let tailOffsetY;
-        const tailEl = get(postObj, "tailEl.current");
+        const tailEl = get(postObj, 'tailEl.current');
         if (tailEl) {
           const { y: tailOffsetTop } = tailEl.getBoundingClientRect();
           tailOffsetY = tailOffsetTop - contentStyle.paddingTop;
@@ -117,17 +111,17 @@ export default function IconScroller({ height, width }) {
           return (
             <div key={edge.id} className="reply-head" style={displayStyle}>
               <Button
-                type={isLast ? "primary" : "dashed"}
+                type={isLast ? 'primary' : 'dashed'}
                 className="icon-button"
                 title={edge.id}
                 onClick={() => {
                   window.scrollTo({
                     top: scrollY - EDGE_OFFSET + edge.offsetY,
-                    behavior: "smooth"
+                    behavior: 'smooth'
                   });
                 }}
               >
-                <Icon type="up-circle" theme="outlined" />
+                <Icon type="emojione:up-left-arrow" theme="outlined" />
               </Button>
             </div>
           );

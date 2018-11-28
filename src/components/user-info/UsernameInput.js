@@ -1,17 +1,13 @@
-import React from "react";
+import React from 'react';
 // import PropTypes from 'prop-types';
-import { Button, Input, Label, Message } from "semantic-ui-react";
-import { Query, Mutation } from "react-apollo";
-import gql from "graphql-tag";
+import { Button, Input, Label, Message } from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 // import Cookie from 'tough-cookie'
-import { cleanError } from "lib/apollo";
-import { emitter } from "./../ms-graphql-client/MsGraphqlClient";
-import { TYPES } from "./../../errors";
-import { imageUrlToUri } from "./../../lib/image";
-import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
-import get from "lodash/get";
-import debounce from "lodash/debounce";
-import Icon from "antd/lib/icon";
+import { cleanError } from 'lib/apollo';
+
+import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 
 const CHECK_USER = gql`
   query GetUserInfo(
@@ -52,7 +48,7 @@ export default class UsernameInput extends React.Component {
   render() {
     const { credentials, user, onValidated } = this.props;
     const { newUsername, hideInfoPopup } = this.state;
-    const username = newUsername || get(user, "username");
+    const username = newUsername || get(user, 'username');
     const variables = {
       username
     };
@@ -62,20 +58,15 @@ export default class UsernameInput extends React.Component {
     }
 
     return (
-      <Query
-        query={CHECK_USER}
-        variables={variables}
-        skip={!user}
-        key={username}
-      >
+      <Query query={CHECK_USER} variables={variables} skip={!user} key={username}>
         {({ data, loading, error }) => {
-          console.log("username data"); //TRACE
+          console.log('username data'); //TRACE
           console.log(data); //TRACE
-          console.log("error"); //TRACE
-          const errorMessage = get(cleanError(error), "message");
+          console.log('error'); //TRACE
+          const errorMessage = get(cleanError(error), 'message');
           console.log(errorMessage); //TRACE
           const openPopup = !!errorMessage && !hideInfoPopup;
-          console.log("openPopup"); //TRACE
+          console.log('openPopup'); //TRACE
           console.log(openPopup); //TRACE
           return (
             <React.Fragment>
@@ -90,9 +81,9 @@ export default class UsernameInput extends React.Component {
                 //   this.popupHandler({ errorMessage });
                 // }}
                 onChange={debounce((e, data) => {
-                  console.log("data.value"); //TRACE
+                  console.log('data.value'); //TRACE
                   console.log(data.value); //TRACE
-                  console.log("set!"); //TRACE
+                  console.log('set!'); //TRACE
                   this.setState({ newUsername: data.value });
                 }, 1000)}
                 placeholder="------ --------"
@@ -100,26 +91,20 @@ export default class UsernameInput extends React.Component {
                   onValidated && onValidated(true);
                 }}
               >
-                <Label basic color={!!errorMessage && "red"}>
+                <Label basic color={!!errorMessage && 'red'}>
                   Username
                 </Label>
                 <input />
                 <Button
                   disabled={!username}
-                  color={!!errorMessage && "red"}
+                  color={!!errorMessage && 'red'}
                   loading={loading}
-                  icon={!!errorMessage ? "warning circle" : "save"}
+                  icon={!!errorMessage ? 'warning circle' : 'save'}
                 />
               </Input>
-              {!hideInfoPopup &&
-                !!errorMessage && (
-                  <Message
-                    size="small"
-                    error
-                    header="Invalid username"
-                    content={errorMessage}
-                  />
-                )}
+              {!hideInfoPopup && !!errorMessage && (
+                <Message size="small" error header="Invalid username" content={errorMessage} />
+              )}
             </React.Fragment>
           );
         }}

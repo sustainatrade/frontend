@@ -1,26 +1,19 @@
-import React, { useMemo, useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Loader,
-  Label,
-  Visibility,
-  Divider,
-  Transition
-} from "semantic-ui-react";
-import Icon from "antd/lib/icon";
-import Menu from "antd/lib/menu";
-import AntButton from "antd/lib/button";
-import Dropdown from "antd/lib/dropdown";
-import "./ContentEditor.css";
-import get from "lodash/get";
-import debounce from "lodash/debounce";
-import last from "lodash/last";
-import { contents, MODES } from "./../../components/widgets";
-import Tabs from "antd/lib/tabs";
-import PostWidgetContext from "../../contexts/PostWidgetContext";
-import { fromJS } from "immutable";
-import nanoid from "nanoid";
-import Responsive from "../../contexts/Responsive";
+import React, { useMemo, useContext, useEffect, useState } from 'react';
+import { Button, Loader, Label, Visibility, Divider, Transition } from 'semantic-ui-react';
+import Icon from 'components/icon-provider/Icon';
+import Menu from 'antd/lib/menu';
+import AntButton from 'antd/lib/button';
+import Dropdown from 'antd/lib/dropdown';
+import './ContentEditor.css';
+import get from 'lodash/get';
+import debounce from 'lodash/debounce';
+import last from 'lodash/last';
+import { contents, MODES } from './../../components/widgets';
+import Tabs from 'antd/lib/tabs';
+import PostWidgetContext from '../../contexts/PostWidgetContext';
+import { fromJS } from 'immutable';
+import nanoid from 'nanoid';
+import Responsive from '../../contexts/Responsive';
 
 const TabPane = Tabs.TabPane;
 
@@ -30,7 +23,7 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
   if (!currentContent) return null;
 
   const ContentComponent = contents[currentContent.code].component;
-  const currentRefNo = get(currentContent, "_refNo");
+  const currentRefNo = get(currentContent, '_refNo');
   return (
     <div>
       <ContentComponent
@@ -51,21 +44,16 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
 });
 
 const WidgetHeader = ({ context }) => {
-  const {
-    currentContent,
-    setCurrentContent,
-    defaultContentCode,
-    contentKeys
-  } = context;
+  const { currentContent, setCurrentContent, defaultContentCode, contentKeys } = context;
 
   const menu = (
     <Menu
       onClick={e => {
         const newCode = fromJS(currentContent)
-          .set("code", e.key)
-          .set("values", {})
+          .set('code', e.key)
+          .set('values', {})
           .toJS();
-        console.log("newCode"); //TRACE
+        console.log('newCode'); //TRACE
         console.log(newCode); //TRACE
         setCurrentContent(newCode);
       }}
@@ -80,7 +68,7 @@ const WidgetHeader = ({ context }) => {
       })}
     </Menu>
   );
-  const code = get(currentContent, "code", defaultContentCode);
+  const code = get(currentContent, 'code', defaultContentCode);
   const selectedContent = contents[code];
   if (!selectedContent) return null;
   return (
@@ -95,8 +83,8 @@ const WidgetHeader = ({ context }) => {
       />
       <span
         style={{
-          fontSize: "x-large",
-          color: "white"
+          fontSize: 'x-large',
+          color: 'white'
         }}
       >
         {selectedContent.name}
@@ -144,13 +132,7 @@ export default function({ post, size, onSizeChanged }) {
       }}
     >
       <div className="content-editor-actions" style={ceActionStyles}>
-        <Visibility
-          key={vKey}
-          fireOnMount
-          continuous
-          updateOn="repaint"
-          onUpdate={handleOnScreen}
-        >
+        <Visibility key={vKey} fireOnMount continuous updateOn="repaint" onUpdate={handleOnScreen}>
           <WidgetHeader context={context} />
           <div className="content-editor-controls">
             <WidgetEditor postRefNo={post._refNo} context={context} />
