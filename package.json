@@ -44,7 +44,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_PATH=./src react-scripts start",
-    "build": "node build.js",
+    "build": "node build.js && node post-build.js",
     "analyze": "cross-env NODE_PATH=./src node analyze.js",
     "server": "nodemon --watch server server/index.js",
     "test": "react-scripts test --env=jsdom",

@@ -15,6 +15,8 @@ echo(JSON.stringify(swConfig)).to('server/sw-config.json');
 
 const webpackConfigProd = require('react-scripts/config/webpack.config.prod');
 
+webpackConfigProd.resolve.alias['@ant-design/icons'] = 'purched-antd-icons';
+
 webpackConfigProd.plugins.push(
   new BundleAnalyzerPlugin({
     analyzerMode: 'static',
@@ -22,10 +24,9 @@ webpackConfigProd.plugins.push(
   })
 );
 
-webpackConfigProd.resolve.alias['@ant-design/icons'] = 'purched-antd-icons';
-
-asyncExec('cross-env NODE_PATH=./src react-scripts build').then(() => {
-  console.log('---injecting .sw-inject.js');
-  cat('.sw-inject.js').toEnd('build/service-worker.js');
-  console.log('---done injecting');
-});
+require("react-scripts/scripts/build");
+// asyncExec('cross-env NODE_PATH=./src react-scripts build').then(() => {
+//   console.log('---injecting .sw-inject.js');
+//   cat('.sw-inject.js').toEnd('build/service-worker.js');
+//   console.log('---done injecting');
+// });
