@@ -1,7 +1,7 @@
 .content-editor-actions {
 }
 .content-editor-controls {
-  padding: 15px;
+  background-color: whitesmoke;
 }
 .content-editor-actions .ant-tabs-tab .anticon {
   margin: 0;
@@ -17,7 +17,7 @@
 
 .content-editor-actions .widget-selector {
   background-color: gainsboro;
-  padding: 5px 15px;
+  padding: 1px 15px;
   font-weight: bolder;
 }
 

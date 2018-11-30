@@ -1,8 +1,10 @@
-import React from "react";
-import Content from "./../base/Content";
-import { Button, Divider } from "semantic-ui-react";
+import React from 'react';
+import Content from './../base/Content';
+import { Button, Divider } from 'semantic-ui-react';
 
 export function DefaultSaveButton(props) {
+  console.log('props', props); //TRACE
+  const txt = props.defaulValue ? 'Update' : 'Add';
   return (
     <div style={{ marginTop: 5, marginBottom: 0 }}>
       <Divider clearing />
@@ -10,7 +12,7 @@ export function DefaultSaveButton(props) {
         primary
         icon="save"
         size="large"
-        content="Submit"
+        content={txt}
         disabled={props.submitting}
         loading={props.submitting}
         onClick={() => {
@@ -26,7 +28,7 @@ export default class Text extends React.Component {
     return (
       <Content
         previewData={{
-          test: "haha"
+          test: 'haha'
         }}
         editor={props => {
           return <div />;

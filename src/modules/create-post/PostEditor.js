@@ -32,19 +32,24 @@ import Drawer from 'antd/lib/drawer';
 import ContentDropdown from './ContentDropdown';
 import ContentEditor from './ContentEditor';
 import { navigate } from '@reach/router';
-import { Spring, animated } from 'react-spring';
+import { Spring, animated, config as SpringConfig } from 'react-spring';
 
 import './create-post.css';
 import { useOnUnmount } from 'react-hanger';
 import PostItem from '../post-item';
 import ThemeContext from '../../contexts/ThemeContext';
+import { useContent } from '../../hooks/Content';
+import Iconify from '../../components/icon-provider/Icon';
 
 function ContentActions({ contentData }) {
   const { _refNo, code, postRefNo } = contentData;
   const context = useContext(PostWidgetContext.Context);
   const error = useContext(ErrorContext.Context);
+  const contentWidget = useContent(code);
   const btnProps = {
     size: 'mini',
+    primary: true,
+    floated: 'right',
     disabled: context.submitting
   };
 
@@ -56,7 +61,6 @@ function ContentActions({ contentData }) {
         e.preventDefault();
       }}
     >
-      <Button icon="arrows alternate" {...btnProps} />
       <Button
         icon="trash"
         {...btnProps}
@@ -72,6 +76,10 @@ function ContentActions({ contentData }) {
           ]);
         }}
       />
+      <Button icon="arrows alternate" {...btnProps} />
+      <Button {...btnProps} basic>
+        <Iconify {...contentWidget.icon} />
+      </Button>
     </div>
   );
 }
@@ -88,18 +96,40 @@ function ContentBlock(props) {
     onUpdated,
     postRefNo,
     _refNo,
-    index
+    index,
+    touched
   } = props;
   const Content = contents[contentKey].component;
-  const style = { paddingLeft: 15, paddingRight: 15, margin: 0 };
+  const style = { padding: 0, margin: 0 };
+
+  console.log('touched', touched, _refNo); //TRACE
   if (!active) {
     style.cursor = 'pointer';
   }
+  const rgba = a => `rgba(26, 105, 164, ${a})`;
   return (
-    <Segment basic onClick={onClick} style={style} className={active ? 'content-active' : 'content-inactive'}>
-      {active && <ContentActions {...props} />}
-      <Content mode={MODES.VIEW} defaultValues={defaultValues} basic fitted />
-    </Segment>
+    <Spring
+      key={touched}
+      native
+      force
+      config={SpringConfig.molasses}
+      from={{ background: touched ? rgba(1) : rgba(0.0) }}
+      to={{ background: rgba(0.0) }}
+    >
+      {sprops => (
+        <animated.div style={sprops}>
+          <Segment
+            basic
+            onClick={onClick}
+            style={style}
+            className={active ? 'content-active' : 'content-inactive'}
+          >
+            {active && <ContentActions {...props} />}
+            <Content mode={MODES.VIEW} defaultValues={defaultValues} basic fitted />
+          </Segment>
+        </animated.div>
+      )}
+    </Spring>
   );
 }
 
@@ -126,68 +156,44 @@ const TitleEditor = React.memo(({ title, refNo }) => {
 
 const ContentList = React.memo(({ post }) => {
   const { isMobile } = useContext(Responsive.Context);
-  const { currentContent, defaultContentCode, setCurrentContent, submitWidgetsFn, submitting } = useContext(
-    PostWidgetContext.Context
-  );
-
-  // const selectedContent = post.widgets.find(widget => {
-  //   return widget._refNo === get(currentContent, "_refNo");
-  // });
-
-  // useEffect(
-  //   () => {
-  //     if (!currentContent) {
-  //       console.log("need select");
-  //       const lastWidget = last(post.widgets);
-  //       if (!lastWidget) {
-  //       } else {
-  //         console.log("setting last current", lastWidget);
-  //         setCurrentContent(lastWidget);
-  //       }
-  //     }
-  //   },
-  //   [post]
-  // );
-
-  // useEffect(
-  //   () => {
-  //     if (selectedContent) {
-  //       setCurrentContent(selectedContent);
-  //       return;
-  //     }
-
-  //     const lastWidget = last(post.widgets);
-  //     console.log("setting last widget");
-  //     setCurrentContent(lastWidget);
-  //   },
-  //   [selectedContent]
-  // );
+  const {
+    currentContent,
+    defaultContentCode,
+    lastTouchKeys,
+    setCurrentContent,
+    submitWidgetsFn,
+    submitting
+  } = useContext(PostWidgetContext.Context);
 
   const contents = post.widgets || [];
 
   return (
     <>
-      {contents.map((content, ii) => (
-        <ContentBlock
-          mobile={isMobile}
-          key={ii}
-          index={ii}
-          _refNo={content._refNo}
-          postRefNo={post._refNo}
-          contentKey={content.code}
-          defaultValues={content.values}
-          contentData={content}
-          active={get(currentContent, '_refNo') === content._refNo}
-          onUpdated={values => {}}
-          // onClose={() => setActiveIndex(null)}
-          onClick={() => setCurrentContent(content)}
-        />
-      ))}
+      <Divider hidden />
+      {contents.map((content, ii) => {
+        const active = get(currentContent, '_refNo') === content._refNo;
+        return (
+          <ContentBlock
+            mobile={isMobile}
+            key={ii}
+            index={ii}
+            _refNo={content._refNo}
+            postRefNo={post._refNo}
+            contentKey={content.code}
+            defaultValues={content.values}
+            contentData={content}
+            active={active}
+            touched={lastTouchKeys.includes(content._refNo)}
+            onUpdated={values => {}}
+            onClick={() => setCurrentContent(active ? null : content)}
+          />
+        );
+      })}
     </>
   );
 });
 
-function ContentSelector({ post }) {
+function ContentSelector({ post, setShowSelector }) {
   const [selectedKey, setSelectedKey] = useState(null);
   const { currentContent, setCurrentContent, submitWidgetsFn, defaultContentCode } = useContext(
     PostWidgetContext.Context
@@ -218,7 +224,15 @@ function ContentSelector({ post }) {
   return (
     <>
       <Segment basic color="olive" inverted>
-        Available Contents
+        Available Contents{' '}
+        <Button
+          icon="x"
+          active
+          style={{ marginTop: -7 }}
+          floated="right"
+          color="olive"
+          onClick={() => setShowSelector(false)}
+        />
       </Segment>
       <Segment basic className="content-selector">
         <Card.Group stackable itemsPerRow={3}>
@@ -266,7 +280,6 @@ function PostActions({ post, onSubmit, onCancel }) {
 
   const [showSelector, setShowSelector] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
   useEffect(
     () => {
       setShowSelector(false);
@@ -276,51 +289,56 @@ function PostActions({ post, onSubmit, onCancel }) {
 
   if (currentContent) return null;
 
-  console.log('contents', contents); //TRACE
-
+  const showControls = isMobile ? !showSelector : true;
   return (
     <>
-      <Segment basic className="add-content" style={{ padding: 10, borderTop: 'solid 1px gainsboro' }}>
-        <AntButton
-          icon={showSelector ? 'minus-circle' : 'plus'}
-          size="large"
-          type="dashed"
-          loading={updating}
-          onClick={() => {
-            setShowSelector(!showSelector);
-          }}
-        >
-          {isMobile ? (showSelector ? `Close` : `Add`) : showSelector ? `Close Selector` : `Add Content`}
-        </AntButton>
-        <Button
-          size="large"
-          icon="send"
-          floated="right"
-          primary
-          loading={submitting}
-          disabled={submitting || get(post, 'widgets', []).length === 0}
-          content="Post"
-          onClick={async () => {
-            if (submitting) return;
-            setSubmitting(true);
-            try {
-              onSubmit && (await onSubmit(post));
-            } finally {
-              setSubmitting(false);
-            }
-          }}
-        />
-        <Button
-          size="large"
-          icon="cancel"
-          floated="right"
-          content={isMobile ? null : 'Cancel'}
+      {showControls && (
+        <Segment
           basic
-          onClick={() => {
-            onCancel && onCancel();
-          }}
-        />
-      </Segment>
+          className="add-content"
+          style={{ padding: 10, marginBottom: 0, borderTop: 'solid 1px gainsboro' }}
+        >
+          <AntButton
+            icon={showSelector ? 'minus-circle' : 'plus'}
+            size="large"
+            type="dashed"
+            loading={updating}
+            onClick={() => {
+              setShowSelector(!showSelector);
+            }}
+          >
+            {isMobile ? (showSelector ? `Close` : `Add`) : showSelector ? `Close Selector` : `Add Content`}
+          </AntButton>
+          <Button
+            size="large"
+            icon="send"
+            floated="right"
+            primary
+            loading={submitting}
+            disabled={submitting || get(post, 'widgets', []).length === 0}
+            content="Post"
+            onClick={async () => {
+              if (submitting) return;
+              setSubmitting(true);
+              try {
+                onSubmit && (await onSubmit(post));
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          />
+          <Button
+            size="large"
+            icon="cancel"
+            floated="right"
+            content={isMobile ? null : 'Cancel'}
+            basic
+            onClick={() => {
+              onCancel && onCancel();
+            }}
+          />
+        </Segment>
+      )}
       <Spring
         native
         force
@@ -329,7 +347,7 @@ function PostActions({ post, onSubmit, onCancel }) {
       >
         {props => (
           <animated.div style={props}>
-            <ContentSelector post={post} />
+            <ContentSelector post={post} setShowSelector={setShowSelector} />
           </animated.div>
         )}
       </Spring>

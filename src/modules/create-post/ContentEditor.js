@@ -25,7 +25,7 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
   const ContentComponent = contents[currentContent.code].component;
   const currentRefNo = get(currentContent, '_refNo');
   return (
-    <div>
+    <div style={{ padding: 15 }}>
       <ContentComponent
         mode={MODES.EDITOR}
         basic
@@ -73,22 +73,22 @@ const WidgetHeader = ({ context }) => {
   if (!selectedContent) return null;
   return (
     <div className="widget-selector">
-      <Button
+      {/* <Button
         floated="right"
         size="mini"
         content="CLOSE"
         basic
         icon="caret down"
         onClick={() => setCurrentContent(null)}
-      />
-      <span
+      /> */}
+      {/* <span
         style={{
           fontSize: 'x-large',
           color: 'white'
         }}
       >
         {selectedContent.name}
-      </span>
+      </span> */}
       {/* <Dropdown
         overlay={menu}
         trigger={["click"]}
@@ -100,7 +100,7 @@ const WidgetHeader = ({ context }) => {
           {selectedContent.name} <Icon type="down" />
         </AntButton>
       </Dropdown> */}
-      <Divider clearing fitted hidden />
+      {/* <Divider clearing fitted hidden /> */}
     </div>
   );
 };

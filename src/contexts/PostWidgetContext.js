@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from "react";
-import { LAST_DRAFT, POST, UPDATE_POST_WIDGETS } from "../gql-schemas";
-import apolloClient from "./../lib/apollo";
-import compact from "lodash/compact";
-import get from "lodash/get";
-import { contents } from "./../components/widgets";
-import { fromJS } from "immutable";
+import React, { useState, useMemo } from 'react';
+import { LAST_DRAFT, POST, UPDATE_POST_WIDGETS } from '../gql-schemas';
+import apolloClient from './../lib/apollo';
+import compact from 'lodash/compact';
+import get from 'lodash/get';
+import { contents } from './../components/widgets';
+import { fromJS } from 'immutable';
+import { useContent } from './../hooks/Content';
 
 export const Context = React.createContext({});
 
@@ -19,8 +20,8 @@ function Provider({ children }) {
 
   const [contentEditorHeight, setContentEditorHeight] = useState(null);
   const [currentContent, setCurrentContent] = useState(null);
+  const [lastTouchKeys, setLastTouchKeys] = useState([]);
   const [defaultContentCode, setDefaultContentCode] = useState(null); // allContentKeys[0]
-
   const [contentKeys, setContentKeys] = useState(allContentKeys);
   const allState = {
     ...state,
@@ -32,22 +33,28 @@ function Provider({ children }) {
     setContentKeys,
     contentEditorHeight,
     setContentEditorHeight,
+    lastTouchKeys,
+    setLastTouchKeys,
     reset() {
       setCurrentContent(null);
+      setLastTouchKeys([]);
     },
     submitWidgetsFn: async (widgetArray, { newWidget } = {}) => {
       setState({ submitting: true });
-      let hasDelete, hasCreate;
+      setLastTouchKeys([]);
+      let hasDelete,
+        hasCreate,
+        lastTouchKeys = [];
       const newWidgets = widgetArray.map(widget => {
         if (widget.__deleted) {
-          widget.type = "DELETE";
+          widget.type = 'DELETE';
           widget.values = {};
           hasDelete = true;
           if (!widget._refNo) return null; //Not changed
         } else if (widget._refNo) {
-          widget.type = "MODIFY";
+          widget.type = 'MODIFY';
         } else {
-          widget.type = "CREATE";
+          widget.type = 'CREATE';
           hasCreate = true;
         }
 
@@ -55,7 +62,7 @@ function Provider({ children }) {
         //   values: JSON.stringify(widget.values)
         // });
         const widgetInput = fromJS(widget)
-          .update("values", vals => JSON.stringify(vals))
+          .update('values', vals => JSON.stringify(vals))
           .toJS();
         delete widgetInput.__deleted;
         delete widgetInput.propValues;
@@ -70,24 +77,14 @@ function Provider({ children }) {
           },
           refetchQueries: () => [LAST_DRAFT.key, POST.key]
         });
+        const touched = get(ret, `data.${UPDATE_POST_WIDGETS.key}.widgets`, []).map(wdg =>
+          get(wdg, '_refNo')
+        );
+        console.log('touched', touched); //TRACE
         const newState = { submitting: false };
-        // const updatedWidgets = get(
-        //   ret,
-        //   "data.UpdatePostWidgets.widgets",
-        //   []
-        // ).map(w => {
-        //   const wdgt = fromJS(w);
-        //   console.log("wdgt"); //TRACE
-        //   console.log(wdgt); //TRACE
-        // });
-
-        // if (hasDelete) {
-        //   setCurrentContent(null);
-        // }
-        // if (hasCreate)
-        //   setCurrentContent(get(ret, "data.UpdatePostWidgets.widgets.0"));
         setState(newState);
         setCurrentContent(null);
+        setLastTouchKeys(touched);
         return ret.data.UpdatePostWidgets.widgets;
       } catch (err) {
         setState({ submitting: false });
