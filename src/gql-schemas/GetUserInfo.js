@@ -13,7 +13,8 @@ const query = gql`
       status
       user{
         id
-        username
+        displayName
+        photoUrl
       }
     }
   }

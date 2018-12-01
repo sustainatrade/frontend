@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 // import PropTypes from 'prop-types';
-import { Button, Modal, Divider, Image, Header } from "semantic-ui-react";
+import { Button, Modal, Divider, Image, Header } from 'semantic-ui-react';
 // import _ from 'lodash'
-import { Query, Mutation } from "react-apollo";
-import gql from "graphql-tag";
+import { Query, Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
 // import Cookie from 'tough-cookie'
-import LoginContext from "./LoginContext";
-import { GetUserInfo } from "./../../gql-schemas/GetUserInfo";
+import LoginContext from './LoginContext';
+import { GetUserInfo } from './../../gql-schemas/GetUserInfo';
 // import UsernameInput from "./../user-info/UsernameInput";
-import get from "lodash/get";
+import get from 'lodash/get';
 
-export const PHOTO_DATA_URI_KEY = "photoDataUri";
+export const PHOTO_DATA_URI_KEY = 'photoDataUri';
 
 const LOGIN = gql`
   mutation($creds: UserAuthLoginInput) {
@@ -40,12 +40,7 @@ const ContinueButton = ({ enabled, credential, doLogin, refetch }) => (
         return <div>Done!</div>;
       }
       return (
-        <Button
-          disabled={!enabled}
-          loading={loading}
-          color="green"
-          onClick={auth}
-        >
+        <Button disabled={!enabled} loading={loading} color="green" onClick={auth}>
           Continue
         </Button>
       );
@@ -65,33 +60,33 @@ export default class WelcomeModal extends React.Component {
           const { user, credential } = authDetail;
           const photoDataUri = localStorage.getItem(PHOTO_DATA_URI_KEY);
           return (
-            <Modal open={true} size="mini">
-              <Header as="h3" image>
-                <center>
-                  <Image src={photoDataUri} size="tiny" circular />
-                  {user.displayName}
-                </center>
-              </Header>
-              <Modal.Content>
-                <center>
-                  <Query
-                    query={GetUserInfo.query}
-                    variables={{
-                      accessToken: credential.accessToken,
-                      providerId: credential.providerId,
-                      email: user.email
-                    }}
-                  >
-                    {({ data, loading }) => {
-                      const userData = get(data, "UserInfo.user");
-                      return (
+            <Query
+              query={GetUserInfo.query}
+              variables={{
+                accessToken: credential.accessToken,
+                providerId: credential.providerId,
+                email: user.email
+              }}
+            >
+              {({ data, loading }) => {
+                const userData = get(data, 'UserInfo.user');
+                console.log('userData', userData); //TRACE
+                const newUser = get(userData, 'id') < 0;
+                return (
+                  <Modal open={true} size="mini">
+                    <Header as="h3" image>
+                      <center>
+                        <Image src={get(userData, 'photoUrl') || photoDataUri} size="tiny" circular />
+                        {newUser ? user.email : get(userData, 'displayName')}
+                      </center>
+                    </Header>
+                    <Modal.Content>
+                      <center>
                         <div>
                           {loading && <p>Checking Login..</p>}
                           {!loading && (
                             <p>
-                              Welcome{" "}
-                              <b>{userData ? userData.username : user.email}</b>
-                              !
+                              Welcome <b>{user.displayName || user.email}</b>!
                             </p>
                           )}
                           <Divider />
@@ -104,12 +99,12 @@ export default class WelcomeModal extends React.Component {
                             }}
                           />
                         </div>
-                      );
-                    }}
-                  </Query>
-                </center>
-              </Modal.Content>
-            </Modal>
+                      </center>
+                    </Modal.Content>
+                  </Modal>
+                );
+              }}
+            </Query>
           );
         }}
       </LoginContext.Consumer>

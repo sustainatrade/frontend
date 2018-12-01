@@ -1,21 +1,22 @@
-import React from "react";
-import { adopt } from "react-adopt";
+import React from 'react';
+import { adopt } from 'react-adopt';
 
 // Put contexts here
 
-import UserContext from "./UserContext";
-import CreatePostContext from "./CreatePost";
-import ResponsiveContext from "./Responsive";
-import UploaderContext from "./Uploader";
-import PostFeedContext from "./PostFeedContext";
-import PostViewContext from "./PostViewContext";
-import CategoryContext from "./CategoryContext";
-import PostWidgetContext from "./PostWidgetContext";
-import PostReplyContext from "./PostReplyContext";
-import PostStackContext from "./PostStackContext";
-import ErrorContext from "./ErrorContext";
-import LayoutContext from "./LayoutContext";
-import ThemeContext from "./ThemeContext";
+import UserContext from './UserContext';
+import CreatePostContext from './CreatePost';
+import ResponsiveContext from './Responsive';
+import UploaderContext from './Uploader';
+import PostFeedContext from './PostFeedContext';
+import PostViewContext from './PostViewContext';
+import CategoryContext from './CategoryContext';
+import PostWidgetContext from './PostWidgetContext';
+import PostReplyContext from './PostReplyContext';
+import PostStackContext from './PostStackContext';
+import ErrorContext from './ErrorContext';
+import LayoutContext from './LayoutContext';
+import ThemeContext from './ThemeContext';
+import SettingsContext from './SettingsContext';
 
 const contexts = {
   createPost: CreatePostContext,
@@ -25,6 +26,7 @@ const contexts = {
   postView: PostViewContext,
   postStack: PostStackContext,
   category: CategoryContext,
+  settings: SettingsContext,
   user: UserContext,
   layout: LayoutContext,
   uploader: UploaderContext,

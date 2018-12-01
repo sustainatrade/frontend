@@ -1,15 +1,17 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
-export * from "./FollowPost";
-export * from "./ReportPost";
-export * from "./RemovePost";
-export * from "./PostList";
-export * from "./GetPost";
-export * from "./Post";
-export * from "./LastDraft";
-export * from "./PublishPost";
-export * from "./UpdatePostWidgets";
-export * from "./ReplyList";
+export * from './FollowPost';
+export * from './ReportPost';
+export * from './RemovePost';
+export * from './PostList';
+export * from './GetPost';
+export * from './GetMe';
+export * from './Post';
+export * from './LastDraft';
+export * from './PublishPost';
+export * from './UpdatePostWidgets';
+export * from './ReplyList';
+export * from './UpdateUserProfile';
 
 export const CREATE_POST = gql`
   mutation($post: CreatePostInput) {

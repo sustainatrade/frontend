@@ -7,6 +7,7 @@ import Home from './home';
 import { Context as LayoutContext } from './../contexts/LayoutContext';
 import { Context as ResponsiveContext } from './../contexts/Responsive';
 import ThemeContext from '../contexts/ThemeContext';
+import Settings from '../modules/settings';
 
 const CreatePost = loadable(() => import(`./create-post`), {
   LoadingComponent: () => <Loader inline="centered" />
@@ -163,6 +164,7 @@ export default function() {
           <Home exact default />
         </Router>
       </div>
+      <Settings />
     </div>
   );
 }

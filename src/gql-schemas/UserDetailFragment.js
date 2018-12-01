@@ -5,6 +5,9 @@ const USER_DETAIL_FRAGMENT = `
         id
         displayName
         roles
+        photoUrl
+        editDate
+        editBy
       }
       roles {
         code

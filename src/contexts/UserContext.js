@@ -1,22 +1,16 @@
-import React from "react";
-import gql from "graphql-tag";
-import apolloClient from "./../lib/apollo";
-import { Query } from "react-apollo";
-import { groupBy } from "lodash";
-import USER_DETAIL_FRAGMENT from "./../gql-schemas/UserDetailFragment";
+import React from 'react';
+import gql from 'graphql-tag';
+import apolloClient from './../lib/apollo';
+import { Query } from 'react-apollo';
+import { groupBy } from 'lodash';
+import USER_DETAIL_FRAGMENT from './../gql-schemas/UserDetailFragment';
+import { GET_ME } from '../gql-schemas';
 // import get from "lodash/get";
 
 const Context = React.createContext();
 const { Consumer } = Context;
 
-const GET_ME = gql`
-  ${USER_DETAIL_FRAGMENT}
-  query {
-    Me {
-      ...UserDetail
-    }
-  }
-`;
+const DEFAULT_AVATAR_URL = 'https://api.adorable.io/avatars/50/usapph@set6-397.png';
 
 const ME_LOGIN = gql`
   ${USER_DETAIL_FRAGMENT}
@@ -39,7 +33,7 @@ class Provider extends React.Component {
           isAdmin = true;
         }
       });
-    const mappedByServices = groupBy(socialServices, "type");
+    const mappedByServices = groupBy(socialServices, 'type');
     // this.setState({
     //   user,
     //   roles,
@@ -59,19 +53,15 @@ class Provider extends React.Component {
     apolloClient
       .subscribe({
         query: ME_LOGIN,
-        variables: { device: "desktop" }
+        variables: { device: 'desktop' }
       })
       .subscribe({
         next({ data }) {
-          console.log("seting state: ME_LOGIN ");
+          console.log('seting state: ME_LOGIN ');
           console.log(data); //TRACE
           if (!data) return;
           console.log(data.MeLoggedIn.user);
-          self.updateUser(
-            data.MeLoggedIn.user,
-            data.MeLoggedIn.roles,
-            data.MeLoggedIn.socialServices
-          );
+          self.updateUser(data.MeLoggedIn.user, data.MeLoggedIn.roles, data.MeLoggedIn.socialServices);
         }
       });
   }
@@ -79,24 +69,19 @@ class Provider extends React.Component {
   render() {
     const { children } = this.props;
     return (
-      <Query query={GET_ME}>
+      <Query query={GET_ME.query}>
         {({ data, loading }) => {
           const contextState = { ...this.state };
           contextState.loading = loading;
+          contextState.defaultAvatarUrl = DEFAULT_AVATAR_URL;
           if (data.Me) {
             if (!data.Me.user) {
-              localStorage.removeItem("_c");
+              localStorage.removeItem('_c');
             }
-            const userData = this.updateUser(
-              data.Me.user,
-              data.Me.roles,
-              data.Me.socialServices
-            );
+            const userData = this.updateUser(data.Me.user, data.Me.roles, data.Me.socialServices);
             Object.assign(contextState, userData);
           }
-          return (
-            <Context.Provider value={contextState}>{children}</Context.Provider>
-          );
+          return <Context.Provider value={contextState}>{children}</Context.Provider>;
         }}
       </Query>
     );

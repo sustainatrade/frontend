@@ -68,8 +68,6 @@ const PostHeader = React.memo(({ post }) => {
   const { contentPadding } = useContext(LayoutContext.Context);
   const isReply = !!post.parentPostRefNo;
   useSetSubHeader(isReply ? "Post Reply" : post.title);
-  console.log("post"); //TRACE
-  console.log(post); //TRACE
   return (
     <div
       style={{
@@ -143,8 +141,6 @@ function PostFooter({ post }) {
   // return <PostReplies post={post} expanded isRoot />;
   const { parentPost } = useContext(PostReplyContext.Context);
   const replyParentPost = get(parentPost, "_refNo") === post._refNo;
-  console.log("replyParentPost"); //TRACE
-  console.log(replyParentPost); //TRACE
   return (
     <>
       <PostReplies post={post} expanded isRoot />
@@ -187,8 +183,6 @@ class PostView extends Component {
       themeContext: { secondaryBgColor }
     } = this.props;
     const { visibilityKey, width, height } = this.state;
-    console.log("height"); //TRACE
-    console.log(height); //TRACE
     let sizeWrapperProps = {},
       SizeWrapper = wprops => <div>{wprops.children}</div>;
     if (!asReply) {
