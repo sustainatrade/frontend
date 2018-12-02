@@ -31,7 +31,7 @@ export default class Text extends React.Component {
           test: 'haha'
         }}
         editor={props => {
-          return <div />;
+          return <div style={{ padding: 15 }} />;
         }}
         view={props => <div />}
         compact={props => <div />}

@@ -151,7 +151,7 @@ function Editor(props) {
     });
   }
   return (
-    <div>
+    <div style={{ padding: 15 }}>
       <UploadPhoto
         photos={photos || defaultFileList}
         onChange={files => {

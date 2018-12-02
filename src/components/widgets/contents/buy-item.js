@@ -142,7 +142,7 @@ export default class BuyItem extends Component {
         }}
         editor={props => {
           return (
-            <div>
+            <div style={{ padding: 15 }}>
               <Input
                 style={{ marginRight: 10, marginBottom: 5 }}
                 defaultValue={get(props, "defaultValues.price.amount")}
