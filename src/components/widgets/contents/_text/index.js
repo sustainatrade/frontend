@@ -6,6 +6,7 @@ import { Button } from 'semantic-ui-react';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { Label } from 'semantic-ui-react';
 import Iconify from '../../../icon-provider/Icon';
+import Text from './Text';
 import './text.css';
 
 const Preview = props => (
@@ -40,7 +41,7 @@ const TextEditor = props => {
     <div style={{ padding: '5px 10px 10px 10px' }}>
       <div className="style-controls">
         <Label basic as="a" className="emoji" color="teal">
-          <Iconify type="ant-design:smile-outline" />
+          <Iconify type=":slightly_smiling_face:" />
         </Label>
         <Label
           basic
@@ -115,14 +116,14 @@ const TextEditor = props => {
   );
 };
 
-export default class Text extends React.Component {
+export default class TextContent extends React.Component {
   render() {
     return (
       <Content
         previewData={{
           text: 'lorem ipsum dolor'
         }}
-        editor={props => <TextEditor {...props} />}
+        editor={props => <Text {...props} />}
         view={props => <Preview {...props} fontSize="larger" />}
         compact={props => <Preview {...props} />}
         {...this.props}
