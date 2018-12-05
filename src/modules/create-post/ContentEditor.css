@@ -1,7 +1,7 @@
 .content-editor-actions {
 }
 .content-editor-controls {
-  background-color: whitesmoke;
+  /* background-color: whitesmoke; */
 }
 .content-editor-actions .ant-tabs-tab .anticon {
   margin: 0;
@@ -16,13 +16,13 @@
 }
 
 .content-editor-actions .widget-selector {
-  background-color: gainsboro;
+  background-color: #2f74ac;
   padding: 1px 15px;
   font-weight: bolder;
 }
 
 .content-editor-actions .widget-selector .button {
-  background-color: whitesmoke !important;
+  /* background-color: whitesmoke !important; */
   font-weight: bolder;
 }
 

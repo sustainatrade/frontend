@@ -9,6 +9,7 @@ import { Map } from 'immutable';
 import Modal from 'antd/lib/modal';
 import { Button, Divider, Segment } from 'semantic-ui-react';
 import 'draft-js/dist/Draft.css';
+import get from 'lodash/get';
 
 const customEmojis = [
   {
@@ -47,7 +48,27 @@ export default function Text(props) {
   );
   const editorState = state.get('editorState');
   const showSelector = state.get('showSelector');
+  console.log('props', props); //TRACE
+  React.useEffect(
+    () => {
+      const defaultText = get(props, 'defaultValues.text');
+      if (!defaultText) return;
+      const contentState = editorState.getCurrentContent();
 
+      const contentStateDefaultValue = Modifier.insertText(
+        contentState,
+        contentState.getSelectionAfter(),
+        defaultText,
+        null,
+        null
+      );
+
+      const newEditorState = EditorState.push(editorState, contentStateDefaultValue);
+      console.log('contentStateWithEmoji.toJS()', contentStateDefaultValue.toJS()); //TRACE
+      onChange(newEditorState);
+    },
+    [props.defaultValues]
+  );
   React.useEffect(
     () => {
       console.log('editState.toJS()', editorState.toJS()); //TRACE
@@ -56,11 +77,16 @@ export default function Text(props) {
   );
   const onChange = state => {
     // setEditorState(state);
-    setState(oldState => oldState.set('editorState', state));
+    setState(oldState => oldState.set('editorState', state).set('showSelector', false));
+    const text = state.getCurrentContent().getPlainText();
+    console.log('text', text); //TRACE
+    props.updateValues({
+      text
+    });
   };
   return (
     <>
-      <Segment basic >
+      <Segment basic>
         <div style={{ float: 'right' }}>
           <Button
             circular
@@ -69,7 +95,15 @@ export default function Text(props) {
             icon="smile outline"
             onClick={() => setState(oldState => oldState.set('showSelector', !showSelector))}
           />
-          <Button circular icon="arrow alternate circle right" primary />
+          <Button
+            circular
+            icon="arrow alternate circle right"
+            primary
+            disabled={props.submitting}
+            onClick={() => {
+              props.actions.save();
+            }}
+          />
         </div>
         <div style={{ fontSize: 'large', marginRight: 100 }}>
           <Editor editorState={editorState} placeholder="Message here..." onChange={onChange} />
@@ -114,7 +148,7 @@ export default function Text(props) {
 
             const newEditorState = EditorState.push(editorState, contentStateWithEmoji);
             console.log('contentStateWithEmoji.toJS()', contentStateWithEmoji.toJS()); //TRACE
-            setState(oldState => oldState.set('editorState', newEditorState).set('showSelector', false));
+            onChange(newEditorState);
           }}
         />
       </Modal>

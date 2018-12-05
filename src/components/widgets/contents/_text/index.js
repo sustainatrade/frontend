@@ -9,19 +9,29 @@ import Iconify from '../../../icon-provider/Icon';
 import Text from './Text';
 import './text.css';
 
-const Preview = props => (
-  <div
-    style={{
-      textAlign: 'left',
-      whiteSpace: 'pre-wrap',
-      wordBreak: 'break-word',
-      padding: '5px 15px',
-      fontSize: props.fontSize
-    }}
-  >
-    {get(props, 'values.text', <i style={{ color: 'lightgrey' }}>Empty Text</i>)}
-  </div>
-);
+const EMOJI_MATCH = /:[^:\s]*(?:::[^:\s]*)*:/g;
+
+const Preview = props => {
+  const text = get(props, 'values.text');
+  console.log('matchtext', text); //TRACE
+  return (
+    <div
+      style={{
+        textAlign: 'left',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+        padding: '5px 15px',
+        fontSize: props.fontSize
+      }}
+    >
+      {text ? (
+        <i style={{ color: 'lightgrey' }}>Empty Text</i>
+      ) : (
+        <i style={{ color: 'lightgrey' }}>Empty Text</i>
+      )}
+    </div>
+  );
+};
 
 const TextEditor = props => {
   const inputEl = useRef(null);

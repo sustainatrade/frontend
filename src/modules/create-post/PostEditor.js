@@ -77,9 +77,9 @@ function ContentActions({ contentData }) {
         }}
       />
       <Button icon="arrows alternate" {...btnProps} />
-      <Button {...btnProps} basic>
+      {/* <Button {...btnProps} basic>
         <Iconify {...contentWidget.icon} />
-      </Button>
+      </Button> */}
     </div>
   );
 }
@@ -296,7 +296,7 @@ function PostActions({ post, onSubmit, onCancel }) {
         <Segment
           basic
           className="add-content"
-          style={{ padding: 10, marginBottom: 0, borderTop: 'solid 1px gainsboro' }}
+          style={{ padding: 10, marginBottom: 0, borderTop: '2px solid #bfdbff' }}
         >
           <AntButton
             icon={showSelector ? 'minus-circle' : 'plus'}
