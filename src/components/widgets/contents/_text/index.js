@@ -9,11 +9,28 @@ import Iconify from '../../../icon-provider/Icon';
 import Text from './Text';
 import './text.css';
 
-const EMOJI_MATCH = /:[^:\s]*(?:::[^:\s]*)*:/g;
+const EMOJI_MATCH = /:[^:\s]*:/g;
+
+function matchSplitter(text, matcher) {
+  const parts = [];
+  let matches = [{ offset: 0 }];
+  text.replace(matcher, (match, i) => matches.push({ text: match, anchor: i, offset: i + match.length }));
+  matches.sort((a, b) => a.anchor < b.anchor);
+  matches.forEach((match, ii) => {
+    const nextMatch = matches[ii + 1] || {
+      text: text.substring(match.offset, text.length),
+      anchor: text.length
+    };
+    console.log(match, nextMatch);
+
+    parts.push(text.substring(match.offset, nextMatch.anchor));
+    nextMatch.offset && parts.push({ matched: true, text: nextMatch.text });
+  });
+  return parts;
+}
 
 const Preview = props => {
   const text = get(props, 'values.text');
-  console.log('matchtext', text); //TRACE
   return (
     <div
       style={{
@@ -25,103 +42,13 @@ const Preview = props => {
       }}
     >
       {text ? (
-        <i style={{ color: 'lightgrey' }}>Empty Text</i>
+        matchSplitter(text, EMOJI_MATCH).map((mData, ii) => {
+          if (mData.matched) return <Iconify key={ii} type={mData.text} />;
+          else return mData;
+        })
       ) : (
         <i style={{ color: 'lightgrey' }}>Empty Text</i>
       )}
-    </div>
-  );
-};
-
-const TextEditor = props => {
-  const inputEl = useRef(null);
-  const [editorState, setEditorState] = React.useState(EditorState.createEmpty());
-  const [focused, setFocused] = React.useState(false);
-  console.log('props', props); //TRACE
-  const onChange = x => {
-    console.log('x.toJS()', x.toJS()); //TRACE
-    setEditorState(x);
-  };
-  const debounceUpdate = debounce(value => {
-    props.updateValues({
-      text: value
-    });
-  }, 200);
-  return (
-    <div style={{ padding: '5px 10px 10px 10px' }}>
-      <div className="style-controls">
-        <Label basic as="a" className="emoji" color="teal">
-          <Iconify type=":slightly_smiling_face:" />
-        </Label>
-        <Label
-          basic
-          as="a"
-          className={true ? 'inactive' : 'active'}
-          onClick={() => {
-            onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
-          }}
-        >
-          <Iconify type="ant-design:bold-outline" />
-        </Label>
-        <Label basic as="a" className={true ? 'inactive' : 'active'}>
-          <Iconify type="ant-design:italic-outline" />
-        </Label>
-        <Label basic as="a" className={true ? 'inactive' : 'active'}>
-          <Iconify type="icons8-header" />
-        </Label>
-        <Label basic as="a" className={true ? 'inactive' : 'active'}>
-          <Iconify type="ant-design:link-outline" />
-        </Label>
-        <Label basic as="a" className={true ? 'inactive' : 'active'}>
-          <Iconify type="octicon-mention" />
-        </Label>
-      </div>
-      <Button
-        primary
-        icon="chevron circle right"
-        floated="right"
-        size="large"
-        circular
-        disabled={props.submitting}
-        onClick={() => {
-          props.actions.save();
-        }}
-      />
-      <div
-        style={{
-          marginRight: 50,
-          backgroundColor: 'white',
-          padding: 5,
-          border: `solid 1px ${focused ? 'lightsteelblue' : 'gainsboro'}`,
-          borderRadius: 5,
-          minHeight: 40,
-          fontSize: 'large'
-        }}
-      >
-        <Editor
-          editorState={editorState}
-          onChange={onChange}
-          placeholder="Enter."
-          onFocus={React.useCallback(() => setFocused(true))}
-          onBlur={React.useCallback(() => setFocused(false))}
-        />
-        {/* <TextArea
-          ref={inputEl}
-          disabled={props.submitting}
-          style={{
-            width: '100%',
-            marginBottom: 5,
-            fontSize: 'large',
-            height: 50
-          }}
-          defaultValue={get(props, 'defaultValues.text')}
-          autosize={{ minRows: 1, maxRows: 6 }}
-          placeholder="Enter Text..."
-          onChange={e => {
-            debounceUpdate(e.target.value);
-          }}
-        /> */}
-      </div>
     </div>
   );
 };
