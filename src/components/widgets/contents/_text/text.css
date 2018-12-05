@@ -1,0 +1,14 @@
+.style-controls {
+  font-size: larger;
+  margin-bottom: 5px;
+}
+
+.style-controls .inactive {
+  border: transparent !important;
+  background: none;
+  color: darkgray !important;
+}
+
+.style-controls .emoji {
+  border: transparent !important;
+}

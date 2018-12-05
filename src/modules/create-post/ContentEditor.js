@@ -25,7 +25,7 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
   const ContentComponent = contents[currentContent.code].component;
   const currentRefNo = get(currentContent, '_refNo');
   return (
-    <div style={{ padding: 15 }}>
+    <div>
       <ContentComponent
         mode={MODES.EDITOR}
         basic

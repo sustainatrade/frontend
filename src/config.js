@@ -11,12 +11,12 @@ module.exports = Object.assign(
       {
         code: 'text',
         name: 'Text',
-        icon: { type: 'fxemoji:decreasefontsize', theme: 'outlined' }
+        icon: { type: ':email:', theme: 'outlined' }
       },
       {
         code: 'photo',
         name: 'Photo',
-        icon: { type: 'logos:imagemin', theme: 'outlined' }
+        icon: { type: ':octocat:', theme: 'outlined' }
       },
       {
         code: 'buy-item',

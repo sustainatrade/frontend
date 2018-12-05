@@ -1,21 +1,15 @@
-import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
-import {
-  Segment,
-  Header,
-  Label,
-  Divider,
-  Button,
-  Message
-} from "semantic-ui-react";
-import AntButton from "antd/lib/button";
-import { MODES } from "./../index";
-import { UPDATE_POST_WIDGETS } from "../../../gql-schemas";
-import { GlobalConsumer } from "../../../contexts";
-import "./WidgetBase.css";
-import { fromJS } from "immutable";
-import ErrorContext from "../../../contexts/ErrorContext";
-import PostWidgetContext from "../../../contexts/PostWidgetContext";
+import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { Segment, Header, Label, Divider, Button, Message } from 'semantic-ui-react';
+import AntButton from 'antd/lib/button';
+import { MODES } from './../index';
+import { UPDATE_POST_WIDGETS } from '../../../gql-schemas';
+import { GlobalConsumer } from '../../../contexts';
+import './WidgetBase.css';
+import { fromJS } from 'immutable';
+import ErrorContext from '../../../contexts/ErrorContext';
+import PostWidgetContext from '../../../contexts/PostWidgetContext';
+import { useOnMount } from 'react-hanger';
 
 const Preview = ({ ownProps, view: View, compact: Compact }) => (
   <>
@@ -29,68 +23,67 @@ const Preview = ({ ownProps, view: View, compact: Compact }) => (
   </>
 );
 
-class Editor extends React.Component {
-  state = { editValues: undefined };
-  componentDidMount() {
-    this.setState({ editValues: this.props.values });
-  }
-  render() {
-    const {
-      values,
-      editor: EditorComponent,
-      onValuesChanged,
-      _refNo,
-      context,
-      error,
-      code,
-      name,
-      postRefNo,
-      children
-    } = this.props;
-    const { editValues } = this.state;
-    const editValuesMap = fromJS(values || {}).mergeDeep(editValues || {});
-    const actions = {
-      save: async () => {
-        if (context.submitting) return;
-        const editValuesObj = editValuesMap.toJS();
-        if (editValuesObj) {
-          error.clear(UPDATE_POST_WIDGETS.key);
-          const ret = await context.submitWidgetsFn([
-            {
-              _refNo,
-              code,
-              name,
-              values: editValuesObj,
-              postRefNo
-            }
-          ]);
-          return ret;
-        }
+function Editor(props) {
+  const {
+    values,
+    editor: EditorComponent,
+    onValuesChanged,
+    _refNo,
+    context,
+    error,
+    code,
+    name,
+    postRefNo,
+    children
+  } = props;
+  const [editValues, setEditValues] = React.useState(values);
+
+  React.useEffect(
+    () => {
+      setEditValues(values);
+    },
+    [values]
+  );
+  const editValuesMap = fromJS(values || {}).mergeDeep(editValues || {});
+  const actions = {
+    save: async () => {
+      if (context.submitting) return;
+      const editValuesObj = editValuesMap.toJS();
+      if (editValuesObj) {
+        error.clear(UPDATE_POST_WIDGETS.key);
+        const ret = await context.submitWidgetsFn([
+          {
+            _refNo,
+            code,
+            name,
+            values: editValuesObj,
+            postRefNo
+          }
+        ]);
+        return ret;
       }
-    };
-    return (
-      <>
-        <EditorComponent
-          _refNo={_refNo}
-          defaultValues={values}
-          updateValues={newValues => {
-            const newEditValues = editValuesMap
-              .mergeDeep(fromJS(newValues))
-              .toJS();
-            this.setState({ editValues: newEditValues });
-            onValuesChanged && onValuesChanged(newEditValues);
-          }}
-          error={error}
-          actions={actions}
-          submitting={context.submitting}
-        />
-        {children({
-          editValues: editValuesMap.toJS(),
-          hello: "haha"
-        })}
-      </>
-    );
-  }
+    }
+  };
+  return (
+    <>
+      <EditorComponent
+        _refNo={_refNo}
+        defaultValues={values}
+        updateValues={newValues => {
+          const newEditValues = editValuesMap.mergeDeep(fromJS(newValues)).toJS();
+          setEditValues(newEditValues);
+          onValuesChanged && onValuesChanged(newEditValues);
+        }}
+        error={error}
+        actions={actions}
+        submitting={context.submitting}
+      />
+      {children({
+        editValues: editValuesMap.toJS(),
+        hello: 'haha'
+      })}
+    </>
+  );
 }
 
 function WidgetBase(props) {
@@ -103,7 +96,7 @@ function WidgetBase(props) {
     editor,
     view,
     compact,
-    mode = "view",
+    mode = 'view',
     defaultValues,
     onValuesChanged,
     previewData = {},
@@ -125,21 +118,21 @@ function WidgetBase(props) {
   if (fitted) {
     fittedStyle = {
       padding: 0,
-      marginTop: 5,
-      marginBottom: 5
+      marginTop: 0,
+      marginBottom: 0
     };
   }
-  console.log("renditring");
+  console.log('renditring');
 
   let RenderObj;
   switch (mode) {
-    case "compact":
+    case 'compact':
       RenderObj = compact;
       break;
-    case "view":
+    case 'view':
       RenderObj = view;
       break;
-    case "editor":
+    case 'editor':
       RenderObj = editor;
       break;
     default:
@@ -159,12 +152,12 @@ function WidgetBase(props) {
     ownProps.values = previewData;
   }
 
-  const oldValuesHash = JSON.stringify(defaultValues);
+  // const oldValuesHash = JSON.stringify(defaultValues);
   return (
     <Segment basic={basic} key={code} style={Object.assign(style, fittedStyle)}>
       <>
-        {mode !== "editor" && <RenderObj {...ownProps} />}
-        {mode === "editor" ? (
+        {mode !== 'editor' && <RenderObj {...ownProps} />}
+        {mode === 'editor' ? (
           <Editor
             {...ownProps}
             editor={editor}
@@ -173,27 +166,18 @@ function WidgetBase(props) {
             // onValuesChanged={onValuesChanged}
           >
             {({ editValues }) => {
-              const editValuesHash = JSON.stringify(editValues);
+              // const editValuesHash = JSON.stringify(editValues);
               const updateErrors = error[UPDATE_POST_WIDGETS.key];
-              const saved = editValuesHash === oldValuesHash && !updateErrors;
+              // const saved = editValuesHash === oldValuesHash && !updateErrors;
               return (
                 <>
                   {showPreview && (
                     <>
                       Preview
-                      <Preview
-                        ownProps={{ values: editValues }}
-                        view={view}
-                        compact={compact}
-                      />
+                      <Preview ownProps={{ values: editValues }} view={view} compact={compact} />
                     </>
                   )}
-                  {!!updateErrors && (
-                    <Message
-                      error
-                      content={updateErrors.map(err => err.message)}
-                    />
-                  )}
+                  {!!updateErrors && <Message error content={updateErrors.map(err => err.message)} />}
                   {/* <Button
                     content={
                       <>
