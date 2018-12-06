@@ -49,7 +49,16 @@ const Actions = React.memo(({ post, canReply }) => {
                 React
               </Menu.Item>
 
-              <Menu.Item name="smile outline">
+              <Menu.Item
+                name="smile outline"
+                onClick={() => {
+                  if (!currentUserId) {
+                    error.emit(TYPES.NOT_LOGGED_IN);
+                    return;
+                  }
+                  setParentPost(post);
+                }}
+              >
                 <Icon name="talk" />
                 Comment
               </Menu.Item>
