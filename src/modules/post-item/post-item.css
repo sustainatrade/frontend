@@ -9,6 +9,14 @@
 }
 
 .post-item-actions {
-  padding: 5px;
+  padding: 0px;
   border-top: solid 1px lavenderblush;
+  font-size: xx-small;
+}
+
+.post-item-actions .item {
+  color: darkgray !important;
+}
+.post-item-actions .item:hover {
+  color: black !important;;
 }

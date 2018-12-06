@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import * as gql from "./../gql-schemas";
-import apolloClient from "./../lib/apollo";
-import get from "lodash/get";
-import { navigate } from "@reach/router";
-import { getUrl } from "./PostFeedContext";
-import { useArray } from 'react-hanger'
+import React, { useState } from 'react';
+import * as gql from './../gql-schemas';
+import apolloClient from './../lib/apollo';
+import get from 'lodash/get';
+import { navigate } from '@reach/router';
+import { getUrl } from './PostFeedContext';
 
 export const Context = React.createContext({});
 
@@ -14,12 +13,13 @@ function Provider({ children }) {
   });
 
   const [parentPost, setParentPost] = useState(null);
-  const activeReplyStack = useArray([]);
+  const [activeReplyUuid, setActiveReplyUuid] = useState(null);
 
   const allState = {
     ...state,
     parentPost,
-    activeReplyStack,
+    activeReplyUuid,
+    setActiveReplyUuid,
     setParentPost,
     reset() {
       setState({ submitting: false });
@@ -27,7 +27,7 @@ function Provider({ children }) {
     },
     postReply: async ({ refNo }) => {
       setState({ submitting: true });
-      console.log("querying..");
+      console.log('querying..');
 
       const ret = await apolloClient.mutate({
         mutation: gql.PUBLISH_POST.query,
@@ -38,7 +38,7 @@ function Provider({ children }) {
       });
       setState({ submitting: false });
       setParentPost(null);
-      const post = get(ret, "data.PublishPost.post");
+      const post = get(ret, 'data.PublishPost.post');
       navigate(getUrl(post));
     }
   };

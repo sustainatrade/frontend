@@ -5,14 +5,31 @@ import { Query } from 'react-apollo';
 import { LAST_DRAFT } from '../../gql-schemas';
 import get from 'lodash/get';
 import './PostReply.css';
-// import Modal from "antd/lib/modal";
+import nanoid from 'nanoid';
+import { useOnMount, useOnUnmount } from 'react-hanger';
 
 const PostEditor = React.lazy(() => import('./../create-post/PostEditor'));
 const PageLoader = () => <div />;
 export default function PostReply() {
-  const { parentPost, postReply, submitting, reset } = useContext(PostReplyContext.Context);
+  const { activeReplyUuid, setActiveReplyUuid, parentPost, postReply, submitting, reset } = useContext(
+    PostReplyContext.Context
+  );
+  const [uuid] = React.useState(nanoid());
   console.log('submitting,parentPost'); //TRACE
   console.log(submitting, parentPost); //TRACE
+  useOnMount(() => {
+    setActiveReplyUuid(oldUuid => {
+      return oldUuid ? oldUuid : uuid;
+    });
+  });
+  useOnUnmount(() => {
+    setActiveReplyUuid(oldUuid => {
+      return oldUuid === uuid ? null : oldUuid;
+    });
+  });
+
+  if (activeReplyUuid !== uuid) return null;
+
   return (
     <div>
       <Suspense fallback={<PageLoader />}>

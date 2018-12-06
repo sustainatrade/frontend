@@ -73,50 +73,52 @@ export default class Sidebar extends Component {
 
   render() {
     return (
-      <ResponsiveContext.Consumer>
-        {({ isMobile }) => (
-          <UserContext.Consumer>
-            {({ user, loading }) => {
-              if (loading) return <div />;
-              return (
-                <Transition.Group as={List} duration={500} verticalAlign="middle">
-                  {isMobile && (
-                    <Menu stackable key="menu-key">
-                      <Menus mobile={isMobile} />
-                    </Menu>
-                  )}
-                  {user ? (
+      <>
+        <ResponsiveContext.Consumer>
+          {({ isMobile }) => (
+            <UserContext.Consumer>
+              {({ user, loading }) => {
+                if (loading) return <div />;
+                return (
+                  <Transition.Group as={List} duration={500} verticalAlign="middle">
+                    {isMobile && (
+                      <Menu stackable key="menu-key">
+                        <Menus mobile={isMobile} />
+                      </Menu>
+                    )}
+                    {user ? (
+                      <List.Item>
+                        <Divider hidden fitted style={{ marginTop: 5 }} />
+                        <AccountControls />
+                      </List.Item>
+                    ) : (
+                      <List.Item>
+                        <Divider hidden fitted style={{ marginTop: 5 }} />
+                        <center>
+                          Start creating your own post by logging in
+                          <Divider />
+                          <UserAuth />
+                        </center>
+                      </List.Item>
+                    )}
                     <List.Item>
-                      <Divider hidden fitted style={{ marginTop: 5 }} />
-                      <AccountControls />
+                      <PostViewModes />
                     </List.Item>
-                  ) : (
                     <List.Item>
-                      <Divider hidden fitted style={{ marginTop: 5 }} />
-                      <center>
-                        Start creating your own post by logging in
-                        <Divider />
-                        <UserAuth />
-                      </center>
+                      <Router primary={false}>
+                        <UserOptions path="u/*" />
+                      </Router>
                     </List.Item>
-                  )}
-                  <List.Item>
-                    <PostViewModes />
-                  </List.Item>
-                  <List.Item>
-                    <Router primary={false}>
-                      <UserOptions path="u/*" />
-                    </Router>
-                  </List.Item>
-                  <List.Item>
-                    <TagList />
-                  </List.Item>
-                </Transition.Group>
-              );
-            }}
-          </UserContext.Consumer>
-        )}
-      </ResponsiveContext.Consumer>
+                    <List.Item>
+                      <TagList />
+                    </List.Item>
+                  </Transition.Group>
+                );
+              }}
+            </UserContext.Consumer>
+          )}
+        </ResponsiveContext.Consumer>
+      </>
     );
   }
 }

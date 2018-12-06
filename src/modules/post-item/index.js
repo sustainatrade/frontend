@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Item } from 'semantic-ui-react';
+import { Item, Icon, Menu } from 'semantic-ui-react';
 import { contents, MODES } from '../../components/widgets';
 // import AntButton from 'antd/lib/button';
 import { getUrl } from '../../contexts/PostFeedContext';
@@ -15,8 +15,7 @@ import BasicButton from '../../components/basic-button/BasicButton';
 import UserContext from '../../contexts/UserContext';
 import ErrorContext from '../../contexts/ErrorContext';
 import { TYPES } from '../../errors';
-console.log('contents'); //TRACE
-console.log(contents); //TRACE
+import Iconify from '../../components/icon-provider/Icon';
 
 const WidgetMeta = ({ widget, mode }) => {
   const ContentWidget = contents[widget.code].component;
@@ -30,11 +29,33 @@ const Actions = React.memo(({ post, canReply }) => {
   const currentUserId = get(user, 'user.id');
   const replyMode = get(parentPost, '_refNo') === post._refNo;
   return (
-    <div style={{ cursor: 'default' }}>
+    <div style={{ cursor: 'default', margin: 0 }}>
       <GlobalConsumer>
         {({ user }) => (
           <div className="post-item-actions">
-            <FollowButton post={post} size="mini" />
+            <Menu secondary icon="labeled" size="mini">
+              <Menu.Item name="gamepad">
+                <Icon name="arrow up" />
+                Up
+              </Menu.Item>
+
+              <Menu.Item name="video camera">
+                <Icon name="arrow down" />
+                Down
+              </Menu.Item>
+
+              <Menu.Item name="smile outline">
+                <Icon name="smile outline" />
+                React
+              </Menu.Item>
+
+              <Menu.Item name="smile outline">
+                <Icon name="talk" />
+                Comment
+              </Menu.Item>
+            </Menu>
+            {/* <Icon name="arrow up" />
+            <Icon name="arrow down" />
             <MoreButton post={post} userContext={user} size="mini" floated="right" />
             {canReply && (
               <BasicButton
@@ -49,7 +70,7 @@ const Actions = React.memo(({ post, canReply }) => {
                   setParentPost(post);
                 }}
               />
-            )}
+            )} */}
           </div>
         )}
       </GlobalConsumer>

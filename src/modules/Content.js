@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Segment, Button } from 'semantic-ui-react';
+import { Segment, Button, Divider } from 'semantic-ui-react';
 import { Loader } from 'semantic-ui-react';
 import { Router } from '@reach/router';
 import loadable from 'loadable-components';
@@ -56,6 +56,7 @@ function SidebarWrapper({ children, attachment = 'left', scrollable }) {
       <Segment basic style={style3}>
         {children}
       </Segment>
+      <AppFooter />
     </div>
   );
 }
@@ -114,6 +115,17 @@ function SubHeaderWrapper() {
       )}
       {HeaderComp || subHeader}
     </div>
+  );
+}
+
+function AppFooter() {
+  return (
+    <>
+      <Divider />
+      <div style={{ padding: '0px 30px', fontSize: 'smaller' }}>
+        Emoji icons supplied by <a href="https://www.emojione.com/">EmojiOne</a>
+      </div>
+    </>
   );
 }
 
