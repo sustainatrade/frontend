@@ -1,6 +1,6 @@
 import React from 'react';
-import { Editor, EditorState, RichUtils, Entity, Modifier, CompositeDecorator } from 'draft-js';
-import Icon from './../../../icon-provider/Icon';
+import { Editor, EditorState, Modifier, CompositeDecorator } from 'draft-js';
+// import Icon from './../../../icon-provider/Icon';
 import EmojiDecorator from './EmojiDecorator';
 import 'emoji-mart/css/emoji-mart.css';
 import { NimblePicker } from 'emoji-mart';
@@ -48,7 +48,6 @@ export default function Text(props) {
   );
   const editorState = state.get('editorState');
   const showSelector = state.get('showSelector');
-  console.log('props', props); //TRACE
   React.useEffect(
     () => {
       const defaultText = get(props, 'defaultValues.text');
@@ -64,14 +63,13 @@ export default function Text(props) {
       );
 
       const newEditorState = EditorState.push(editorState, contentStateDefaultValue);
-      console.log('contentStateWithEmoji.toJS()', contentStateDefaultValue.toJS()); //TRACE
       onChange(newEditorState);
     },
     [props.defaultValues]
   );
   React.useEffect(
     () => {
-      console.log('editState.toJS()', editorState.toJS()); //TRACE
+      // console.log('editState.toJS()', editorState.toJS()); //TRACE
     },
     [editorState]
   );
@@ -79,7 +77,6 @@ export default function Text(props) {
     // setEditorState(state);
     setState(oldState => oldState.set('editorState', state).set('showSelector', false));
     const text = state.getCurrentContent().getPlainText();
-    console.log('text', text); //TRACE
     props.updateValues({
       text
     });
@@ -147,7 +144,6 @@ export default function Text(props) {
             );
 
             const newEditorState = EditorState.push(editorState, contentStateWithEmoji);
-            console.log('contentStateWithEmoji.toJS()', contentStateWithEmoji.toJS()); //TRACE
             onChange(newEditorState);
           }}
         />

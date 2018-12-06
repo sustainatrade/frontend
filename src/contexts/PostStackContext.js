@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import * as gql from "./../gql-schemas";
-import apolloClient from "./../lib/apollo";
-import get from "lodash/get";
-import { navigate } from "@reach/router";
-import { getUrl } from "./PostFeedContext";
-import { List } from "immutable";
+import React, { useState } from 'react';
+// import * as gql from "./../gql-schemas";
+// import apolloClient from "./../lib/apollo";
+// import get from "lodash/get";
+// import { navigate } from "@reach/router";
+// import { getUrl } from "./PostFeedContext";
+import { List } from 'immutable';
 
 export const Context = React.createContext({});
 
@@ -25,7 +25,7 @@ function Provider({ children }) {
           return stack.push(obj);
         } else {
           const mutatedObj = Object.assign(stack.get(idx), obj);
-          console.log("mutatedObj"); //TRACE
+          console.log('mutatedObj'); //TRACE
           console.log(mutatedObj); //TRACE
           return stack.set(idx, mutatedObj);
         }

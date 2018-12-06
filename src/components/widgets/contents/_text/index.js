@@ -1,27 +1,26 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Content from './../../base/Content';
 import get from 'lodash/get';
-import debounce from 'lodash/debounce';
-import { Button } from 'semantic-ui-react';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import { Label } from 'semantic-ui-react';
+import sortBy from 'lodash/sortBy';
 import Iconify from '../../../icon-provider/Icon';
-import Text from './Text';
+import { Loader } from 'semantic-ui-react';
 import './text.css';
+
+const Text = React.lazy(() => import('./Text'));
 
 const EMOJI_MATCH = /:[^:\s]*:/g;
 
 function matchSplitter(text, matcher) {
-  const parts = [];
+  const parts = [],
+    textTmp = text;
   let matches = [{ offset: 0 }];
-  text.replace(matcher, (match, i) => matches.push({ text: match, anchor: i, offset: i + match.length }));
-  matches.sort((a, b) => a.anchor < b.anchor);
+  textTmp.replace(matcher, (match, i) => matches.push({ text: match, anchor: i, offset: i + match.length }));
+  matches = sortBy(matches, ['offset']);
   matches.forEach((match, ii) => {
     const nextMatch = matches[ii + 1] || {
       text: text.substring(match.offset, text.length),
       anchor: text.length
     };
-    console.log(match, nextMatch);
 
     parts.push(text.substring(match.offset, nextMatch.anchor));
     nextMatch.offset && parts.push({ matched: true, text: nextMatch.text });
@@ -60,7 +59,11 @@ export default class TextContent extends React.Component {
         previewData={{
           text: 'lorem ipsum dolor'
         }}
-        editor={props => <Text {...props} />}
+        editor={props => (
+          <React.Suspense fallback={<Loader active inline="centered" />}>
+            <Text {...props} />
+          </React.Suspense>
+        )}
         view={props => <Preview {...props} fontSize="larger" />}
         compact={props => <Preview {...props} />}
         {...this.props}

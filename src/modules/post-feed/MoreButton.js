@@ -1,13 +1,11 @@
-import React, { Component } from "react";
-import { Label, Button, Icon } from "semantic-ui-react";
-import Popover from "antd/lib/popover";
+import React, { Component } from 'react';
+// import { Label, Button, Icon } from "semantic-ui-react";
+import Popover from 'antd/lib/popover';
 // import { Share } from "react-facebook";
-import MoreProps from "./MoreProps";
+import MoreProps from './MoreProps';
 
-import config from "config";
-import BasicButton from "../../components/basic-button/BasicButton";
-
-const ACTION_BUTTON_SIZE = config.posts.actionButtonSize;
+// import config from 'config';
+import BasicButton from '../../components/basic-button/BasicButton';
 
 export default class MoreButton extends Component {
   state = {};
@@ -20,18 +18,15 @@ export default class MoreButton extends Component {
       ...rest
     } = this.props;
     const poProps = {
-      placement: "bottomRight"
+      placement: 'bottomRight'
     };
     if (isCompact) {
-      poProps.placement = "rightBottom";
+      poProps.placement = 'rightBottom';
     }
     return (
       <Popover
         content={
-          <div
-            style={{ width: 200 }}
-            onClick={() => this.setState({ showMore: false })}
-          >
+          <div style={{ width: 200 }} onClick={() => this.setState({ showMore: false })}>
             <MoreProps post={post} isAdmin={isAdmin} />
           </div>
         }
@@ -40,12 +35,7 @@ export default class MoreButton extends Component {
         onVisibleChange={showMore => this.setState({ showMore })}
         {...poProps}
       >
-        <BasicButton
-          name="ellipsis horizontal"
-          floated="right"
-          title="More"
-          {...rest}
-        />
+        <BasicButton name="ellipsis horizontal" floated="right" title="More" {...rest} />
       </Popover>
     );
   }

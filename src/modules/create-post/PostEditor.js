@@ -1,51 +1,30 @@
-import React, { Component, useState, useContext, useCallback, useRef, useEffect, useMemo } from 'react';
-import {
-  Header,
-  Container,
-  Segment,
-  Label,
-  Loader,
-  Divider,
-  Popup,
-  Visibility,
-  Icon as SemIcon,
-  Button,
-  Message,
-  Card,
-  Input
-} from 'semantic-ui-react';
-import { Query } from 'react-apollo';
+import React, { useState, useContext, useCallback, useRef, useEffect } from 'react';
+import { Segment, Label, Divider, Icon as SemIcon, Button, Card, Input } from 'semantic-ui-react';
+// import { Query } from 'react-apollo';
 import { contents, MODES } from './../../components/widgets';
 import AntButton from 'antd/lib/button';
-import { LAST_DRAFT, PUBLISH_POST, UPDATE_POST_WIDGETS } from '../../gql-schemas';
+import { PUBLISH_POST, UPDATE_POST_WIDGETS } from '../../gql-schemas';
 import CreatePostContext from '../../contexts/CreatePost';
 import ErrorContext from '../../contexts/ErrorContext';
 import Responsive from '../../contexts/Responsive';
 import PostWidgetContext from '../../contexts/PostWidgetContext';
 import LayoutContext from './../../contexts/LayoutContext';
 import get from 'lodash/get';
-import last from 'lodash/last';
 import debounce from 'lodash/debounce';
 import Icon from 'components/icon-provider/Icon';
 import Modal from 'antd/lib/modal';
 import Drawer from 'antd/lib/drawer';
-import ContentDropdown from './ContentDropdown';
 import ContentEditor from './ContentEditor';
-import { navigate } from '@reach/router';
 import { Spring, animated, config as SpringConfig } from 'react-spring';
 
 import './create-post.css';
-import { useOnUnmount } from 'react-hanger';
 import PostItem from '../post-item';
 import ThemeContext from '../../contexts/ThemeContext';
-import { useContent } from '../../hooks/Content';
-import Iconify from '../../components/icon-provider/Icon';
 
 function ContentActions({ contentData }) {
   const { _refNo, code, postRefNo } = contentData;
   const context = useContext(PostWidgetContext.Context);
   const error = useContext(ErrorContext.Context);
-  const contentWidget = useContent(code);
   const btnProps = {
     size: 'mini',
     primary: true,
@@ -85,20 +64,7 @@ function ContentActions({ contentData }) {
 }
 
 function ContentBlock(props) {
-  const {
-    mobile,
-    contentKey,
-    active,
-    onClick,
-    onDelete,
-    onClose,
-    defaultValues,
-    onUpdated,
-    postRefNo,
-    _refNo,
-    index,
-    touched
-  } = props;
+  const { contentKey, active, onClick, defaultValues, _refNo, touched } = props;
   const Content = contents[contentKey].component;
   const style = { padding: 0, margin: 0 };
 
@@ -156,14 +122,7 @@ const TitleEditor = React.memo(({ title, refNo }) => {
 
 const ContentList = React.memo(({ post }) => {
   const { isMobile } = useContext(Responsive.Context);
-  const {
-    currentContent,
-    defaultContentCode,
-    lastTouchKeys,
-    setCurrentContent,
-    submitWidgetsFn,
-    submitting
-  } = useContext(PostWidgetContext.Context);
+  const { currentContent, lastTouchKeys, setCurrentContent } = useContext(PostWidgetContext.Context);
 
   const contents = post.widgets || [];
 
@@ -195,9 +154,7 @@ const ContentList = React.memo(({ post }) => {
 
 function ContentSelector({ post, setShowSelector }) {
   const [selectedKey, setSelectedKey] = useState(null);
-  const { currentContent, setCurrentContent, submitWidgetsFn, defaultContentCode } = useContext(
-    PostWidgetContext.Context
-  );
+  const { setCurrentContent, submitWidgetsFn } = useContext(PostWidgetContext.Context);
 
   async function createNewContent() {
     const newAdded = await submitWidgetsFn(
@@ -269,14 +226,7 @@ function ContentSelector({ post, setShowSelector }) {
 
 function PostActions({ post, onSubmit, onCancel }) {
   const { isMobile } = useContext(Responsive.Context);
-  const {
-    currentContent,
-    setCurrentContent,
-    defaultContentCode,
-    submitting: updating,
-    contentKeys,
-    submitWidgetsFn
-  } = useContext(PostWidgetContext.Context);
+  const { currentContent, submitting: updating } = useContext(PostWidgetContext.Context);
 
   const [showSelector, setShowSelector] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -369,10 +319,6 @@ function ContentEditorWrapper({ post, contentEditorSize, inline }) {
       });
   });
   return <ContentEditor post={post} size={contentEditorSize} onSizeChanged={sizeChanged} />;
-}
-
-function ParentPost({ refNo }) {
-  return null;
 }
 
 function PostHeader({ post }) {
@@ -476,19 +422,18 @@ function DrawerWrapper({
 
 export default function PostEditor({ post, inline, extras, onSubmit, onCancel }) {
   // const { activeIndex, setActiveIndex } = useState(getLastWidgetIndex(post));
-  const headerRef = useRef(null);
   const contentRef = useRef(null);
   const actionsRef = useRef(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const [contentMaxHeight, setContentMaxHeight] = useState(null);
+  const [size] = useState({ width: 0, height: 0 });
+  // const [contentMaxHeight, setContentMaxHeight] = useState(null);
   const [closing, setClosing] = useState(false);
   const { isMobile } = useContext(Responsive.Context);
   const { windowSize, contentStyle } = useContext(LayoutContext.Context);
   const { mainBgColor } = useContext(ThemeContext.Context);
-  function handleOnScreen(e, { calculations }) {
-    if (calculations.height === size.height && calculations.width === size.width) return;
-    setSize({ width: calculations.width, height: calculations.height });
-  }
+  // function handleOnScreen(e, { calculations }) {
+  //   if (calculations.height === size.height && calculations.width === size.width) return;
+  //   setSize({ width: calculations.width, height: calculations.height });
+  // }
   console.log('renderall');
 
   const isReply = !!post.parentPostRefNo;

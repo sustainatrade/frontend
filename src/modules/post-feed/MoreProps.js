@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { GlobalConsumer } from "./../../contexts";
+import React, { Component } from 'react';
+import { GlobalConsumer } from './../../contexts';
 // import { Mutation } from "react-apollo";
 // import { FOLLOW_POST } from "./../../gql-schemas";
-import { List, Icon, Loader } from "semantic-ui-react";
-import { getShareUrl } from "./../../contexts/PostFeedContext";
-import { Share } from "react-facebook";
+import { List, Icon, Loader } from 'semantic-ui-react';
+import { getShareUrl } from './../../contexts/PostFeedContext';
+import { Share } from 'react-facebook';
 
 // function sleep(ms) {
 //   return new Promise(resolve => setTimeout(resolve, ms));
@@ -25,7 +25,7 @@ export default class MoreProps extends Component {
     if (isAdmin) {
       if (!isRemoved) {
         const [HidePostModal] = await Promise.all([
-          import("./../../admin/components/hide-post-modal/HidePostModal")
+          import('./../../admin/components/hide-post-modal/HidePostModal')
         ]);
         options.push(
           <List.Item key="hide-post">
@@ -42,12 +42,8 @@ export default class MoreProps extends Component {
     const { post, isMobile } = this.props;
     return (
       <GlobalConsumer>
-        {({
-          createPost: { openModal },
-          user: { user },
-          postView: { reportPostFn }
-        }) => {
-          const isMyPost = user && post.createdBy === user.id;
+        {({ createPost: { openModal }, user: { user }, postView: { reportPostFn } }) => {
+          // const isMyPost = user && post.createdBy === user.id;
           return (
             <List divided>
               {/* {isMyPost && (
@@ -66,7 +62,7 @@ export default class MoreProps extends Component {
                   <Share href={getShareUrl(post)}>
                     <div>
                       <Icon name="facebook f" size="large" />
-                      {"     "}
+                      {'     '}
                       Share
                     </div>
                   </Share>

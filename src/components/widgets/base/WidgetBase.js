@@ -1,15 +1,11 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Header, Label, Divider, Button, Message } from 'semantic-ui-react';
-import AntButton from 'antd/lib/button';
-import { MODES } from './../index';
+import { Segment, Message } from 'semantic-ui-react';
 import { UPDATE_POST_WIDGETS } from '../../../gql-schemas';
-import { GlobalConsumer } from '../../../contexts';
 import './WidgetBase.css';
 import { fromJS } from 'immutable';
 import ErrorContext from '../../../contexts/ErrorContext';
 import PostWidgetContext from '../../../contexts/PostWidgetContext';
-import { useOnMount } from 'react-hanger';
 
 const Preview = ({ ownProps, view: View, compact: Compact }) => (
   <>
@@ -87,7 +83,7 @@ function Editor(props) {
 }
 
 function WidgetBase(props) {
-  const [state, setState] = useState({ values: undefined, loading: false });
+  const [state] = useState({ values: undefined, loading: false });
 
   const {
     code,
@@ -98,7 +94,6 @@ function WidgetBase(props) {
     compact,
     mode = 'view',
     defaultValues,
-    onValuesChanged,
     previewData = {},
     preview,
     showPreview = false,

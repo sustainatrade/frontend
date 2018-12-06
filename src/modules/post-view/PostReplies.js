@@ -1,34 +1,19 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-  useCallback
-} from "react";
-import {
-  Dimmer,
-  Visibility,
-  Button,
-  List,
-  Divider,
-  Transition,
-  Icon,
-  Segment
-} from "semantic-ui-react";
-import { Query } from "react-apollo";
-import { REPLY_LIST } from "../../gql-schemas";
-import get from "lodash/get";
-import debounce from "lodash/debounce";
-import PostItem from "../post-item";
-import UserLabel from "./../user-profile/UserLabel";
-import { Link } from "@reach/router";
-import { getUrl } from "../../contexts/PostFeedContext";
-import "./PostReplies.css";
-import PostReplyContext from "../../contexts/PostReplyContext";
-import PostStackContext from "../../contexts/PostStackContext";
-import PostView from "./index";
-import { useOnMount, useOnUnmount } from "react-hanger";
-import LayoutContext from "../../contexts/LayoutContext";
+import React, { useState, useContext, useRef, useCallback } from 'react';
+import { Visibility, List, Transition, Icon, Segment } from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import { REPLY_LIST } from '../../gql-schemas';
+import get from 'lodash/get';
+// import debounce from 'lodash/debounce';
+import PostItem from '../post-item';
+import UserLabel from './../user-profile/UserLabel';
+// import { Link } from '@reach/router';
+// import { getUrl } from '../../contexts/PostFeedContext';
+import './PostReplies.css';
+// import PostReplyContext from '../../contexts/PostReplyContext';
+import PostStackContext from '../../contexts/PostStackContext';
+// import PostView from './index';
+import { useOnMount, useOnUnmount } from 'react-hanger';
+import LayoutContext from '../../contexts/LayoutContext';
 
 // const DEPTH_INDENT = 50;
 
@@ -90,21 +75,17 @@ function ReplyItem({ reply, showDivider }) {
   // const { activeReplyStack } = useContext(PostReplyContext.Context);
   const [expanded, setExpanded] = useState(false);
   const [onScreen, setOnScreen] = useState(false);
-  const dimmed = false;
   const { contentStyle, iconScrollWidth } = useContext(LayoutContext.Context);
   const ctrlOffsetY = contentStyle.paddingTop;
-
 
   // !onScreen && calculations.onScreen && this.setState({ onScreen: true });
   let vStyle = { marginBottom: 15 };
   if (expanded) {
-    vStyle.borderLeft = "solid 5px steelblue";
+    vStyle.borderLeft = 'solid 5px steelblue';
   }
   return (
     <React.Fragment>
-      {expanded && onScreen && (
-        <IconController head onScreen={onScreen} post={reply} />
-      )}
+      {expanded && onScreen && <IconController head onScreen={onScreen} post={reply} />}
       <Visibility
         fireOnMount
         continuous
@@ -123,9 +104,7 @@ function ReplyItem({ reply, showDivider }) {
           }
         }}
       >
-        <Segment
-          style={{ marginLeft: iconScrollWidth, marginBottom: 0, padding: 0 }}
-        >
+        <Segment style={{ marginLeft: iconScrollWidth, marginBottom: 0, padding: 0 }}>
           <div className="reply">
             <div className="reply-header">
               <span className="name">
@@ -153,9 +132,7 @@ function ReplyItem({ reply, showDivider }) {
         </Segment>
         <PostReplies post={reply} expanded={expanded} />
       </Visibility>
-      {expanded && onScreen && (
-        <IconController tail onScreen={onScreen} post={reply} />
-      )}
+      {expanded && onScreen && <IconController tail onScreen={onScreen} post={reply} />}
     </React.Fragment>
   );
 }
@@ -169,7 +146,7 @@ function ReplyHeader({ edges, limit, large }) {
       className="replies-header"
       style={{
         marginLeft: iconScrollWidth,
-        fontSize: large ? "large" : "small"
+        fontSize: large ? 'large' : 'small'
       }}
     >
       <Icon name="level up alternate" rotated="clockwise" />
@@ -191,7 +168,7 @@ export default function PostReplies({ post, expanded, isRoot }) {
       }}
     >
       {({ loading, data }) => {
-        const edges = get(data, "PostList.edges", []);
+        const edges = get(data, 'PostList.edges', []);
 
         return (
           <div className="replies">
@@ -202,11 +179,7 @@ export default function PostReplies({ post, expanded, isRoot }) {
                   const reply = edge.node;
                   return (
                     <List.Item key={edge.cursor}>
-                      <ReplyItem
-                        key={edge.cursor}
-                        showDivider={ii > 0}
-                        reply={reply}
-                      />
+                      <ReplyItem key={edge.cursor} showDivider={ii > 0} reply={reply} />
                     </List.Item>
                   );
                 })}

@@ -1,33 +1,22 @@
-import React, { useContext, useEffect } from "react";
-import {
-  Header,
-  Icon,
-  Loader,
-  Button,
-  Segment,
-  Message,
-  Container,
-  Divider,
-  Dimmer
-} from "semantic-ui-react";
-import { Query } from "react-apollo";
-import { LAST_DRAFT, PUBLISH_POST } from "../../gql-schemas";
-import get from "lodash/get";
-import "./create-post.css";
-import PostEditor from "./PostEditor";
-import { Context } from "./../../contexts/CreatePost";
-import { Context as LayoutContext } from "./../../contexts/LayoutContext";
-import { navigate } from "@reach/router";
-import { useSetSubHeader } from "../../hooks/SetSubHeader";
-import ErrorContext from "../../contexts/ErrorContext";
+import React, { useContext } from 'react';
+import { Header, Icon, Loader, Button, Segment, Message, Divider, Dimmer } from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import { LAST_DRAFT, PUBLISH_POST } from '../../gql-schemas';
+import get from 'lodash/get';
+import './create-post.css';
+import PostEditor from './PostEditor';
+import { Context } from './../../contexts/CreatePost';
+import { navigate } from '@reach/router';
+import { useSetSubHeader } from '../../hooks/SetSubHeader';
+import ErrorContext from '../../contexts/ErrorContext';
 
 function PublishPostModal() {
   const { publishedPost, reset } = useContext(Context);
-  console.log("publishedPost"); //TRACE
+  console.log('publishedPost'); //TRACE
   console.log(publishedPost); //TRACE
   return (
     <Dimmer inverted active={!!publishedPost} page>
-      <Header as="h2" icon style={{ color: "black" }}>
+      <Header as="h2" icon style={{ color: 'black' }}>
         <Icon name="check circle outline" color="green" />
         Post Published!
         <Divider horizontal />
@@ -58,9 +47,9 @@ function SubHeader({ post }) {
     <span>
       <span
         style={{
-          fontWeight: "bold",
-          fontSize: "large",
-          marginLeft: "10px"
+          fontWeight: 'bold',
+          fontSize: 'large',
+          marginLeft: '10px'
         }}
       >
         Create Post
@@ -89,7 +78,7 @@ function PostEditorWrapper({ post }) {
   //
   const { publishPost, publishedPost } = useContext(Context);
   const error = useContext(ErrorContext.Context);
-  console.log("error", error); //TRACE
+  console.log('error', error); //TRACE
   const publishErrors = error[PUBLISH_POST.key];
   if (publishedPost) return null;
   return (
@@ -103,7 +92,7 @@ function PostEditorWrapper({ post }) {
         if (window.history.length > 0) {
           window.history.back();
         } else {
-          navigate("/");
+          navigate('/');
         }
       }}
       extras={
@@ -121,10 +110,10 @@ export default function() {
   return (
     <Query query={LAST_DRAFT.query}>
       {({ loading, data }) => {
-        console.log("data"); //TRACE
+        console.log('data'); //TRACE
         console.log(data); //TRACE
-        const post = get(data, "LastDraft.post");
-        console.log("post"); //TRACE
+        const post = get(data, 'LastDraft.post');
+        console.log('post'); //TRACE
         console.log(post); //TRACE
         // activeIdx === undefined ? newContents.length - 1 : activeIdx;
         if (!post) return <Loader inline="centered" active />;
@@ -133,7 +122,7 @@ export default function() {
             <SubHeader post={post} />
             <div
               style={{
-                margin: "0 auto",
+                margin: '0 auto',
                 maxWidth: 768
               }}
             >

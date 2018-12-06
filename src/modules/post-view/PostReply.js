@@ -1,19 +1,17 @@
-import React, { useContext, useCallback, Suspense } from "react";
-import PostReplyContext from "../../contexts/PostReplyContext";
-import { Loader, Dimmer } from "semantic-ui-react";
-import { Query, Mutation } from "react-apollo";
-import { LAST_DRAFT } from "../../gql-schemas";
-import get from "lodash/get";
-import "./PostReply.css";
+import React, { useContext, Suspense } from 'react';
+import PostReplyContext from '../../contexts/PostReplyContext';
+// import { Loader, Dimmer } from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import { LAST_DRAFT } from '../../gql-schemas';
+import get from 'lodash/get';
+import './PostReply.css';
 // import Modal from "antd/lib/modal";
 
-const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
+const PostEditor = React.lazy(() => import('./../create-post/PostEditor'));
 const PageLoader = () => <div />;
 export default function PostReply() {
-  const { parentPost, postReply, submitting, reset } = useContext(
-    PostReplyContext.Context
-  );
-  console.log("submitting,parentPost"); //TRACE
+  const { parentPost, postReply, submitting, reset } = useContext(PostReplyContext.Context);
+  console.log('submitting,parentPost'); //TRACE
   console.log(submitting, parentPost); //TRACE
   return (
     <div>
@@ -21,11 +19,11 @@ export default function PostReply() {
         <Query
           query={LAST_DRAFT.query}
           variables={{
-            parentPostRefNo: get(parentPost, "_refNo")
+            parentPostRefNo: get(parentPost, '_refNo')
           }}
         >
           {({ loading, data }) => {
-            const reply = get(data, "LastDraft.post");
+            const reply = get(data, 'LastDraft.post');
 
             if (loading) return null;
             return (

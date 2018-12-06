@@ -1,7 +1,7 @@
 import React from 'react';
 import { Emoji } from 'emoji-mart';
-import { searchEmoji, getCustomEmoji } from '../emoji';
-import get from 'lodash/get';
+import { getCustomEmoji } from '../emoji';
+// import get from 'lodash/get';
 
 const trimRegex = new RegExp(`^[:]+|[:]+$`, 'g');
 const LOADING_EMOJI = {

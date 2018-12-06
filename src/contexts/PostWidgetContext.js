@@ -5,7 +5,6 @@ import compact from 'lodash/compact';
 import get from 'lodash/get';
 import { contents } from './../components/widgets';
 import { fromJS } from 'immutable';
-import { useContent } from './../hooks/Content';
 
 export const Context = React.createContext({});
 
@@ -42,20 +41,20 @@ function Provider({ children }) {
     submitWidgetsFn: async (widgetArray, { newWidget } = {}) => {
       setState({ submitting: true });
       setLastTouchKeys([]);
-      let hasDelete,
-        hasCreate,
-        lastTouchKeys = [];
+      // let hasDelete,
+      //   hasCreate,
+      //   lastTouchKeys = [];
       const newWidgets = widgetArray.map(widget => {
         if (widget.__deleted) {
           widget.type = 'DELETE';
           widget.values = {};
-          hasDelete = true;
+          // hasDelete = true;
           if (!widget._refNo) return null; //Not changed
         } else if (widget._refNo) {
           widget.type = 'MODIFY';
         } else {
           widget.type = 'CREATE';
-          hasCreate = true;
+          // hasCreate = true;
         }
 
         // const widgetInput = Object.assign({}, widget, {

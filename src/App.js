@@ -3,15 +3,15 @@ import EcoContent from './modules/Content';
 import RootContextProvider from './contexts';
 import { Context as ResponsiveContext } from './contexts/Responsive';
 import { Context as LayoutContext } from './contexts/LayoutContext';
-import { Divider, Menu, Dimmer, Header, Button, Icon } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 
 import PwaStatus from './components/pwa-status/PwaStatus';
 import IconProvider from './components/icon-provider/IconProvider';
 import CookiePopup from './components/cookie-popup/CookiePopup';
 import loadable from 'loadable-components';
 import './App.css';
-import config from 'config';
-import get from 'lodash/get';
+// import config from 'config';
+// import get from 'lodash/get';
 
 // Antd component styles here
 import 'antd/lib/drawer/style/css';

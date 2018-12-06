@@ -226,7 +226,6 @@ export default class UserAuth extends React.Component {
   }
 
   render() {
-    const self = this;
     const { compact } = this.props;
     // const { authDetail } = this.state;
     return (

@@ -1,24 +1,14 @@
-import React, { useMemo, useContext, useEffect, useState } from 'react';
-import { Button, Loader, Label, Visibility, Divider, Transition } from 'semantic-ui-react';
-import Icon from 'components/icon-provider/Icon';
-import Menu from 'antd/lib/menu';
-import AntButton from 'antd/lib/button';
-import Dropdown from 'antd/lib/dropdown';
+import React, { useContext, useState } from 'react';
+import { Visibility, Transition } from 'semantic-ui-react';
 import './ContentEditor.css';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import last from 'lodash/last';
 import { contents, MODES } from './../../components/widgets';
-import Tabs from 'antd/lib/tabs';
 import PostWidgetContext from '../../contexts/PostWidgetContext';
-import { fromJS } from 'immutable';
 import nanoid from 'nanoid';
-import Responsive from '../../contexts/Responsive';
-
-const TabPane = Tabs.TabPane;
 
 const WidgetEditor = React.memo(({ postRefNo, context }) => {
-  const { currentContent, submitWidgetsFn, submitting } = context;
+  const { currentContent } = context;
 
   if (!currentContent) return null;
 
@@ -44,30 +34,8 @@ const WidgetEditor = React.memo(({ postRefNo, context }) => {
 });
 
 const WidgetHeader = ({ context }) => {
-  const { currentContent, setCurrentContent, defaultContentCode, contentKeys } = context;
+  const { currentContent, defaultContentCode } = context;
 
-  const menu = (
-    <Menu
-      onClick={e => {
-        const newCode = fromJS(currentContent)
-          .set('code', e.key)
-          .set('values', {})
-          .toJS();
-        console.log('newCode'); //TRACE
-        console.log(newCode); //TRACE
-        setCurrentContent(newCode);
-      }}
-    >
-      {contentKeys.map(cKey => {
-        return (
-          <Menu.Item key={cKey}>
-            <Icon {...contents[cKey].icon} />
-            {contents[cKey].name}
-          </Menu.Item>
-        );
-      })}
-    </Menu>
-  );
   const code = get(currentContent, 'code', defaultContentCode);
   const selectedContent = contents[code];
   if (!selectedContent) return null;
@@ -107,8 +75,6 @@ const WidgetHeader = ({ context }) => {
 
 export default function({ post, size, onSizeChanged }) {
   const context = useContext(PostWidgetContext.Context);
-  const { isMobile } = useContext(Responsive.Context);
-  const { currentContent } = context;
   const [vKey, setVKey] = useState(null);
   // if (!currentContent) return null;
 

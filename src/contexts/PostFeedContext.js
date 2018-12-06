@@ -1,23 +1,20 @@
-import React from "react";
-import gql from "graphql-tag";
-import get from "lodash/get";
-import apolloClient from "./../lib/apollo";
-import postFragment from "./../gql-schemas/PostFragment";
-import { POST_LIST } from "../gql-schemas";
-import { kebabCase } from "lodash";
+import React from 'react';
+import gql from 'graphql-tag';
+import get from 'lodash/get';
+import apolloClient from './../lib/apollo';
+import { POST_LIST } from '../gql-schemas';
+import { kebabCase } from 'lodash';
 
 const Context = React.createContext();
 const { Consumer } = Context;
 
 export function getShareUrl(post) {
-  return `https://${window.location.hostname}/p/${kebabCase(
-    post.title.substring(0, 30)
-  )}/${post._refNo}`;
+  return `https://${window.location.hostname}/p/${kebabCase(post.title.substring(0, 30))}/${post._refNo}`;
 }
 
 export function getUrl(post) {
   let postTitle = post.title;
-  if (!postTitle || postTitle.length === 0) postTitle = "reply";
+  if (!postTitle || postTitle.length === 0) postTitle = 'reply';
   return `/p/${kebabCase(postTitle.substring(0, 30))}/${post._refNo}`;
 }
 
@@ -83,8 +80,8 @@ class Provider extends React.Component {
           variables: { search: JSON.stringify({ createdBy: userRefNo }) }
         })
       ]);
-      const myPosts = get(myPostCount, "data.PostCount.count");
-      const followed = get(followerCount, "data.PostCount.count");
+      const myPosts = get(myPostCount, 'data.PostCount.count');
+      const followed = get(followerCount, 'data.PostCount.count');
       this.setState({ postCount: { followed, myPosts } });
     },
     clearUnreadFn: async () => {
@@ -169,11 +166,11 @@ class Provider extends React.Component {
 
       console.info(`Loading more. ${afterCursor}:${limit}`);
       if (loadingMore) {
-        console.log("waiting for previous loadingMore to finish");
+        console.log('waiting for previous loadingMore to finish');
         return;
       }
       this.setState({ loadingMore: true });
-      console.log("filters"); //TRACE
+      console.log('filters'); //TRACE
       console.log(filters); //TRACE
       const queryFilters = {};
       if (filters.content) {
@@ -196,14 +193,11 @@ class Provider extends React.Component {
       const { PostList } = data;
       // const stateUpdates = {}
       const { list } = this.state;
-      const postList = get(PostList, "edges", []);
+      const postList = get(PostList, 'edges', []);
       if (postList.length > 0) {
         const lastIndex = postList.length - 1;
-        const newAfterCursor = get(postList, [lastIndex, "cursor"]);
-        const updatedList = [
-          ...list,
-          ...(postList.map(edge => edge.node) || [])
-        ];
+        const newAfterCursor = get(postList, [lastIndex, 'cursor']);
+        const updatedList = [...list, ...(postList.map(edge => edge.node) || [])];
         this.setState({
           loadingMore: false,
           afterCursor: newAfterCursor,
@@ -222,11 +216,11 @@ class Provider extends React.Component {
     apolloClient
       .subscribe({
         query: POST_CREATED,
-        variables: { device: "desktop" }
+        variables: { device: 'desktop' }
       })
       .subscribe({
         next({ data }) {
-          console.log("setting state: ");
+          console.log('setting state: ');
           if (!data) return;
           console.log(data.PostCreated.post);
           const { unreadPosts } = self.state;

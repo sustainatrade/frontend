@@ -1,37 +1,20 @@
-import React, { Component, useContext } from "react";
-import {
-  Segment,
-  Button,
-  List,
-  Transition,
-  Menu,
-  Icon,
-  Header,
-  Divider
-} from "semantic-ui-react";
-import UserContext from "./../contexts/UserContext";
-import { Context as LayoutContext } from "./../contexts/LayoutContext";
+import React, { Component, useContext } from 'react';
+import { Button, List, Transition, Menu, Icon, Header, Divider } from 'semantic-ui-react';
+import UserContext from './../contexts/UserContext';
+import { Context as LayoutContext } from './../contexts/LayoutContext';
 // import CategoryContext from "./../contexts/CategoryContext";
 // import PostFeedContext from "./../contexts/PostFeedContext";
-import PostViewContext, { VIEW_MODES } from "./../contexts/PostViewContext";
-import CreatePostContext, {
-  Context as CreatePostCtx
-} from "./../contexts/CreatePost";
-import ResponsiveContext, {
-  Context as ResponsiveCtx
-} from "./../contexts/Responsive";
-import { UserAuth } from "../components";
-import { Menus } from "./../components/main-header/MainHeader";
-import { Router, Link } from "@reach/router";
-import TagList from "./home/TagList";
+import PostViewContext, { VIEW_MODES } from './../contexts/PostViewContext';
+import { Context as CreatePostCtx } from './../contexts/CreatePost';
+import ResponsiveContext, { Context as ResponsiveCtx } from './../contexts/Responsive';
+import { UserAuth } from '../components';
+import { Menus } from './../components/main-header/MainHeader';
+import { Router, Link } from '@reach/router';
+import TagList from './home/TagList';
 
 const UserOptions = () => <React.Fragment />;
 
-function PostViewMode({
-  icon,
-  viewMode,
-  postViewContext: { postViewMode, setPostViewMode }
-}) {
+function PostViewMode({ icon, viewMode, postViewContext: { postViewMode, setPostViewMode } }) {
   return (
     <Button
       icon
@@ -48,11 +31,7 @@ const PostViewModes = () => (
   <PostViewContext.Consumer>
     {postViewContext => (
       <>
-        <Header
-          floated="left"
-          size="small"
-          style={{ marginTop: 10, marginRight: 0, color: "grey" }}
-        >
+        <Header floated="left" size="small" style={{ marginTop: 10, marginRight: 0, color: 'grey' }}>
           Post View
         </Header>
         <Button.Group floated="right">
@@ -61,16 +40,8 @@ const PostViewModes = () => (
             postViewContext={postViewContext}
             viewMode={VIEW_MODES.compact}
           />
-          <PostViewMode
-            icon="table"
-            postViewContext={postViewContext}
-            viewMode={VIEW_MODES.card}
-          />
-          <PostViewMode
-            icon="th"
-            postViewContext={postViewContext}
-            viewMode={VIEW_MODES.tiled}
-          />
+          <PostViewMode icon="table" postViewContext={postViewContext} viewMode={VIEW_MODES.card} />
+          <PostViewMode icon="th" postViewContext={postViewContext} viewMode={VIEW_MODES.tiled} />
         </Button.Group>
         <Divider hidden fitted clearing />
       </>
@@ -89,7 +60,7 @@ function AccountControls() {
           disabled={modalOpened}
           fluid
           color="green"
-          content={"Create Post"}
+          content={'Create Post'}
           icon="pencil"
           onClick={() => isMobile && setShowSidebar(false)}
         />
@@ -101,8 +72,6 @@ export default class Sidebar extends Component {
   state = {};
 
   render() {
-    const self = this;
-
     return (
       <ResponsiveContext.Consumer>
         {({ isMobile }) => (
@@ -110,11 +79,7 @@ export default class Sidebar extends Component {
             {({ user, loading }) => {
               if (loading) return <div />;
               return (
-                <Transition.Group
-                  as={List}
-                  duration={500}
-                  verticalAlign="middle"
-                >
+                <Transition.Group as={List} duration={500} verticalAlign="middle">
                   {isMobile && (
                     <Menu stackable key="menu-key">
                       <Menus mobile={isMobile} />

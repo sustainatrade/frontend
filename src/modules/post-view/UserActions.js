@@ -1,7 +1,6 @@
-import React, { useContext, useCallback, useEffect } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { Button } from 'semantic-ui-react';
 import './UserActions.css';
-import get from 'lodash/get';
 import PostReplyContext from '../../contexts/PostReplyContext';
 import PostViewContext from '../../contexts/PostViewContext';
 

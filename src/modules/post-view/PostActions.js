@@ -13,7 +13,7 @@ import { TYPES } from '../../errors';
 
 export default function({ post }) {
   const { editting, setEditMode } = useContext(PostViewContext.Context);
-  const { setParentPost, parentPost } = useContext(PostReplyContext.Context);
+  const { setParentPost } = useContext(PostReplyContext.Context);
   const user = useContext(UserContext.Context);
   const error = useContext(ErrorContext.Context);
 

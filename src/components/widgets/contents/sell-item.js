@@ -1,13 +1,12 @@
-import React, { Component } from "react";
-import Content from "./../base/Content";
-import get from "lodash/get";
-import debounce from "lodash/debounce";
-import { MODES } from "../index";
-import { Icon, Input, Dropdown, Label, Segment } from "semantic-ui-react";
-import { categoryArray, getCategory } from "./buy-item";
-import { DefaultSaveButton } from "./_template";
+import React, { Component } from 'react';
+import Content from './../base/Content';
+import get from 'lodash/get';
+import debounce from 'lodash/debounce';
+import { Icon, Input, Dropdown, Label, Segment } from 'semantic-ui-react';
+import { categoryArray, getCategory } from './buy-item';
+import { DefaultSaveButton } from './_template';
 
-const options = [{ key: "php", text: "Php", value: "php" }];
+const options = [{ key: 'php', text: 'Php', value: 'php' }];
 
 const SellItemView = props => {
   const cat = getCategory(props);
@@ -16,12 +15,11 @@ const SellItemView = props => {
       <Label basic size="small" pointing="right" color="green">
         SELLING
       </Label>
-      |{"  "}
+      |{'  '}
       <b>
-        {get(props, "values.price.currency")}{" "}
-        {get(props, "values.price.amount")}
-      </b>{" "}
-      |{" "}
+        {get(props, 'values.price.currency')} {get(props, 'values.price.amount')}
+      </b>{' '}
+      |{' '}
       {cat && (
         <>
           <a href="#search">
@@ -39,8 +37,8 @@ export default class SellItem extends Component {
     return (
       <Content
         previewData={{
-          test: "haha",
-          price: { currency: "Php", amount: 100000 },
+          test: 'haha',
+          price: { currency: 'Php', amount: 100000 },
           category: 2
         }}
         editor={props => {
@@ -48,13 +46,13 @@ export default class SellItem extends Component {
             <div style={{ padding: 15 }}>
               <Input
                 style={{ marginRight: 10, marginBottom: 5 }}
-                defaultValue={get(props, "defaultValues.price.amount")}
+                defaultValue={get(props, 'defaultValues.price.amount')}
                 label={<Dropdown defaultValue="php" options={options} />}
                 placeholder="Enter amount"
                 onChange={debounce((_, { value }) => {
                   // const newPrice = Object.assign(oldPrice, { amount: value });
                   props.updateValues({
-                    price: { amount: value, currency: "Php" }
+                    price: { amount: value, currency: 'Php' }
                   });
                 }, 200)}
               />
@@ -62,7 +60,7 @@ export default class SellItem extends Component {
                 placeholder="Select Category"
                 search
                 selection
-                defaultValue={get(props, "defaultValues.category")}
+                defaultValue={get(props, 'defaultValues.category')}
                 onChange={(_, { value }) => {
                   props.updateValues({
                     category: value

@@ -1,29 +1,17 @@
-import React, { useState, useEffect } from "react";
-import nanoid from "nanoid";
-import get from "lodash/get";
-import {
-  Dimmer,
-  Button,
-  Header,
-  Divider,
-  Icon,
-  Loader
-} from "semantic-ui-react";
-import {
-  addNewContentAvailableListener,
-  removeContentAvailableListener
-} from "../../registerServiceWorker";
-import { useOnMount } from "react-hanger";
+import React, { useState } from 'react';
+import { Dimmer, Button, Header, Divider, Icon } from 'semantic-ui-react';
+import { addNewContentAvailableListener } from '../../registerServiceWorker';
+import { useOnMount } from 'react-hanger';
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 function usePwaUpdateChecker(props) {
   let [updated, setUpdated] = useState(false);
 
   useOnMount(() => {
-    addNewContentAvailableListener("pwa-status", () => setUpdated(true));
+    addNewContentAvailableListener('pwa-status', () => setUpdated(true));
   });
 
   return {
@@ -43,11 +31,7 @@ export default function PwaStatus() {
         New Update Available!
         <Header.Subheader>Reload to apply the updates</Header.Subheader>
         <Divider hidden />
-        <Button
-          primary
-          content="Reload"
-          onClick={() => window.location.reload()}
-        />
+        <Button primary content="Reload" onClick={() => window.location.reload()} />
         <Button inverted basic content="Later" onClick={() => later()} />
       </Header>
     </Dimmer>

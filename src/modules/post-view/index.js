@@ -1,53 +1,32 @@
-import React, { Component, Suspense, useContext, useEffect } from "react";
-import {
-  Item,
-  Grid,
-  Modal,
-  Image,
-  Button,
-  Divider,
-  Transition,
-  List,
-  Segment,
-  Header,
-  Loader,
-  Visibility
-} from "semantic-ui-react";
-import get from "lodash/get";
-import { Query } from "react-apollo";
-import UserLabel from "./../user-profile/UserLabel";
-import nanoid from "nanoid";
+import React, { Component, Suspense, useContext, useEffect } from 'react';
+import { Grid, Button, Divider, List, Segment, Header, Loader, Visibility } from 'semantic-ui-react';
+import get from 'lodash/get';
+import { Query } from 'react-apollo';
+import UserLabel from './../user-profile/UserLabel';
+import nanoid from 'nanoid';
 
-import { POST } from "./../../gql-schemas";
-import moment from "moment";
-import { contents, MODES } from "./../../components/widgets";
-import UserActions from "./UserActions";
-import IconScroller from "../../components/icon-scroller/IconScroller";
-import PostActions from "./PostActions";
-import { PostComments } from "./index.old";
-import PostReply from "./PostReply";
-import PostReplies from "./PostReplies";
-import { useSetSubHeader } from "../../hooks/SetSubHeader";
-import PostViewContext from "../../contexts/PostViewContext";
-import LayoutContext from "../../contexts/LayoutContext";
-import ResponsiveContext from "../../contexts/Responsive";
-import ThemeContext from "../../contexts/ThemeContext";
-import PostReplyContext from "../../contexts/PostReplyContext";
-import PostItem from "../post-item";
-import PostWidgetContext from "../../contexts/PostWidgetContext";
+import { POST } from './../../gql-schemas';
+import moment from 'moment';
+import { contents, MODES } from './../../components/widgets';
+import IconScroller from '../../components/icon-scroller/IconScroller';
+import PostActions from './PostActions';
+import PostReply from './PostReply';
+import PostReplies from './PostReplies';
+import { useSetSubHeader } from '../../hooks/SetSubHeader';
+import PostViewContext from '../../contexts/PostViewContext';
+import LayoutContext from '../../contexts/LayoutContext';
+import ResponsiveContext from '../../contexts/Responsive';
+import ThemeContext from '../../contexts/ThemeContext';
+import PostReplyContext from '../../contexts/PostReplyContext';
+import PostItem from '../post-item';
+import PostWidgetContext from '../../contexts/PostWidgetContext';
 
-const PostEditor = React.lazy(() => import("./../create-post/PostEditor"));
+const PostEditor = React.lazy(() => import('./../create-post/PostEditor'));
 
 function PostEditorWrapper(props) {
   const { setEditMode } = useContext(PostViewContext.Context);
   const PostHeader = (
-    <Button
-      content="Done"
-      icon="check"
-      color="green"
-      basic
-      onClick={() => setEditMode(false)}
-    />
+    <Button content="Done" icon="check" color="green" basic onClick={() => setEditMode(false)} />
   );
   useSetSubHeader(PostHeader, { hideBackButton: true });
   return (
@@ -67,11 +46,11 @@ const PostHeader = React.memo(({ post }) => {
   const { isMobile } = useContext(ResponsiveContext.Context);
   const { contentPadding } = useContext(LayoutContext.Context);
   const isReply = !!post.parentPostRefNo;
-  useSetSubHeader(isReply ? "Post Reply" : post.title);
+  useSetSubHeader(isReply ? 'Post Reply' : post.title);
   return (
     <div
       style={{
-        backgroundColor: "snow",
+        backgroundColor: 'snow',
         padding: contentPadding,
         paddingBottom: 5,
         paddingTop: isMobile ? 0 : 15
@@ -82,12 +61,7 @@ const PostHeader = React.memo(({ post }) => {
           {!!post.parentPost && (
             <>
               <Segment color="blue">
-                <PostItem
-                  isCompact
-                  post={post.parentPost}
-                  basic
-                  withLabels={false}
-                />
+                <PostItem isCompact post={post.parentPost} basic withLabels={false} />
               </Segment>
               <Divider horizontal>Reply</Divider>
             </>
@@ -105,9 +79,7 @@ const PostHeader = React.memo(({ post }) => {
         </List.Item>
         <List.Item>
           <List.Icon name="clock" />
-          <List.Content>
-            {moment(parseInt(post.createdDate, 10)).fromNow()}
-          </List.Content>
+          <List.Content>{moment(parseInt(post.createdDate, 10)).fromNow()}</List.Content>
         </List.Item>
       </List>
     </div>
@@ -121,14 +93,8 @@ const PostContents = React.memo(({ post }) => {
       {post.widgets.map(widget => {
         const ContentWidget = contents[widget.code].component;
         return (
-          <div style={{ padding: "5px 10px" }} key={widget.id}>
-            <ContentWidget
-              key={widget.id}
-              defaultValues={widget.values}
-              mode={MODES.VIEW}
-              basic
-              fitted
-            />
+          <div style={{ padding: '5px 10px' }} key={widget.id}>
+            <ContentWidget key={widget.id} defaultValues={widget.values} mode={MODES.VIEW} basic fitted />
           </div>
         );
       })}
@@ -140,7 +106,7 @@ const PostContents = React.memo(({ post }) => {
 function PostFooter({ post }) {
   // return <PostReplies post={post} expanded isRoot />;
   const { parentPost } = useContext(PostReplyContext.Context);
-  const replyParentPost = get(parentPost, "_refNo") === post._refNo;
+  const replyParentPost = get(parentPost, '_refNo') === post._refNo;
   return (
     <>
       <PostReplies post={post} expanded isRoot />
@@ -165,24 +131,17 @@ class PostView extends Component {
       this.setState({ width: calculations.width, height: calculations.height });
   };
 
-  componentDidMount = () =>
-    setTimeout(() => this.setState({ visibilityKey: nanoid() }), 3000);
+  componentDidMount = () => setTimeout(() => this.setState({ visibilityKey: nanoid() }), 3000);
 
   render() {
     const {
       postRefNo,
       asReply,
       postRef,
-      postViewContext: { editting, isEditting },
-      layoutContext: {
-        windowSize,
-        contentStyle,
-        showIconScroller,
-        iconScrollWidth
-      },
-      themeContext: { secondaryBgColor }
+      postViewContext: { isEditting },
+      layoutContext: { windowSize, contentStyle, showIconScroller, iconScrollWidth }
     } = this.props;
-    const { visibilityKey, width, height } = this.state;
+    const { visibilityKey } = this.state;
     let sizeWrapperProps = {},
       SizeWrapper = wprops => <div>{wprops.children}</div>;
     if (!asReply) {
@@ -195,13 +154,9 @@ class PostView extends Component {
     }
 
     return (
-      <Query
-        query={POST.query}
-        skip={!!postRef}
-        variables={{ _refNo: postRefNo }}
-      >
+      <Query query={POST.query} skip={!!postRef} variables={{ _refNo: postRefNo }}>
         {({ data, loading }) => {
-          const post = get(data, "Post.post", postRef);
+          const post = get(data, 'Post.post', postRef);
 
           const gridHeight = windowSize.height - contentStyle.paddingTop;
           if (loading && !post) return <Loader active inline="centered" />;
@@ -212,7 +167,7 @@ class PostView extends Component {
               <Grid
                 className="content-panel"
                 style={{
-                  margin: "0 auto",
+                  margin: '0 auto',
                   maxWidth: 768
                 }}
               >
@@ -224,16 +179,11 @@ class PostView extends Component {
                 >
                   {!asReply && !isEditting(post._refNo) && (
                     <>
-                      {showIconScroller && (
-                        <IconScroller
-                          height={gridHeight}
-                          width={iconScrollWidth}
-                        />
-                      )}
+                      {showIconScroller && <IconScroller height={gridHeight} width={iconScrollWidth} />}
                       <div
                         style={{
-                          position: "relative",
-                          backgroundColor: "white",
+                          position: 'relative',
+                          backgroundColor: 'white',
                           zIndex: 2
                         }}
                       >
@@ -300,7 +250,7 @@ export default function PostViewWrapper(props) {
   const postViewContext = useContext(PostViewContext.Context);
   const themeContext = useContext(ThemeContext.Context);
   const postReply = useContext(PostReplyContext.Context);
-  const showScroller = get(postReply, "parentPost._refNo") !== props.postRefNo;
+  const showScroller = get(postReply, 'parentPost._refNo') !== props.postRefNo;
   useEffect(
     () => {
       const { setShowIconScroller, showIconScroller } = layoutContext;

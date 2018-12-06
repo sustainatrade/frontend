@@ -21,8 +21,9 @@ export default class ContentDropdown extends React.Component {
   }
   render() {
     const { selectedCode } = this.state;
-    const { compact, defaultValue } = this.props;
-    const tagOptions = [];
+    // const { compact, defaultValue } = this.props;
+    const { compact } = this.props;
+    // const tagOptions = [];
     let Trigger;
     if (selectedCode) {
       const selectedContent = contents[selectedCode];

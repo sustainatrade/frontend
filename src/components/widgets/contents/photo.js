@@ -1,19 +1,19 @@
-import React, { Component, useState, useContext, useEffect } from "react";
-import Content from "./../base/Content";
+import React, { Component, useState, useContext, useEffect } from 'react';
+import Content from './../base/Content';
 
-import Upload from "antd/lib/upload";
-import Modal from "antd/lib/modal";
+import Upload from 'antd/lib/upload';
+import Modal from 'antd/lib/modal';
 
-import { Icon, Button, Divider, Image } from "semantic-ui-react";
-import Uploader from "../../../contexts/Uploader";
-import get from "lodash/get";
-import MsImage from "../../ms-image/MsImage";
-import { DefaultSaveButton } from "./_template";
+import { Icon, Button, Image } from 'semantic-ui-react';
+import Uploader from '../../../contexts/Uploader';
+import get from 'lodash/get';
+import MsImage from '../../ms-image/MsImage';
+import { DefaultSaveButton } from './_template';
 
-const UPLOAD_NAME = "Post Image Upload";
+const UPLOAD_NAME = 'Post Image Upload';
 
-const path = localStorage.getItem("postPhotoPath");
-const storage = localStorage.getItem("storage");
+const path = localStorage.getItem('postPhotoPath');
+const storage = localStorage.getItem('storage');
 
 class UploadPhoto extends Component {
   state = {};
@@ -38,7 +38,7 @@ class UploadPhoto extends Component {
     const { previewVisible, previewImage } = this.state;
     const { photos = [], onChange } = this.props;
     const hasSelectedPhoto = photos.length > 0;
-    console.log("hasSelectedPhoto", hasSelectedPhoto); //TRACE
+    console.log('hasSelectedPhoto', hasSelectedPhoto); //TRACE
     return (
       <React.Fragment>
         <Upload
@@ -62,7 +62,7 @@ class UploadPhoto extends Component {
                 color="blue"
                 basic
                 onClick={() => {
-                  console.log("clinging");
+                  console.log('clinging');
                 }}
               >
                 <Icon.Group size="huge">
@@ -74,13 +74,9 @@ class UploadPhoto extends Component {
             )}
           </>
         </Upload>
-        <div style={{ clear: "both", marginBottom: 10 }} />
-        <Modal
-          visible={previewVisible}
-          footer={null}
-          onCancel={this.handleCancel}
-        >
-          <img alt="example" style={{ width: "100%" }} src={previewImage} />
+        <div style={{ clear: 'both', marginBottom: 10 }} />
+        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
       </React.Fragment>
     );
@@ -96,7 +92,7 @@ function Editor(props) {
 
   useEffect(
     () => {
-      console.log("uploadedName", uploadedName); //TRACE
+      console.log('uploadedName', uploadedName); //TRACE
       if (!uploaded) return;
       if (uploaded.progress === 100) {
         const values = {
@@ -105,7 +101,7 @@ function Editor(props) {
           photoUrl: `${storage}${path}/${uploadedName}`
         };
         props.updateValues(values);
-        console.log("values", values); //TRACE
+        console.log('values', values); //TRACE
       }
     },
     [uploadedName]
@@ -114,14 +110,14 @@ function Editor(props) {
     () => {
       if (uploading || photos === null) return;
       if (photos && photos.length > 0) {
-        const path = localStorage.getItem("postPhotoPath");
+        const path = localStorage.getItem('postPhotoPath');
         upload({
           name: UPLOAD_NAME,
           path,
           files: photos
         });
       } else {
-        console.log("empting");
+        console.log('empting');
 
         const values = {
           name: null,
@@ -133,20 +129,20 @@ function Editor(props) {
     },
     [photos]
   );
-  console.log("status", status); //TRACE
-  console.log("props", props); //TRACE
+  console.log('status', status); //TRACE
+  console.log('props', props); //TRACE
   // useEffect(() => {
 
   // }, [props.defaultValues]);
   const defaultFileList = [];
-  const defaultPhotoUrl = get(props, "defaultValues.photoUrl");
-  const defaultPhotoName = get(props, "defaultValues.originalName");
+  const defaultPhotoUrl = get(props, 'defaultValues.photoUrl');
+  const defaultPhotoName = get(props, 'defaultValues.originalName');
   if (defaultPhotoUrl) {
-    console.log("defaultPhotoUrl", defaultPhotoUrl); //TRACE
+    console.log('defaultPhotoUrl', defaultPhotoUrl); //TRACE
     defaultFileList.push({
-      uid: "1",
+      uid: '1',
       name: defaultPhotoName,
-      status: "done",
+      status: 'done',
       url: defaultPhotoUrl
     });
   }
@@ -155,7 +151,7 @@ function Editor(props) {
       <UploadPhoto
         photos={photos || defaultFileList}
         onChange={files => {
-          console.log("files", files); //TRACE
+          console.log('files', files); //TRACE
           setPhotos(files);
         }}
       />
@@ -174,28 +170,23 @@ export default class Text extends React.Component {
     return (
       <Content
         previewData={{
-          test: "haha"
+          test: 'haha'
         }}
         editor={props => {
           return <Editor {...props} />;
         }}
         view={props => {
-          const src = get(props, "values.photoUrl");
-          return <div>{src ? <Image src={src} /> : "No image selected"}</div>;
+          const src = get(props, 'values.photoUrl');
+          return <div>{src ? <Image src={src} /> : 'No image selected'}</div>;
         }}
         compact={props => {
-          const src = get(props, "values.photoUrl");
+          const src = get(props, 'values.photoUrl');
           return (
             <div>
               {src ? (
-                <MsImage
-                  height={50}
-                  width={50}
-                  style={{ cursor: "pointer" }}
-                  src={src}
-                />
+                <MsImage height={50} width={50} style={{ cursor: 'pointer' }} src={src} />
               ) : (
-                "No image selected"
+                'No image selected'
               )}
             </div>
           );

@@ -1,6 +1,6 @@
 import React from 'react';
 import UserContext from '../../contexts/UserContext';
-import { Form, Input, Button, Image, Placeholder, Divider, Segment } from 'semantic-ui-react';
+import { Form, Input, Button, Image, Placeholder, Divider } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import random from 'lodash/random';
 import debounce from 'lodash/debounce';

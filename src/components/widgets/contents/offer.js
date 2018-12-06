@@ -1,6 +1,6 @@
 import React from 'react';
 import Content from './../base/Content';
-import { Input, Icon, Segment, Label } from 'semantic-ui-react';
+import { Input, Icon, Label } from 'semantic-ui-react';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { DefaultSaveButton } from './_template';

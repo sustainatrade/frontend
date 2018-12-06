@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Segment, Button, Header, Container } from 'semantic-ui-react';
+import { Segment, Button } from 'semantic-ui-react';
 import { Loader } from 'semantic-ui-react';
 import { Router } from '@reach/router';
 import loadable from 'loadable-components';
@@ -63,7 +63,7 @@ function SidebarWrapper({ children, attachment = 'left', scrollable }) {
 function SubHeaderWrapper() {
   const { subHeader, contentStyle, hideBackButton } = useContext(LayoutContext);
   const { isMobile } = useContext(ResponsiveContext);
-  const { secondaryBgColor, background } = useContext(ThemeContext.Context);
+  // const { secondaryBgColor, background } = useContext(ThemeContext.Context);
   console.log('contentStyle wra'); //TRACE
   console.log(contentStyle); //TRACE
   let HeaderComp;
@@ -120,7 +120,7 @@ function SubHeaderWrapper() {
 export default function() {
   const { showSidebar, setShowSidebar, subHeader, contentStyle } = useContext(LayoutContext);
   const { isMobile, stretched } = useContext(ResponsiveContext);
-  const { mainBgColor, background } = useContext(ThemeContext.Context);
+  const { background } = useContext(ThemeContext.Context);
 
   useEffect(
     () => {

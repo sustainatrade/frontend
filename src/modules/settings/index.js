@@ -1,8 +1,7 @@
 import React from 'react';
-import Modal from 'antd/lib/modal';
 import SettingsContext from '../../contexts/SettingsContext';
 import UserContext from '../../contexts/UserContext';
-import get from 'lodash/get';
+// import get from 'lodash/get';
 
 const Settings = React.lazy(() => import('./Settings'));
 

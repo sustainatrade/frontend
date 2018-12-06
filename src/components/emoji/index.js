@@ -1,4 +1,3 @@
-import React from 'react';
 import data from 'emoji-mart/data/emojione.json';
 import { NimbleEmojiIndex } from 'emoji-mart';
 

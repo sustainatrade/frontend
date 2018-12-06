@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { Segment, Icon, Label, Button, Dimmer } from "semantic-ui-react";
-import { parseGraphData } from "./../../components/widgets/lib";
+import React, { Component } from 'react';
+import { Segment, Icon, Label, Dimmer } from 'semantic-ui-react';
+import { parseGraphData } from './../../components/widgets/lib';
 // import { manifests } from "./../../components/widgets";
-import gql from "graphql-tag";
-import apolloClient from "./../../lib/apollo";
+import gql from 'graphql-tag';
+import apolloClient from './../../lib/apollo';
 
 const POST_WIDGET = gql`
   query($refNo: String!) {
@@ -49,38 +49,22 @@ export default class PostWidget extends Component {
     onRendered && onRendered(renderedState);
   }
   render() {
-    const { editable, onEdit, onDelete } = this.props;
+    // const { editable, onEdit, onDelete } = this.props;
+    const { editable } = this.props;
     const { name, values, showControls } = this.state;
 
     if (!name) return <div>loading...</div>;
 
     const Widget = null;
     return (
-      <Dimmer.Dimmable
-        as={Segment}
-        piled
-        compact
-        textAlign="center"
-        dimmed={showControls}
-      >
+      <Dimmer.Dimmable as={Segment} piled compact textAlign="center" dimmed={showControls}>
         {editable && (
-          <Label
-            as="a"
-            size="tiny"
-            floating
-            onClick={() => this.setState({ showControls: !showControls })}
-          >
-            <Icon
-              name={showControls ? "ban" : "pencil alternate"}
-              style={{ margin: 0 }}
-            />
+          <Label as="a" size="tiny" floating onClick={() => this.setState({ showControls: !showControls })}>
+            <Icon name={showControls ? 'ban' : 'pencil alternate'} style={{ margin: 0 }} />
           </Label>
         )}
         <Widget {...values} />
-        <Dimmer
-          active={showControls}
-          onClickOutside={() => this.setState({ showControls: false })}
-        />
+        <Dimmer active={showControls} onClickOutside={() => this.setState({ showControls: false })} />
       </Dimmer.Dimmable>
     );
   }
