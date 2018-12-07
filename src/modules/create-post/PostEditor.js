@@ -20,6 +20,40 @@ import { Spring, animated, config as SpringConfig } from 'react-spring';
 import './create-post.css';
 import PostItem from '../post-item';
 import ThemeContext from '../../contexts/ThemeContext';
+import PopModal from '../../components/pop-modal/Modal';
+
+function ResetContentButton(props) {
+  const [showModal, setShowModal] = React.useState(false);
+  const { setCurrentContent, currentContent } = useContext(PostWidgetContext.Context);
+  return (
+    <>
+      <Button
+        {...props}
+        onClick={() => {
+          props.onClick && props.onClick();
+          setShowModal(true);
+        }}
+      />
+      {showModal && (
+        <PopModal onClose={() => setShowModal(false)}>
+          {({ close }) => (
+            <ContentSelector
+              reset
+              onCancel={() => setShowModal(false)}
+              onSelect={selectedKey => {
+                if (!currentContent) return;
+                console.log('currentContent', currentContent); //TRACE
+                const newContent = { ...currentContent, code: selectedKey, values: {} };
+                setCurrentContent(newContent);
+                close();
+              }}
+            />
+          )}
+        </PopModal>
+      )}
+    </>
+  );
+}
 
 function ContentActions({ contentData }) {
   const { _refNo, code, postRefNo } = contentData;
@@ -42,6 +76,7 @@ function ContentActions({ contentData }) {
     >
       <Button
         icon="trash"
+        content="REMOVE"
         {...btnProps}
         onClick={async () => {
           error.clear(UPDATE_POST_WIDGETS.key);
@@ -55,7 +90,8 @@ function ContentActions({ contentData }) {
           ]);
         }}
       />
-      <Button icon="arrows alternate" {...btnProps} />
+      {/* <Button icon="arrows alternate" {...btnProps} /> */}
+      <ResetContentButton content="RESET" icon="redo alternate" {...btnProps} />
       {/* <Button {...btnProps} basic>
         <Iconify {...contentWidget.icon} />
       </Button> */}
@@ -68,7 +104,6 @@ function ContentBlock(props) {
   const Content = contents[contentKey].component;
   const style = { padding: 0, margin: 0 };
 
-  console.log('touched', touched, _refNo); //TRACE
   if (!active) {
     style.cursor = 'pointer';
   }
@@ -129,8 +164,9 @@ const ContentList = React.memo(({ post }) => {
   return (
     <>
       <Divider hidden />
-      {contents.map((content, ii) => {
-        const active = get(currentContent, '_refNo') === content._refNo;
+      {contents.map((savedContent, ii) => {
+        const active = get(currentContent, '_refNo') === savedContent._refNo;
+        const content = active ? currentContent : savedContent;
         return (
           <ContentBlock
             mobile={isMobile}
@@ -152,11 +188,12 @@ const ContentList = React.memo(({ post }) => {
   );
 });
 
-function ContentSelector({ post, setShowSelector }) {
+function ContentSelector({ post, onSelect, onCancel, reset }) {
   const [selectedKey, setSelectedKey] = useState(null);
   const { setCurrentContent, submitWidgetsFn } = useContext(PostWidgetContext.Context);
 
   async function createNewContent() {
+    if (!post) return;
     const newAdded = await submitWidgetsFn(
       [
         {
@@ -170,10 +207,18 @@ function ContentSelector({ post, setShowSelector }) {
     setCurrentContent(get(newAdded, '0'));
   }
 
+  async function changeContentType() {
+    if (!setCurrentContent) return;
+    const newContent = { ...setCurrentContent, code: selectedKey };
+    setCurrentContent(newContent);
+  }
+
   useEffect(
     () => {
       if (!selectedKey) return;
-      createNewContent();
+      onSelect && onSelect(selectedKey);
+      // if (reset) changeContentType();
+      // else createNewContent();
     },
     [selectedKey]
   );
@@ -188,7 +233,7 @@ function ContentSelector({ post, setShowSelector }) {
           style={{ marginTop: -7 }}
           floated="right"
           color="olive"
-          onClick={() => setShowSelector(false)}
+          onClick={() => onCancel && onCancel()}
         />
       </Segment>
       <Segment basic className="content-selector">
@@ -226,7 +271,9 @@ function ContentSelector({ post, setShowSelector }) {
 
 function PostActions({ post, onSubmit, onCancel }) {
   const { isMobile } = useContext(Responsive.Context);
-  const { currentContent, submitting: updating } = useContext(PostWidgetContext.Context);
+  const { currentContent, submitting: updating, submitWidgetsFn, setCurrentContent } = useContext(
+    PostWidgetContext.Context
+  );
 
   const [showSelector, setShowSelector] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -297,7 +344,24 @@ function PostActions({ post, onSubmit, onCancel }) {
       >
         {props => (
           <animated.div style={props}>
-            <ContentSelector post={post} setShowSelector={setShowSelector} />
+            <ContentSelector
+              post={post}
+              onCancel={() => setShowSelector(false)}
+              onSelect={async selectedKey => {
+                if (!post) return;
+                const newAdded = await submitWidgetsFn(
+                  [
+                    {
+                      code: selectedKey,
+                      postRefNo: post._refNo,
+                      values: {}
+                    }
+                  ],
+                  { newWidget: true }
+                );
+                setCurrentContent(get(newAdded, '0'));
+              }}
+            />
           </animated.div>
         )}
       </Spring>

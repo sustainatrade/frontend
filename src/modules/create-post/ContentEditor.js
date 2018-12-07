@@ -6,35 +6,53 @@ import debounce from 'lodash/debounce';
 import { contents, MODES } from './../../components/widgets';
 import PostWidgetContext from '../../contexts/PostWidgetContext';
 import nanoid from 'nanoid';
+import hash from 'object-hash';
 
-const WidgetEditor = React.memo(({ postRefNo, context }) => {
-  const { currentContent } = context;
+function ContentChangeHandler({ onUpdate }) {
+  const { currentContent, setCurrentContent } = useContext(PostWidgetContext.Context);
+  React.useEffect(
+    () => {
+      // only update if code and refno is changed
+      onUpdate && onUpdate({ currentContent, setCurrentContent });
+    },
+    [get(currentContent, 'code'), get(currentContent, '_refNo'), get(currentContent, 'id')]
+  );
+  return null;
+}
 
-  if (!currentContent) return null;
+const WidgetEditor = React.memo(({ postRefNo }) => {
+  const [state, setState] = useState({});
+  const { currentContent, setCurrentContent } = state;
 
-  const ContentComponent = contents[currentContent.code].component;
   const currentRefNo = get(currentContent, '_refNo');
+  let ContentComponent;
+  if (currentRefNo) ContentComponent = contents[currentContent.code].component;
   return (
     <div>
-      <ContentComponent
-        mode={MODES.EDITOR}
-        basic
-        fitted
-        _refNo={currentRefNo}
-        postRefNo={postRefNo}
-        defaultValues={currentContent.values}
-        onValuesChanged={values => {
-          // error.clear(PUBLISH_POST.key);
-        }}
-      >
-        {() => <div>x</div>}
-      </ContentComponent>
+      <ContentChangeHandler onUpdate={setState} />
+      {currentRefNo && (
+        <ContentComponent
+          mode={MODES.EDITOR}
+          basic
+          fitted
+          _refNo={currentRefNo}
+          postRefNo={postRefNo}
+          defaultValues={currentContent.values}
+          onValuesChanged={values => {
+            const oldHash = hash(currentContent.values);
+            const newHash = hash(values);
+            if (oldHash !== newHash) setCurrentContent({ ...currentContent, values });
+          }}
+        >
+          {() => <div>x</div>}
+        </ContentComponent>
+      )}
     </div>
   );
 });
 
-const WidgetHeader = ({ context }) => {
-  const { currentContent, defaultContentCode } = context;
+const WidgetHeader = () => {
+  const { currentContent, defaultContentCode } = useContext(PostWidgetContext.Context);
 
   const code = get(currentContent, 'code', defaultContentCode);
   const selectedContent = contents[code];
@@ -74,7 +92,6 @@ const WidgetHeader = ({ context }) => {
 };
 
 export default function({ post, size, onSizeChanged }) {
-  const context = useContext(PostWidgetContext.Context);
   const [vKey, setVKey] = useState(null);
   // if (!currentContent) return null;
 
@@ -99,9 +116,9 @@ export default function({ post, size, onSizeChanged }) {
     >
       <div className="content-editor-actions" style={ceActionStyles}>
         <Visibility key={vKey} fireOnMount continuous updateOn="repaint" onUpdate={handleOnScreen}>
-          <WidgetHeader context={context} />
+          <WidgetHeader />
           <div className="content-editor-controls">
-            <WidgetEditor postRefNo={post._refNo} context={context} />
+            <WidgetEditor postRefNo={post._refNo} />
           </div>
         </Visibility>
       </div>

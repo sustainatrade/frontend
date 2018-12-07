@@ -14,6 +14,11 @@ module.exports = Object.assign(
         icon: { type: ':email:', theme: 'outlined' }
       },
       {
+        code: 'header',
+        name: 'Header',
+        icon: { type: ':newspaper:', theme: 'outlined' }
+      },
+      {
         code: 'photo',
         name: 'Photo',
         icon: { type: ':octocat:', theme: 'outlined' }

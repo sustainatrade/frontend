@@ -94,6 +94,7 @@ function WidgetBase(props) {
     compact,
     mode = 'view',
     defaultValues,
+    onValuesChanged,
     previewData = {},
     preview,
     showPreview = false,
@@ -158,7 +159,7 @@ function WidgetBase(props) {
             editor={editor}
             submitting={context.submitting}
             error={error}
-            // onValuesChanged={onValuesChanged}
+            onValuesChanged={onValuesChanged}
           >
             {({ editValues }) => {
               // const editValuesHash = JSON.stringify(editValues);
