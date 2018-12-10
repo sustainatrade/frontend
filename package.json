@@ -42,7 +42,7 @@
     "react-props-editor": "1.0.5",
     "react-scripts": "2.1.1",
     "react-spring": "6.1.10",
-    "semantic-ui-react": "0.83.0",
+    "semantic-ui-react": "0.84.0",
     "subscriptions-transport-ws": "0.9.15",
     "the-platform": "0.9.3"
   },
