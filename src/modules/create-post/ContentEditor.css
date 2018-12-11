@@ -2,6 +2,7 @@
 }
 .content-editor-controls {
   /* background-color: whitesmoke; */
+  max-height: 400px;
 }
 .content-editor-actions .ant-tabs-tab .anticon {
   margin: 0;

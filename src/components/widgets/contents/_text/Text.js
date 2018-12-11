@@ -127,6 +127,9 @@ export default function Text(props) {
           data={data}
           showSkinTones={false}
           skin={1}
+          sheetSize={20}
+          showPreview={false}
+          perLine={4}
           style={{ width: '100%', border: 'none' }}
           onSelect={emoji => {
             const contentState = editorState.getCurrentContent();
