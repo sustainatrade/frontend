@@ -8,6 +8,8 @@ import { Context as LayoutContext } from './../contexts/LayoutContext';
 import { Context as ResponsiveContext } from './../contexts/Responsive';
 import ThemeContext from '../contexts/ThemeContext';
 import Settings from '../modules/settings';
+import { Page } from 'react-facebook';
+import config from 'config';
 
 const CreatePost = loadable(() => import(`./create-post`), {
   LoadingComponent: () => <Loader inline="centered" />
@@ -121,6 +123,7 @@ function SubHeaderWrapper() {
 function AppFooter() {
   return (
     <>
+      <Page href={config.fbPageUrl} height="70" />
       <Divider />
       <div style={{ padding: '0px 30px', fontSize: 'smaller' }}>
         Emoji icons supplied by <a href="https://www.emojione.com/">EmojiOne</a>

@@ -10,7 +10,7 @@ import IconProvider from './components/icon-provider/IconProvider';
 import CookiePopup from './components/cookie-popup/CookiePopup';
 import loadable from 'loadable-components';
 import './App.css';
-// import config from 'config';
+import config from './config';
 // import get from 'lodash/get';
 
 // Antd component styles here
@@ -70,7 +70,7 @@ class Root extends React.Component {
       <RootContextProvider>
         <React.Fragment>
           <HeaderWrapper />
-          <FacebookProvider appId="512081562521251">
+          <FacebookProvider appId={config.fbAppID}>
             <EcoContent />
             <CookiePopup />
           </FacebookProvider>

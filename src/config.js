@@ -42,6 +42,8 @@ module.exports = Object.assign(
     posts: {
       actionButtonSize: 'medium'
     },
+    fbAppID: 512081562521251,
+    fbPageUrl: 'https://www.facebook.com/chingchong-df209613652859324/',
     staticPages: {
       privacy: '',
       about: 'https://www.sustainatrade.com',
