@@ -6,7 +6,6 @@ import 'emoji-mart/css/emoji-mart.css';
 import { NimblePicker } from 'emoji-mart';
 import data from 'emoji-mart/data/emojione.json';
 import { Map } from 'immutable';
-import Modal from 'antd/lib/modal';
 import { Button, Divider, Segment } from 'semantic-ui-react';
 import 'draft-js/dist/Draft.css';
 import get from 'lodash/get';
@@ -83,74 +82,81 @@ export default function Text(props) {
   };
   return (
     <>
-      <Segment basic>
-        <div style={{ float: 'right' }}>
-          <Button
-            circular
-            basic
-            color="blue"
-            icon="smile outline"
-            onClick={() => setState(oldState => oldState.set('showSelector', !showSelector))}
+      {!showSelector && (
+        <Segment basic>
+          <div style={{ float: 'right' }}>
+            <Button
+              circular
+              basic
+              color="blue"
+              icon="smile outline"
+              onClick={() => setState(oldState => oldState.set('showSelector', !showSelector))}
+            />
+            <Button
+              circular
+              icon="arrow alternate circle right"
+              primary
+              disabled={props.submitting}
+              onClick={() => {
+                props.actions.save();
+              }}
+            />
+          </div>
+          <div style={{ fontSize: 'large', marginRight: 100 }}>
+            <Editor editorState={editorState} placeholder="Message here..." onChange={onChange} />
+          </div>
+          <Divider fitted clearing style={{ marginRight: 100 }} />
+        </Segment>
+      )}
+      {showSelector && (
+        <div>
+          <BackButtonHandler
+            onBack={() => {
+              console.log('back');
+              setState(oldState => oldState.set('showSelector', false));
+            }}
+          />
+          <NimblePicker
+            set="emojione"
+            custom={customEmojis}
+            data={data}
+            showSkinTones={false}
+            skin={1}
+            exclude={['flags']}
+            sheetSize={32}
+            showPreview={false}
+            perLine={4}
+            style={{ width: '100%', border: 'none' }}
+            onSelect={emoji => {
+              const contentState = editorState.getCurrentContent();
+              const contentStateWithEmojiEntity = contentState.createEntity('EMOJI', 'IMMUTABLE', {
+                emoji: emoji.colons
+              });
+              const entityKey = contentStateWithEmojiEntity.getLastCreatedEntityKey();
+
+              const contentStateWithEmoji = Modifier.insertText(
+                contentStateWithEmojiEntity,
+                contentStateWithEmojiEntity.getSelectionAfter(),
+                `${emoji.colons} `,
+                null,
+                entityKey
+              );
+
+              const newEditorState = EditorState.push(editorState, contentStateWithEmoji);
+              onChange(newEditorState);
+            }}
           />
           <Button
-            circular
-            icon="arrow alternate circle right"
+            content="CLOSE"
             primary
-            disabled={props.submitting}
+            icon="x"
+            fluid
             onClick={() => {
-              props.actions.save();
+              setState(oldState => oldState.set('showSelector', false));
             }}
           />
         </div>
-        <div style={{ fontSize: 'large', marginRight: 100 }}>
-          <Editor editorState={editorState} placeholder="Message here..." onChange={onChange} />
-        </div>
-        <Divider fitted clearing style={{ marginRight: 100 }} />
-      </Segment>
-      <Modal
-        visible={showSelector}
-        onCancel={() => setState(oldState => oldState.set('showSelector', false))}
-        bodyStyle={{ padding: 0 }}
-        footer={null}
-        closable={false}
-        destroyOnClose
-      >
-        <BackButtonHandler
-          onBack={() => {
-            console.log('back');
-            setState(oldState => oldState.set('showSelector', false));
-          }}
-        />
-        <NimblePicker
-          set="emojione"
-          custom={customEmojis}
-          data={data}
-          showSkinTones={false}
-          skin={1}
-          sheetSize={32}
-          showPreview={false}
-          perLine={4}
-          style={{ width: '100%', border: 'none' }}
-          onSelect={emoji => {
-            const contentState = editorState.getCurrentContent();
-            const contentStateWithEmojiEntity = contentState.createEntity('EMOJI', 'IMMUTABLE', {
-              emoji: emoji.colons
-            });
-            const entityKey = contentStateWithEmojiEntity.getLastCreatedEntityKey();
-
-            const contentStateWithEmoji = Modifier.insertText(
-              contentStateWithEmojiEntity,
-              contentStateWithEmojiEntity.getSelectionAfter(),
-              `${emoji.colons} `,
-              null,
-              entityKey
-            );
-
-            const newEditorState = EditorState.push(editorState, contentStateWithEmoji);
-            onChange(newEditorState);
-          }}
-        />
-      </Modal>
+      )}
     </>
   );
 }
