@@ -6,7 +6,7 @@ import { Context as LayoutContext } from './contexts/LayoutContext';
 import { Menu } from 'semantic-ui-react';
 
 import PwaStatus from './components/pwa-status/PwaStatus';
-import IconProvider from './components/icon-provider/IconProvider';
+import ErrorBoundary from './components/error-boundary/ErrorBoundary';
 import CookiePopup from './components/cookie-popup/CookiePopup';
 import loadable from 'loadable-components';
 import './App.css';
@@ -28,7 +28,6 @@ import 'antd/lib/tabs/style/css';
 import 'antd/lib/input/style/css';
 import { FacebookProvider } from 'react-facebook';
 import Modal from 'antd/lib/modal';
-import Globals from './modules/globals';
 
 const EmptyHeader = () => (
   <Menu className="top-header">
@@ -67,18 +66,18 @@ function HeaderWrapper() {
 class Root extends React.Component {
   render() {
     return (
-      <RootContextProvider>
-        <React.Fragment>
-          <HeaderWrapper />
-          <FacebookProvider appId={config.fbAppID}>
-            <EcoContent />
-            <CookiePopup />
-          </FacebookProvider>
-        </React.Fragment>
-        <PwaStatus />
-        <Globals />
-        <IconProvider />
-      </RootContextProvider>
+      <ErrorBoundary>
+        <RootContextProvider>
+          <React.Fragment>
+            <HeaderWrapper />
+            <FacebookProvider appId={config.fbAppID}>
+              <EcoContent />
+              <CookiePopup />
+            </FacebookProvider>
+          </React.Fragment>
+          <PwaStatus />
+        </RootContextProvider>
+      </ErrorBoundary>
     );
   }
 }
