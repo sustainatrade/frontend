@@ -1460,10 +1460,10 @@ ant-design-palettes@^1.1.3:
   dependencies:
     tinycolor2 "^1.4.1"
 
-antd@3.11.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-3.11.0.tgz#e9ff4e37bd1301bb085730e26a38e633270a38f1"
-  integrity sha512-K5gvVOwKNrWVAapfiGpdq8bopXIZCliKbsDuxI/ro/TAY+fPBocZvk9NCFQZxbPw2zfS2TOnvc7AQqe+ILt5IA==
+antd@3.11.5:
+  version "3.11.5"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-3.11.5.tgz#70a22c902fa765293113f4a25f7c8a1c642ab175"
+  integrity sha512-+uJJ1S8FrlTImwRzYvhRFvf72K5ft0OV2adxhxaKx1x5r/JHzEKLjMSkwLqIEswS0iUMkMnp1VUNvUN1PFiJrw==
   dependencies:
     "@ant-design/icons" "~1.1.15"
     "@ant-design/icons-react" "~1.1.2"
@@ -1490,14 +1490,14 @@ antd@3.11.0:
     rc-drawer "~1.7.6"
     rc-dropdown "~2.2.1"
     rc-editor-mention "^1.1.7"
-    rc-form "^2.2.3"
-    rc-input-number "~4.3.0"
+    rc-form "^2.4.0"
+    rc-input-number "~4.3.7"
     rc-menu "~7.4.12"
     rc-notification "~3.3.0"
-    rc-pagination "~1.17.3"
+    rc-pagination "~1.17.5"
     rc-progress "~2.2.6"
     rc-rate "~2.4.2"
-    rc-select "~8.6.0"
+    rc-select "^8.6.7"
     rc-slider "~8.6.3"
     rc-steps "~3.3.0"
     rc-switch "~1.8.0"
@@ -1825,10 +1825,10 @@ async-shelljs@0.1.2:
     "@types/shelljs" "^0.7.7"
     shelljs "^0.8.1"
 
-async-validator@1.x:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.8.2.tgz#b77597226e96242f8d531c0d46ae295f62422ba4"
-  integrity sha1-t3WXIm6WJC+NUxwNRq4pX2JCK6Q=
+async-validator@~1.8.5:
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.8.5.tgz#dc3e08ec1fd0dddb67e60842f02c0cd1cec6d7f0"
+  integrity sha512-tXBM+1m056MAX0E8TL2iCjg8WvSyXu0Zc8LNtYqrVeyoL3+esHRZ4SieE9fKQyyU09uONjnMEjrNBMqT0mbvmA==
   dependencies:
     babel-runtime "6.x"
 
@@ -9330,12 +9330,12 @@ rc-editor-mention@^1.1.7:
     rc-animate "^2.3.0"
     rc-editor-core "~0.8.3"
 
-rc-form@^2.2.3:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/rc-form/-/rc-form-2.2.4.tgz#d27106c2b8dfa30d89cc0cf580ef8bb41cf2aa1a"
-  integrity sha512-CxAZ12v5UR8hRu63+yPcf3/N3cXmXuo6cv/92iHj2RD82b0hTIZyMfY1duU/oNBSfpQQ0RTlv3WuGnujtU9Bww==
+rc-form@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/rc-form/-/rc-form-2.4.0.tgz#7488619a2ed73fc2f776afc8705e587539d16e19"
+  integrity sha512-NuXc+TXOkEmIgVcgvxCUNUNNBaGaPQRuB0WRIACAl4UGkiHTadkBmBUBw9+1WzwutaVIzJi/XVd7rWrI24OyFQ==
   dependencies:
-    async-validator "1.x"
+    async-validator "~1.8.5"
     babel-runtime "6.x"
     create-react-class "^15.5.3"
     dom-scroll-into-view "1.x"
@@ -9352,10 +9352,10 @@ rc-hammerjs@~0.6.0:
     hammerjs "^2.0.8"
     prop-types "^15.5.9"
 
-rc-input-number@~4.3.0:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-4.3.1.tgz#f4b7f414f00816fd803ce5f11aac25bd38dd0f22"
-  integrity sha512-804O+hgb/+F6cr8m47UeFAENfBtaLiAMfzxjuVPjZtrwh0PD94AihjceZklpu8vN9sgogj2OTXHzj8CLWAXWuQ==
+rc-input-number@~4.3.7:
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-4.3.7.tgz#5c11a2015812c414492d8f0408ef04bb48fd6e1c"
+  integrity sha512-uIrUSJ3mURDBIcoBE3Suq6hvO7OyfNJHLeai0xN2hXMxOkR9ePH4B/RbiqNjMPflmj6/fxbtK5odOXqVV7BemQ==
   dependencies:
     babel-runtime "6.x"
     classnames "^2.2.0"
@@ -9407,13 +9407,14 @@ rc-notification@~3.3.0:
     rc-animate "2.x"
     rc-util "^4.0.4"
 
-rc-pagination@~1.17.3:
-  version "1.17.3"
-  resolved "https://registry.yarnpkg.com/rc-pagination/-/rc-pagination-1.17.3.tgz#4c5334adef607f7a80b90ca7501a1e962491aae5"
-  integrity sha512-/bwe4++vjBHq2lNvxWP2LpCx0c0CRNH+tDO75tFsj1XMpQQo/vzdhreISC3HFjQOeb5a+59e2dXKmoBCootr9Q==
+rc-pagination@~1.17.5:
+  version "1.17.5"
+  resolved "https://registry.yarnpkg.com/rc-pagination/-/rc-pagination-1.17.5.tgz#56bf8748dc42920f1f8c0f03cdd0685d321f0238"
+  integrity sha512-SHxN9P/cpoxdhKwSDWnLTTMQKTEL1D4qSUdnjdjEZcwO+RfxCnVJ4SjfFq0lsyiKfaYdD2HVYZoAiXtPdOwf9A==
   dependencies:
     babel-runtime "6.x"
     prop-types "^15.5.7"
+    react-lifecycles-compat "^3.0.4"
 
 rc-progress@~2.2.6:
   version "2.2.6"
@@ -9433,10 +9434,10 @@ rc-rate@~2.4.2:
     prop-types "^15.5.8"
     rc-util "^4.3.0"
 
-rc-select@~8.6.0:
-  version "8.6.2"
-  resolved "https://registry.yarnpkg.com/rc-select/-/rc-select-8.6.2.tgz#bce840874cc8d6f6744255eba414b14f71fba7c4"
-  integrity sha512-UL1U5Q4YlMtBPOOF+AunxVA/32tc8qEQyEafvYaxnAESmAz3lmO26exWLavkB6WItQqcxgkOWN0Ehobfvd7bZg==
+rc-select@^8.6.7:
+  version "8.6.9"
+  resolved "https://registry.yarnpkg.com/rc-select/-/rc-select-8.6.9.tgz#e10f208b1090626df837a6de91d59d84b00bf951"
+  integrity sha512-W06QQaKYr7qZuq5eHotOIrQIC3x1z64f3FLeOXq8ZMH9VkrLimaLibSBQ+Zne1wOQ7ZsFpqfvcdmzEOexM85DA==
   dependencies:
     babel-runtime "^6.23.0"
     classnames "2.x"
