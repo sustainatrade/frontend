@@ -38,8 +38,8 @@ export default class Text extends React.Component {
           </div>
         )}
         compact={props => (
-          <div style={{ padding: '15px 10px' }}>
-            <h2>{get(props, 'values.price')}</h2>
+          <div>
+            <b>{get(props, 'values.price')}</b>
           </div>
         )}
         {...this.props}

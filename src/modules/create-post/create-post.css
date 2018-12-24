@@ -71,6 +71,7 @@
 
 .post-editor-modal .ant-drawer-body {
   height: 100%;
+  padding: 0px;
 }
 
 .reply-wrap-drawer {

@@ -182,7 +182,12 @@ export default class Text extends React.Component {
         compact={props => {
           const src = get(props, 'values.photoUrl');
           return (
-            <div>
+            <div
+              style={{
+                textAlign: 'center',
+                backgroundColor: 'whitesmoke'
+              }}
+            >
               {src ? (
                 <MsImage height={50} width={50} style={{ cursor: 'pointer' }} src={src} />
               ) : (

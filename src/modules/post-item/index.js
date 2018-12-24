@@ -92,6 +92,13 @@ export default class PostItem extends React.Component {
   render() {
     const { post, onContentClick, isCompact, withActions = true } = this.props;
     const mode = isCompact ? MODES.COMPACT : MODES.VIEW;
+    let widgets = [];
+    if (isCompact) {
+      widgets.push(post.widgets[0]);
+      post.widgets[1] && widgets.push(post.widgets[1]);
+      post.widgets[2] && widgets.push(post.widgets[2]);
+    } else widgets = post.widgets;
+
     return (
       <Item className="post-item">
         <Item.Content>
@@ -103,11 +110,16 @@ export default class PostItem extends React.Component {
               onContentClick && onContentClick(post);
             }}
           >
-            {post.widgets.map((widget, ii) => (
+            {widgets.map((widget, ii) => (
               <WidgetMeta widget={widget} mode={mode} key={ii} />
             ))}
           </div>
-          <Item.Extra>{withActions && <Actions post={post} canReply />}</Item.Extra>
+          <Item.Extra style={{ marginTop: 0 }}>
+            {post.widgets && post.widgets.length > 3 && (
+              <div className="blurrer">+{post.widgets.length - 3} More Contents</div>
+            )}
+            {withActions && <Actions post={post} canReply />}
+          </Item.Extra>
         </Item.Content>
       </Item>
     );

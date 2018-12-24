@@ -9,6 +9,7 @@ import './text.css';
 const Text = React.lazy(() => import('./Text'));
 
 const EMOJI_MATCH = /:[^:\s]*:/g;
+const COMPACT_LENGTH = 90;
 
 function matchSplitter(text, matcher) {
   const parts = [],
@@ -52,6 +53,36 @@ const Preview = props => {
   );
 };
 
+const PreviewCompact = props => {
+  const [textCap, setTextCap] = React.useState(COMPACT_LENGTH);
+  const text = get(props, 'values.text');
+  let renderedCharLength = 0;
+  return (
+    <div>
+      {text ? (
+        matchSplitter(text, EMOJI_MATCH).map((mData, ii) => {
+          console.log('renderedCharLength', renderedCharLength, mData); //TRACE
+          if (renderedCharLength > textCap) return '';
+          if (mData.matched) {
+            renderedCharLength += 1;
+            return <Iconify key={ii} type={mData.text} />;
+          } else {
+            renderedCharLength += mData.length;
+            if (renderedCharLength > textCap) {
+              const excess = renderedCharLength - textCap;
+              console.log('excess', excess); //TRACE
+              return mData.substring(0, mData.length - excess);
+            } else return mData;
+          }
+        })
+      ) : (
+        <i style={{ color: 'lightgrey' }}>Empty Text</i>
+      )}
+      {renderedCharLength > textCap && '...'}
+    </div>
+  );
+};
+
 export default class TextContent extends React.Component {
   render() {
     return (
@@ -65,7 +96,7 @@ export default class TextContent extends React.Component {
           </React.Suspense>
         )}
         view={props => <Preview {...props} fontSize="larger" />}
-        compact={props => <Preview {...props} />}
+        compact={props => <PreviewCompact {...props} />}
         {...this.props}
       />
     );

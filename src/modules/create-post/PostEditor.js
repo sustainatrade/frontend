@@ -390,14 +390,8 @@ function PostHeader({ post }) {
   const hasParent = !!post.parentPost;
   return hasParent ? (
     <>
-      <Segment color="teal" className="reply-parent-post" basic secondary>
-        <Label as="a" color="teal" ribbon>
-          <SemIcon name="comment alternate" />
-          Post
-        </Label>
-        <Segment className="reply-parent-post-item" raised>
-          <PostItem isCompact post={post.parentPost} basic withLabels={false} withActions={false} />
-        </Segment>
+      <Segment color="teal" className="reply-parent-post" basic style={{ padding: '0 5px' }}>
+        <PostItem isCompact post={post.parentPost} basic withLabels={false} withActions={false} />
       </Segment>
       <Segment inverted color="teal" className="new-reply-header">
         Reply
