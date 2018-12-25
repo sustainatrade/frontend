@@ -10029,7 +10029,7 @@ react-props-editor@1.0.5:
   dependencies:
     lodash "^4.17.10"
 
-react-scripts@2.1.2:
+react-scripts@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-2.1.2.tgz#cf1686cd9ca3c6148e1428e97aac12995f01b554"
   integrity sha512-AmnKID1MgZfiYxuzv0+C6m1c8CFt+IVDQge5cEbNnU4YQ5Are2amHmDexcVF0Ft6W/lAsXxjzWYjC0T3lUurRw==
