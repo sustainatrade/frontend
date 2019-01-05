@@ -6,7 +6,8 @@ It’s currently a work-in-progress, and unfortunately isn’t able to be run st
 
 The main technologies used are:
 
-- ES6
+- PWA
+- ES6,ES7
 - [Create-react-app](https://github.com/facebook/create-react-app)
 - [React](http://facebook.github.io/react/)
 - [GraphQL](http://graphql.org)
