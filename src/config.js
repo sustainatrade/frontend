@@ -9,9 +9,14 @@ module.exports = Object.assign(
     sections: [],
     contents: [
       {
-        code: 'text',
-        name: 'Text',
-        icon: { type: ':email:', theme: 'outlined' }
+        code: 'buy-item',
+        name: 'Buy Item',
+        icon: { type: ':shopping_trolley:', theme: 'outlined' }
+      },
+      {
+        code: 'sell-item',
+        name: 'Sell Item',
+        icon: { type: ':label:', theme: 'outlined' }
       },
       {
         code: 'header',
@@ -19,19 +24,14 @@ module.exports = Object.assign(
         icon: { type: ':newspaper:', theme: 'outlined' }
       },
       {
+        code: 'text',
+        name: 'Text',
+        icon: { type: ':speech_balloon:', theme: 'outlined' }
+      },
+      {
         code: 'photo',
         name: 'Photo',
         icon: { type: ':octocat:', theme: 'outlined' }
-      },
-      {
-        code: 'buy-item',
-        name: 'Buying Item',
-        icon: { type: 'emojione:shopping-cart', theme: 'outlined' }
-      },
-      {
-        code: 'sell-item',
-        name: 'Selling Item',
-        icon: { type: 'emojione-v1:label', theme: 'outlined' }
       },
       {
         code: 'offer',

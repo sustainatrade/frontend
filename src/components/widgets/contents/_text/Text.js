@@ -39,6 +39,7 @@ function BackButtonHandler({ onBack }) {
 }
 
 export default function Text(props) {
+  const editorRef = React.useRef(null);
   const [state, setState] = React.useState(
     Map({
       editorState: EditorState.createEmpty(new CompositeDecorator([EmojiDecorator])),
@@ -50,7 +51,12 @@ export default function Text(props) {
   React.useEffect(
     () => {
       const defaultText = get(props, 'defaultValues.text');
-      if (!defaultText) return;
+      if (!defaultText) {
+        if (editorRef) {
+          editorRef.current.focus();
+        }
+        return;
+      }
       const contentState = editorState.getCurrentContent();
 
       const contentStateDefaultValue = Modifier.insertText(
@@ -64,7 +70,7 @@ export default function Text(props) {
       const newEditorState = EditorState.push(editorState, contentStateDefaultValue);
       onChange(newEditorState);
     },
-    [props.defaultValues]
+    [props.defaultValues, editorRef]
   );
   React.useEffect(
     () => {
@@ -103,9 +109,14 @@ export default function Text(props) {
             />
           </div>
           <div style={{ fontSize: 'large', marginRight: 100 }}>
-            <Editor editorState={editorState} placeholder="Message here..." onChange={onChange} />
+            <Editor
+              ref={editorRef}
+              editorState={editorState}
+              placeholder="Message here..."
+              onChange={onChange}
+            />
           </div>
-          <Divider fitted clearing style={{ marginRight: 100 }} />
+          <Divider fitted clearing style={{ marginRight: 100, borderColor: '#1678c2' }} />
         </Segment>
       )}
       {showSelector && (

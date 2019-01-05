@@ -39,7 +39,9 @@ const WidgetEditor = React.memo(({ postRefNo }) => {
           postRefNo={postRefNo}
           defaultValues={currentContent.values}
           onValuesChanged={values => {
-            const oldHash = hash(currentContent.values);
+            console.log('values',values); //TRACE
+            if (!values) return;
+            const oldHash = hash(currentContent.values || {});
             const newHash = hash(values);
             if (oldHash !== newHash) setCurrentContent({ ...currentContent, values });
           }}

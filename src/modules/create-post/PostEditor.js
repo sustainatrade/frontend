@@ -15,12 +15,13 @@ import Icon from 'components/icon-provider/Icon';
 import Modal from 'antd/lib/modal';
 import Drawer from 'antd/lib/drawer';
 import ContentEditor from './ContentEditor';
-import { Spring, animated, config as SpringConfig } from 'react-spring';
 
 import './create-post.css';
 import PostItem from '../post-item';
 import ThemeContext from '../../contexts/ThemeContext';
 import PopModal from '../../components/pop-modal/Modal';
+import PostActions, { ContentSelector } from './PostActions';
+import { Spring, animated, config as SpringConfig } from 'react-spring';
 
 function ResetContentButton(props) {
   const [showModal, setShowModal] = React.useState(false);
@@ -91,7 +92,7 @@ function ContentActions({ contentData }) {
         }}
       />
       {/* <Button icon="arrows alternate" {...btnProps} /> */}
-      <ResetContentButton content="RESET" icon="redo alternate" {...btnProps} />
+      <ResetContentButton content="CHANGE" icon="exchange" {...btnProps} />
       {/* <Button {...btnProps} basic>
         <Iconify {...contentWidget.icon} />
       </Button> */}
@@ -188,187 +189,6 @@ const ContentList = React.memo(({ post }) => {
   );
 });
 
-function ContentSelector({ post, onSelect, onCancel, reset }) {
-  const [selectedKey, setSelectedKey] = useState(null);
-  const { setCurrentContent, submitWidgetsFn } = useContext(PostWidgetContext.Context);
-
-  async function createNewContent() {
-    if (!post) return;
-    const newAdded = await submitWidgetsFn(
-      [
-        {
-          code: selectedKey,
-          postRefNo: post._refNo,
-          values: {}
-        }
-      ],
-      { newWidget: true }
-    );
-    setCurrentContent(get(newAdded, '0'));
-  }
-
-  async function changeContentType() {
-    if (!setCurrentContent) return;
-    const newContent = { ...setCurrentContent, code: selectedKey };
-    setCurrentContent(newContent);
-  }
-
-  useEffect(
-    () => {
-      if (!selectedKey) return;
-      onSelect && onSelect(selectedKey);
-      // if (reset) changeContentType();
-      // else createNewContent();
-    },
-    [selectedKey]
-  );
-
-  return (
-    <>
-      <Segment basic color="olive" inverted>
-        Available Contents{' '}
-        <Button
-          icon="x"
-          active
-          style={{ marginTop: -7 }}
-          floated="right"
-          color="olive"
-          onClick={() => onCancel && onCancel()}
-        />
-      </Segment>
-      <Segment basic className="content-selector">
-        <Card.Group stackable itemsPerRow={3}>
-          {Object.keys(contents).map(cKey => {
-            const contentData = contents[cKey];
-            return (
-              <Card
-                key={cKey}
-                onClick={() => {
-                  if (selectedKey) return;
-                  setSelectedKey(cKey);
-                }}
-              >
-                <Card.Content>
-                  <Card.Header>
-                    <Icon {...contentData.icon} />
-                    {'  '}
-                    {contentData.name}
-                  </Card.Header>
-                  <Card.Meta>{cKey}</Card.Meta>
-                  {/* <Card.Description>
-          Steve wants to add you to the group{" "}
-          <strong>best friends</strong>
-        </Card.Description> */}
-                </Card.Content>
-              </Card>
-            );
-          })}
-        </Card.Group>
-      </Segment>
-    </>
-  );
-}
-
-function PostActions({ post, onSubmit, onCancel }) {
-  const { isMobile } = useContext(Responsive.Context);
-  const { currentContent, submitting: updating, submitWidgetsFn, setCurrentContent } = useContext(
-    PostWidgetContext.Context
-  );
-
-  const [showSelector, setShowSelector] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  useEffect(
-    () => {
-      setShowSelector(false);
-    },
-    [currentContent]
-  );
-
-  if (currentContent) return null;
-
-  const showControls = isMobile ? !showSelector : true;
-  return (
-    <>
-      {showControls && (
-        <Segment
-          basic
-          className="add-content"
-          style={{ padding: 10, marginBottom: 0, borderTop: '2px solid #bfdbff' }}
-        >
-          <AntButton
-            icon={showSelector ? 'minus-circle' : 'plus'}
-            size="large"
-            type="dashed"
-            loading={updating}
-            onClick={() => {
-              setShowSelector(!showSelector);
-            }}
-          >
-            {isMobile ? (showSelector ? `Close` : `Add`) : showSelector ? `Close Selector` : `Add Content`}
-          </AntButton>
-          <Button
-            size="large"
-            icon="send"
-            floated="right"
-            primary
-            loading={submitting}
-            disabled={submitting || get(post, 'widgets', []).length === 0}
-            content="Post"
-            onClick={async () => {
-              if (submitting) return;
-              setSubmitting(true);
-              try {
-                onSubmit && (await onSubmit(post));
-              } finally {
-                setSubmitting(false);
-              }
-            }}
-          />
-          <Button
-            size="large"
-            icon="cancel"
-            floated="right"
-            content={isMobile ? null : 'Cancel'}
-            basic
-            onClick={() => {
-              onCancel && onCancel();
-            }}
-          />
-        </Segment>
-      )}
-      <Spring
-        native
-        force
-        from={{ height: 0, overflowY: 'hidden' }}
-        to={{ height: showSelector ? 'auto' : 0 }}
-      >
-        {props => (
-          <animated.div style={props}>
-            <ContentSelector
-              post={post}
-              onCancel={() => setShowSelector(false)}
-              onSelect={async selectedKey => {
-                if (!post) return;
-                const newAdded = await submitWidgetsFn(
-                  [
-                    {
-                      code: selectedKey,
-                      postRefNo: post._refNo,
-                      values: {}
-                    }
-                  ],
-                  { newWidget: true }
-                );
-                setCurrentContent(get(newAdded, '0'));
-              }}
-            />
-          </animated.div>
-        )}
-      </Spring>
-    </>
-  );
-}
-
 function ContentEditorWrapper({ post, contentEditorSize, inline }) {
   const [state, setState] = useState({
     height: 0,
@@ -390,10 +210,10 @@ function PostHeader({ post }) {
   const hasParent = !!post.parentPost;
   return hasParent ? (
     <>
-      <Segment color="teal" className="reply-parent-post" basic style={{ padding: '0 5px' }}>
+      <Segment color="blue" className="reply-parent-post" basic style={{ padding: '0 5px' }}>
         <PostItem isCompact post={post.parentPost} basic withLabels={false} withActions={false} />
       </Segment>
-      <Segment inverted color="teal" className="new-reply-header">
+      <Segment inverted color="blue" className="new-reply-header">
         Reply
       </Segment>
     </>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Content from './../base/Content';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { Icon, Label, Input, Dropdown, Segment } from 'semantic-ui-react';
+import { Icon, Label, Input, Dropdown, Segment, Button } from 'semantic-ui-react';
 import { DefaultSaveButton } from './_template';
 
 const options = [{ key: 'php', text: 'Php', value: 'php' }];
@@ -177,6 +177,7 @@ export default class BuyItem extends Component {
         }}
         view={props => <BuyItemView {...props} />}
         compact={props => <BuyItemView {...props} />}
+        shortcut={props => <Button content="Add Buy Item" {...props} />}
         onSave={props => {}}
         {...this.props}
       />

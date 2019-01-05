@@ -92,6 +92,7 @@ function WidgetBase(props) {
     editor,
     view,
     compact,
+    shortcut,
     mode = 'view',
     defaultValues,
     onValuesChanged,
@@ -100,6 +101,7 @@ function WidgetBase(props) {
     showPreview = false,
     basic,
     fitted,
+    inline,
     style = {},
     _refNo,
     postRefNo,
@@ -131,6 +133,9 @@ function WidgetBase(props) {
     case 'editor':
       RenderObj = editor;
       break;
+    case 'shortcut':
+      RenderObj = shortcut;
+      break;
     default:
       RenderObj = () => <span>Empty</span>;
   }
@@ -147,10 +152,15 @@ function WidgetBase(props) {
   if (preview) {
     ownProps.values = previewData;
   }
-
+  const Wrapper = wProps =>
+    inline ? (
+      <div {...wProps} style={{ display: 'inline' }} />
+    ) : (
+      <Segment basic={basic} key={code} style={Object.assign(style, fittedStyle)} {...wProps} />
+    );
   // const oldValuesHash = JSON.stringify(defaultValues);
   return (
-    <Segment basic={basic} key={code} style={Object.assign(style, fittedStyle)}>
+    <Wrapper>
       <>
         {mode !== 'editor' && <RenderObj {...ownProps} />}
         {mode === 'editor' ? (
@@ -174,54 +184,6 @@ function WidgetBase(props) {
                     </>
                   )}
                   {!!updateErrors && <Message error content={updateErrors.map(err => err.message)} />}
-                  {/* <Button
-                    content={
-                      <>
-                        <Icon {...icon} />
-                        {saved ? " Saved" : ` Preview ${name}`}
-                      </>
-                    }
-                    size="large"
-                    loading={context.submitting}
-                    disabled={saved}
-                    color="green"
-                    onClick={async () => {
-                      if (editValues) {
-                        error.clear(UPDATE_POST_WIDGETS.key);
-                        await context.submitWidgetsFn([
-                          {
-                            _refNo,
-                            code,
-                            name,
-                            values: editValues,
-                            postRefNo
-                          }
-                        ]);
-                        setState({ saved: true });
-                      }
-                    }}
-                  />
-
-                  <Button
-                    icon="trash"
-                    size="large"
-                    color="red"
-                    // content="Remove"
-                    loading={context.submitting}
-                    basic
-                    onClick={async () => {
-                      error.clear(UPDATE_POST_WIDGETS.key);
-                      await context.submitWidgetsFn([
-                        {
-                          __deleted: true,
-                          _refNo,
-                          code,
-                          postRefNo
-                        }
-                      ]);
-                    }}
-                  />
-                  <Divider hidden /> */}
                 </>
               );
             }}
@@ -230,7 +192,7 @@ function WidgetBase(props) {
           children
         )}
       </>
-    </Segment>
+    </Wrapper>
   );
 }
 
