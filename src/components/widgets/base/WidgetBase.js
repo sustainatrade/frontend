@@ -42,9 +42,13 @@ function Editor(props) {
   );
   const editValuesMap = fromJS(values || {}).mergeDeep(editValues || {});
   const actions = {
-    save: async () => {
+    cancel: async () => {
       if (context.submitting) return;
-      const editValuesObj = editValuesMap.toJS();
+      context.reset();
+    },
+    save: async newValues => {
+      if (context.submitting) return;
+      const editValuesObj = newValues || editValuesMap.toJS();
       if (editValuesObj) {
         error.clear(UPDATE_POST_WIDGETS.key);
         const ret = await context.submitWidgetsFn([
@@ -102,9 +106,12 @@ function WidgetBase(props) {
     basic,
     fitted,
     inline,
+    shortcutOptions,
     style = {},
     _refNo,
     postRefNo,
+    postData,
+    loading,
     children
   } = props;
 
@@ -134,7 +141,7 @@ function WidgetBase(props) {
       RenderObj = editor;
       break;
     case 'shortcut':
-      RenderObj = shortcut;
+      RenderObj = shortcut || (() => <span />);
       break;
     default:
       RenderObj = () => <span>Empty</span>;
@@ -144,10 +151,13 @@ function WidgetBase(props) {
     context,
     _refNo,
     values: values ? values : defaultValues,
+    shortcutOptions: mode === 'shortcut' ? shortcutOptions : null,
     code,
     name,
     icon,
-    postRefNo
+    postRefNo,
+    postData,
+    loading
   };
   if (preview) {
     ownProps.values = previewData;

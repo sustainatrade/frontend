@@ -7,9 +7,13 @@ import { contents, MODES } from './../../components/widgets';
 import PostWidgetContext from '../../contexts/PostWidgetContext';
 import nanoid from 'nanoid';
 import hash from 'object-hash';
+import { useOnUnmount } from 'react-hanger';
 
 function ContentChangeHandler({ onUpdate }) {
-  const { currentContent, setCurrentContent } = useContext(PostWidgetContext.Context);
+  const { reset, currentContent, setCurrentContent } = useContext(PostWidgetContext.Context);
+  useOnUnmount(() => {
+    reset();
+  });
   React.useEffect(
     () => {
       // only update if code and refno is changed
@@ -39,7 +43,7 @@ const WidgetEditor = React.memo(({ postRefNo }) => {
           postRefNo={postRefNo}
           defaultValues={currentContent.values}
           onValuesChanged={values => {
-            console.log('values',values); //TRACE
+            console.log('values', values); //TRACE
             if (!values) return;
             const oldHash = hash(currentContent.values || {});
             const newHash = hash(values);
@@ -102,11 +106,6 @@ export default function({ post, size, onSizeChanged }) {
   }, 500);
 
   const ceActionStyles = {};
-  // const ceActionStyles = { width: size.width, minHeight: size.height };
-  // if (isMobile) {
-  //   ceActionStyles.width = "100%";
-  //   ceActionStyles.left = 0;
-  // }
   return (
     <Transition
       visible

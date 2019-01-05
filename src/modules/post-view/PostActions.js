@@ -35,11 +35,7 @@ export default function({ post }) {
             setParentPost(post);
           })}
         />
-        {myPost && (
-          <Button onClick={() => setEditMode(true, post._refNo)}>
-            <Icon type="bytesize:edit" theme="outlined" /> Edit
-          </Button>
-        )}
+        {myPost && <Button content="Edit" icon="edit" onClick={() => setEditMode(true, post._refNo)} />}
         <MoreButton post={post} userContext={user} floated="right" />
       </Button.Group>
     </div>

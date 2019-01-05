@@ -137,7 +137,7 @@ export default function PostActions({ post, onSubmit, onCancel }) {
           style={{ padding: 10, marginBottom: 0, borderTop: '2px solid #bfdbff' }}
         >
           <AntButton
-            icon={showSelector ? 'minus-circle' : 'plus'}
+            icon={showSelector ? 'minus-circle' : 'search'}
             size="large"
             type="dashed"
             style={{ padding: '0 15px', marginRight: 5 }}
@@ -148,7 +148,22 @@ export default function PostActions({ post, onSubmit, onCancel }) {
           >
             {/* {isMobile ? (showSelector ? `Close` : `Add`) : showSelector ? `Close Selector` : `Add Content`} */}
           </AntButton>
-          <ContentShortcut mode="shortcut" postRefNo={post._refNo} basic fitted inline />
+          {ContentShortcut && (
+            <ContentShortcut
+              mode="shortcut"
+              postRefNo={post._refNo}
+              postData={post}
+              loading={updating}
+              basic
+              fitted
+              inline
+              shortcutOptions={{
+                onSelect(selectedKey) {
+                  addContent(selectedKey);
+                }
+              }}
+            />
+          )}
           {/* <Input
             placeholder="Write something.."
             loading={updating}

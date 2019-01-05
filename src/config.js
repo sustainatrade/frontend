@@ -9,14 +9,19 @@ module.exports = Object.assign(
     sections: [],
     contents: [
       {
+        code: 'sell-item',
+        name: 'Sell Item',
+        icon: { type: ':label:', theme: 'outlined' }
+      },
+      {
         code: 'buy-item',
         name: 'Buy Item',
         icon: { type: ':shopping_trolley:', theme: 'outlined' }
       },
       {
-        code: 'sell-item',
-        name: 'Sell Item',
-        icon: { type: ':label:', theme: 'outlined' }
+        code: 'tags',
+        name: 'Tags',
+        icon: { type: ':bookmark:', theme: 'outlined' }
       },
       {
         code: 'header',

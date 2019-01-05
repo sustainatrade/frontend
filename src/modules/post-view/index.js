@@ -93,7 +93,7 @@ const PostContents = React.memo(({ post }) => {
       {post.widgets.map(widget => {
         const ContentWidget = contents[widget.code].component;
         return (
-          <div style={{ padding: '5px 10px' }} key={widget.id}>
+          <div style={{ padding: '0px 0px' }} key={widget.id}>
             <ContentWidget key={widget.id} defaultValues={widget.values} mode={MODES.VIEW} basic fitted />
           </div>
         );

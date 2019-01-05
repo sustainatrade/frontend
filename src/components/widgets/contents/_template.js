@@ -3,20 +3,29 @@ import Content from './../base/Content';
 import { Button, Divider } from 'semantic-ui-react';
 
 export function DefaultSaveButton(props) {
-  console.log('props', props); //TRACE
-  const txt = props.defaulValue ? 'Update' : 'Add';
+  const txt = Object.keys(props.defaultValues || {}).length > 0 ? 'Update' : 'Add';
+  const { onSave, onCancel } = props;
   return (
     <div style={{ marginTop: 5, marginBottom: 0 }}>
       <Divider clearing />
       <Button
         primary
-        icon="save"
+        icon={props.saveIcon || 'plus'}
         size="large"
-        content={txt}
+        content={props.saveText || txt}
         disabled={props.submitting}
         loading={props.submitting}
         onClick={() => {
-          props.actions.save();
+          onSave ? onSave() : props.actions.save();
+        }}
+      />
+      <Button
+        icon="x"
+        size="large"
+        disabled={props.submitting}
+        loading={props.submitting}
+        onClick={() => {
+          onCancel ? onCancel() : props.actions.cancel();
         }}
       />
     </div>

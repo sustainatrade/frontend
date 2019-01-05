@@ -86,22 +86,25 @@ class UploadPhoto extends Component {
 function Editor(props) {
   const [photos, setPhotos] = useState(null);
   const { status, isUploading, upload } = useContext(Uploader.Context);
+  const [values, setValues] = useState({});
   const uploading = isUploading(UPLOAD_NAME);
   const uploaded = get(status, `${UPLOAD_NAME}.0`);
   const uploadedName = get(uploaded, `data.name`);
-
+  function updateValues(nValues) {
+    setValues(nValues);
+  }
   useEffect(
     () => {
       console.log('uploadedName', uploadedName); //TRACE
       if (!uploaded) return;
       if (uploaded.progress === 100) {
-        const values = {
+        const nvalues = {
           name: uploadedName,
           originalName: get(uploaded, `data.originalName`),
           photoUrl: `${storage}${path}/${uploadedName}`
         };
-        props.updateValues(values);
-        console.log('values', values); //TRACE
+        updateValues(nvalues);
+        console.log('values', nvalues); //TRACE
       }
     },
     [uploadedName]
@@ -119,12 +122,12 @@ function Editor(props) {
       } else {
         console.log('empting');
 
-        const values = {
+        const nvalues = {
           name: null,
           originalName: null,
           photoUrl: null
         };
-        props.updateValues(values);
+        updateValues(nvalues);
       }
     },
     [photos]
@@ -155,7 +158,9 @@ function Editor(props) {
           setPhotos(files);
         }}
       />
-      {photos && photos.length > 0 && <DefaultSaveButton {...props} />}
+      {photos && photos.length > 0 && (
+        <DefaultSaveButton {...props} onSave={() => props.actions.save(values)} />
+      )}
       {/* <Divider /> */}
       {/* <Button.Group>
         <Button>Fit</Button>

@@ -9,6 +9,7 @@ import { Map } from 'immutable';
 import { Button, Divider, Segment } from 'semantic-ui-react';
 import 'draft-js/dist/Draft.css';
 import get from 'lodash/get';
+import { fromJS } from 'immutable';
 
 const customEmojis = [
   {
@@ -40,6 +41,7 @@ function BackButtonHandler({ onBack }) {
 
 export default function Text(props) {
   const editorRef = React.useRef(null);
+  const [values, setValues] = React.useState(fromJS(props.defaultValues || {}));
   const [state, setState] = React.useState(
     Map({
       editorState: EditorState.createEmpty(new CompositeDecorator([EmojiDecorator])),
@@ -48,6 +50,11 @@ export default function Text(props) {
   );
   const editorState = state.get('editorState');
   const showSelector = state.get('showSelector');
+  const onChange = state => {
+    setState(oldState => oldState.set('editorState', state).set('showSelector', false));
+    const text = state.getCurrentContent().getPlainText();
+    setValues(map => map.set('text', text));
+  };
   React.useEffect(
     () => {
       const defaultText = get(props, 'defaultValues.text');
@@ -72,20 +79,7 @@ export default function Text(props) {
     },
     [props.defaultValues, editorRef]
   );
-  React.useEffect(
-    () => {
-      // console.log('editState.toJS()', editorState.toJS()); //TRACE
-    },
-    [editorState]
-  );
-  const onChange = state => {
-    // setEditorState(state);
-    setState(oldState => oldState.set('editorState', state).set('showSelector', false));
-    const text = state.getCurrentContent().getPlainText();
-    props.updateValues({
-      text
-    });
-  };
+
   return (
     <>
       {!showSelector && (
@@ -103,9 +97,7 @@ export default function Text(props) {
               icon="arrow alternate circle right"
               primary
               disabled={props.submitting}
-              onClick={() => {
-                props.actions.save();
-              }}
+              onClick={() => props.actions.save(values.toJS())}
             />
           </div>
           <div style={{ fontSize: 'large', marginRight: 100 }}>

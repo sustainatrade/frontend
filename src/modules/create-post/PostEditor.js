@@ -109,6 +109,7 @@ function ContentBlock(props) {
     style.cursor = 'pointer';
   }
   const rgba = a => `rgba(26, 105, 164, ${a})`;
+  if (!defaultValues) return null;
   return (
     <Spring
       key={touched}
@@ -164,7 +165,9 @@ const ContentList = React.memo(({ post }) => {
 
   return (
     <>
-      <Divider hidden />
+      <Divider horizontal style={{ color: 'powderblue', padding: 3 }}>
+        {contents.length > 0 ? `Contents(${contents.length})` : 'Empty'}
+      </Divider>
       {contents.map((savedContent, ii) => {
         const active = get(currentContent, '_refNo') === savedContent._refNo;
         const content = active ? currentContent : savedContent;
@@ -205,16 +208,29 @@ function ContentEditorWrapper({ post, contentEditorSize, inline }) {
   return <ContentEditor post={post} size={contentEditorSize} onSizeChanged={sizeChanged} />;
 }
 
-function PostHeader({ post }) {
+function PostHeader({ post, onSubmit, onCancel }) {
   console.log('postPheader', post); //TRACE
   const hasParent = !!post.parentPost;
   return hasParent ? (
     <>
-      <Segment color="blue" className="reply-parent-post" basic style={{ padding: '0 5px' }}>
+      <Segment
+        className="reply-parent-post"
+        basic
+        style={{ padding: '0 5px', borderTop: '2px solid powderblue' }}
+      >
         <PostItem isCompact post={post.parentPost} basic withLabels={false} withActions={false} />
       </Segment>
-      <Segment inverted color="blue" className="new-reply-header">
+      <Segment inverted style={{ backgroundColor: 'powderblue' }} className="new-reply-header">
         Reply
+        <Button
+          content="Submit"
+          icon="send"
+          color="blue"
+          floated="right"
+          style={{ marginRight: -7, marginTop: -7 }}
+          onClick={onSubmit}
+        />
+        <Button icon="x" inverted basic floated="right" style={{ marginTop: -7 }} onClick={onCancel} />
       </Segment>
     </>
   ) : (
@@ -347,7 +363,7 @@ export default function PostEditor({ post, inline, extras, onSubmit, onCancel })
           
         </div> */}
         <div ref={contentRef} style={{ width: '100%' }} className="reply-wrap-body">
-          <PostHeader post={post} />
+          <PostHeader post={post} onSubmit={onSubmit} onCancel={() => setClosing(true)} />
           <ContentList post={post} />
         </div>
         <div ref={actionsRef} style={{ width: '100%' }} className="reply-wrap-actions">
