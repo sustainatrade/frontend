@@ -19,12 +19,13 @@ export default function({ post }) {
 
   const currentUserId = get(user, 'user.id');
   const myPost = currentUserId === post.createdBy;
+  if (!myPost) return null;
   if (editting) return null;
   return (
     <div className="post-actions">
-      <FollowButton post={post} />
+      {/* <FollowButton post={post} /> */}
       <Button.Group floated="right" basic>
-        <Button
+        {/* <Button
           content="Reply"
           icon="comment"
           onClick={useCallback(() => {
@@ -34,7 +35,7 @@ export default function({ post }) {
             }
             setParentPost(post);
           })}
-        />
+        /> */}
         {myPost && <Button content="Edit" icon="edit" onClick={() => setEditMode(true, post._refNo)} />}
         <MoreButton post={post} userContext={user} floated="right" />
       </Button.Group>

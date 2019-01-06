@@ -2,6 +2,16 @@ import React from 'react';
 import Content from './../base/Content';
 import { Button, Divider } from 'semantic-ui-react';
 
+export const DIVIDER_COLOR = 'ghostwhite';
+export const FOOTER_STYLES = {
+  backgroundColor: DIVIDER_COLOR,
+  padding: 5,
+  color: 'darkgray',
+  fontSize: 'small',
+  paddingBottom: 0,
+  paddingLeft: 15
+};
+
 export function DefaultSaveButton(props) {
   const txt = Object.keys(props.defaultValues || {}).length > 0 ? 'Update' : 'Add';
   const { onSave, onCancel } = props;

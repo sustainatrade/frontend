@@ -7,12 +7,13 @@ import { Loader } from 'semantic-ui-react';
 import WidgetBase from './base/WidgetBase';
 
 const contents = {};
-const registerTemplate = ({ code, name, tags, icon, description }) => {
+const registerTemplate = ({ code, name, tags, icon, color, description }) => {
   contents[code] = {
     code,
     name,
     tags,
     icon,
+    color,
     description,
     component: loadable(() => import(`./contents/${code}`), {
       render: ({ Component, error, loading, ownProps }) => {

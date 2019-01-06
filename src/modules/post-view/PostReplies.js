@@ -46,15 +46,17 @@ function IconController({ post, head, tail }) {
 
 const PostItemCompact = React.memo(({ reply, onContentClick }) => {
   return (
-    <PostItem
-      key={reply._refNo}
-      isCompact
-      post={reply}
-      basic
-      withLabels={false}
-      onContentClick={onContentClick}
-      allowReply
-    />
+    <div style={{ padding: 5 }}>
+      <PostItem
+        key={reply._refNo}
+        isCompact
+        post={reply}
+        basic
+        withLabels={false}
+        onContentClick={onContentClick}
+        allowReply
+      />
+    </div>
   );
 });
 
@@ -104,7 +106,7 @@ function ReplyItem({ reply, showDivider }) {
           }
         }}
       >
-        <Segment style={{ marginLeft: iconScrollWidth, marginBottom: 0, padding: 0 }}>
+        <Segment style={{ marginLeft: iconScrollWidth, marginRight: 5, marginBottom: 0, padding: 0 }}>
           <div className="reply">
             <div className="reply-header">
               <span className="name">
@@ -149,7 +151,6 @@ function ReplyHeader({ edges, limit, large }) {
         fontSize: large ? 'large' : 'small'
       }}
     >
-      <Icon name="level up alternate" rotated="clockwise" />
       <span>Replies ({totalReply})</span>
     </div>
   );

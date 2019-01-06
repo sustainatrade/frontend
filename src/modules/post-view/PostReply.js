@@ -45,32 +45,6 @@ export default function PostReply() {
             if (loading) return null;
             return (
               <div className="create-reply">
-                {/* <div className="create-reply-header">
-                  <span>Reply</span>
-                  <Button
-                    size="large"
-                    content="Post"
-                    icon="send"
-                    color="teal"
-                    loading={submitting}
-                    disabled={get(reply, "widgets", []).length === 0}
-                    floated="right"
-                    onClick={() => {
-                      postReply({ refNo: reply._refNo });
-                    }}
-                  />
-                  <Button
-                    size="large"
-                    color="teal"
-                    content="Cancel"
-                    icon="ban"
-                    loading={submitting}
-                    floated="right"
-                    onClick={() => {
-                      reset();
-                    }}
-                  />
-                </div> */}
                 <PostEditor
                   post={{ ...reply, parentPost }}
                   onSubmit={() => {

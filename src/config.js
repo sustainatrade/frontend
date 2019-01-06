@@ -10,18 +10,15 @@ module.exports = Object.assign(
     contents: [
       {
         code: 'sell-item',
-        name: 'Sell Item',
+        name: 'Selling',
+        color: 'green',
         icon: { type: ':label:', theme: 'outlined' }
       },
       {
         code: 'buy-item',
-        name: 'Buy Item',
+        name: 'Buying',
+        color: 'orange',
         icon: { type: ':shopping_trolley:', theme: 'outlined' }
-      },
-      {
-        code: 'tags',
-        name: 'Tags',
-        icon: { type: ':bookmark:', theme: 'outlined' }
       },
       {
         code: 'header',
@@ -42,6 +39,11 @@ module.exports = Object.assign(
         code: 'offer',
         name: 'Offer',
         icon: { type: 'flat-color-icons:document', theme: 'outlined' }
+      },
+      {
+        code: 'tags',
+        name: 'Tags',
+        icon: { type: ':bookmark:', theme: 'outlined' }
       }
     ],
     posts: {

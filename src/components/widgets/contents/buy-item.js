@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { Divider, Icon, Label, Input, Dropdown, Segment, Popup, Grid, Button } from 'semantic-ui-react';
 import AntButton from 'antd/lib/button';
-import { DefaultSaveButton } from './_template';
+import { DefaultSaveButton, DIVIDER_COLOR } from './_template';
 import { fromJS } from 'immutable';
 
 const options = [{ key: 'php', text: 'Php', value: 'php' }];
@@ -110,34 +110,45 @@ export function getCategory(props) {
 const BuyItemView = props => {
   const cat = getCategory(props);
   const style = props.compact ? {} : { fontSize: 'large' };
-  const wrapStyle = { backgroundColor: 'linen' };
+  const wrapStyle = {};
   if (props.compact) {
     wrapStyle.padding = '5px 0px';
     wrapStyle.backgroundColor = 'inherit';
   }
   return (
-    <Segment style={wrapStyle} basic>
-      <div style={{ paddingBottom: 5 }}>
-        <Label basic size="tiny" color="orange">
-          LOOKING FOR
-        </Label>
-      </div>
-      <div style={style}>
-        <b>{get(props, 'values.itemName')}</b> |{' '}
-        {cat && (
-          <>
-            <a href="#search">
-              <Icon name={cat.icon} />
-              {cat.name}
-            </a>
-          </>
+    <>
+      <Segment style={wrapStyle} basic>
+        {!props.compact && (
+          <div style={{ paddingBottom: 5 }}>
+            <Label basic size="tiny" color="orange">
+              BUYING
+            </Label>
+          </div>
         )}
-        <span style={{ float: 'right', fontWeight: 'bold' }}>
-          {get(props, 'values.price.currency')} {get(props, 'values.price.amount')}
-        </span>
-      </div>
-      {/* {!props.compact && <Divider />} */}
-    </Segment>
+        <div style={style}>
+          <b>{get(props, 'values.itemName')}</b> |{' '}
+          {cat && (
+            <>
+              <a href="#search">
+                <Icon name={cat.icon} />
+                {cat.name}
+              </a>
+            </>
+          )}
+          <span style={{ float: 'right', fontWeight: 'bold' }}>
+            {get(props, 'values.price.currency')} {get(props, 'values.price.amount')}
+          </span>
+        </div>
+        {/* {!props.compact && <Divider />} */}
+      </Segment>
+      {!props.compact && (
+        <div style={{ backgroundColor: DIVIDER_COLOR, padding: 5, paddingBottom: 0 }}>
+          <Button floated="right" primary content="Create Quote" size="mini" />
+          <Popup trigger={<Button floated="right" basic icon="reply" size="mini" />} content="Add Comment" />
+          <Divider hidden fitted clearing />
+        </div>
+      )}
+    </>
   );
 };
 

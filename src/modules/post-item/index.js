@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Item, Icon, Menu } from 'semantic-ui-react';
+import { Item, Icon, Menu, Label, Divider } from 'semantic-ui-react';
 import { contents, MODES } from '../../components/widgets';
 // import AntButton from 'antd/lib/button';
 import { getUrl } from '../../contexts/PostFeedContext';
@@ -19,7 +19,12 @@ import Iconify from '../../components/icon-provider/Icon';
 
 const WidgetMeta = ({ widget, mode }) => {
   const ContentWidget = contents[widget.code].component;
-  return <ContentWidget mode={mode} defaultValues={widget.values} basic fitted />;
+  return (
+    <>
+      {mode === MODES.VIEW && <Divider fitted style={{ borderColor: 'ghostwhite' }} />}
+      <ContentWidget mode={mode} defaultValues={widget.values} basic fitted />
+    </>
+  );
 };
 const Actions = React.memo(({ post, canReply }) => {
   const { parentPost, setParentPost } = useContext(PostReplyContext.Context);
@@ -63,23 +68,6 @@ const Actions = React.memo(({ post, canReply }) => {
                 Comment
               </Menu.Item>
             </Menu>
-            {/* <Icon name="arrow up" />
-            <Icon name="arrow down" />
-            <MoreButton post={post} userContext={user} size="mini" floated="right" />
-            {canReply && (
-              <BasicButton
-                content="Reply"
-                name="reply"
-                floated="right"
-                onClick={() => {
-                  if (!currentUserId) {
-                    error.emit(TYPES.NOT_LOGGED_IN);
-                    return;
-                  }
-                  setParentPost(post);
-                }}
-              />
-            )} */}
           </div>
         )}
       </GlobalConsumer>
@@ -99,12 +87,22 @@ export default class PostItem extends React.Component {
       post.widgets[2] && widgets.push(post.widgets[2]);
     } else widgets = post.widgets;
 
+    const subjectContent = contents[widgets[0].code];
     return (
       <Item className="post-item">
         <Item.Content>
-          <Item.Header as="h4">
-            <Link to={getUrl(post)}>{post.title}</Link>
-          </Item.Header>
+          {post.title && (
+            <Item.Header as="h4">
+              <Link to={getUrl(post)}>{post.title}</Link>
+              <Label
+                size="mini"
+                style={{ marginLeft: 5, position: 'relative', top: -4 }}
+                color={subjectContent.color}
+              >
+                {subjectContent.name}
+              </Label>
+            </Item.Header>
+          )}
           <div
             onClick={() => {
               onContentClick && onContentClick(post);
@@ -118,7 +116,7 @@ export default class PostItem extends React.Component {
             {post.widgets && post.widgets.length > 3 && (
               <div className="blurrer">+{post.widgets.length - 3} More Contents</div>
             )}
-            {withActions && <Actions post={post} canReply />}
+            {/* {withActions && <Actions post={post} canReply />} */}
           </Item.Extra>
         </Item.Content>
       </Item>

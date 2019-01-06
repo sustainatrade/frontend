@@ -90,15 +90,17 @@ const PostContents = React.memo(({ post }) => {
   // const { contentPadding } = useContext(LayoutContext.Context);
   return (
     <>
+      <PostActions post={post} />
+      <Divider fitted />
       {post.widgets.map(widget => {
         const ContentWidget = contents[widget.code].component;
         return (
           <div style={{ padding: '0px 0px' }} key={widget.id}>
             <ContentWidget key={widget.id} defaultValues={widget.values} mode={MODES.VIEW} basic fitted />
+            <Divider fitted style={{ borderColor: 'ghostwhite' }} />
           </div>
         );
       })}
-      <PostActions post={post} />
     </>
   );
 });
@@ -109,6 +111,7 @@ function PostFooter({ post }) {
   const replyParentPost = get(parentPost, '_refNo') === post._refNo;
   return (
     <>
+      {!replyParentPost && <Divider fitted />}
       <PostReplies post={post} expanded isRoot />
       {replyParentPost && <PostReply />}
     </>
@@ -215,16 +218,6 @@ class PostView extends Component {
                     </SizeWrapper>
                   )}
                 </Grid.Column>
-                {/* <Grid.Column
-                  width={6}
-                  style={{
-                    padding: 5,
-                    paddingTop: 0,
-                    backgroundColor: secondaryBgColor
-                  }}
-                >
-                  <PostComments post={post} />
-                </Grid.Column> */}
               </Grid>
             </>
           );

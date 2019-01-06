@@ -3,8 +3,9 @@ import Content from './../../base/Content';
 import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import Iconify from '../../../icon-provider/Icon';
-import { Loader } from 'semantic-ui-react';
+import { Loader, Popup, Button, Divider } from 'semantic-ui-react';
 import './text.css';
+import { FOOTER_STYLES } from '../_template';
 
 const Text = React.lazy(() => import('./Text'));
 
@@ -32,24 +33,31 @@ function matchSplitter(text, matcher) {
 const Preview = props => {
   const text = get(props, 'values.text');
   return (
-    <div
-      style={{
-        textAlign: 'left',
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'break-word',
-        padding: '5px 15px',
-        fontSize: props.fontSize
-      }}
-    >
-      {text ? (
-        matchSplitter(text, EMOJI_MATCH).map((mData, ii) => {
-          if (mData.matched) return <Iconify key={ii} type={mData.text} />;
-          else return mData;
-        })
-      ) : (
-        <i style={{ color: 'lightgrey' }}>Empty Text</i>
-      )}
-    </div>
+    <>
+      <div
+        style={{
+          textAlign: 'left',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          padding: '5px 15px',
+          fontSize: props.fontSize
+        }}
+      >
+        {text ? (
+          matchSplitter(text, EMOJI_MATCH).map((mData, ii) => {
+            if (mData.matched) return <Iconify key={ii} type={mData.text} />;
+            else return mData;
+          })
+        ) : (
+          <i style={{ color: 'lightgrey' }}>Empty Text</i>
+        )}
+      </div>
+      <div style={FOOTER_STYLES}>
+        1 Comment
+        <Popup trigger={<Button floated="right" basic icon="reply" size="mini" />} content="Add Comment" />
+        <Divider hidden fitted clearing />
+      </div>
+    </>
   );
 };
 
@@ -58,7 +66,7 @@ const PreviewCompact = props => {
   const text = get(props, 'values.text');
   let renderedCharLength = 0;
   return (
-    <div>
+    <div style={{ fontSize: 'smaller' }}>
       {text ? (
         matchSplitter(text, EMOJI_MATCH).map((mData, ii) => {
           console.log('renderedCharLength', renderedCharLength, mData); //TRACE
