@@ -10133,10 +10133,10 @@ react-spinner-children@^1.0.8:
     prop-types "^15.6.0"
     spin.js "^2.3.2"
 
-react-spring@7.2.7:
-  version "7.2.7"
-  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-7.2.7.tgz#1e64ddfbc9b835a3d8795bb0e5c45c3a400ab9e7"
-  integrity sha512-UFPkQzPQMOf9E9GFprcGVfa+1EdnffQV6tvFGY+kck32orqgqKrfP54y8da3qP3T6hLnLkU77seVZOD7GYPNEg==
+react-spring@7.2.11:
+  version "7.2.11"
+  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-7.2.11.tgz#90962121c925c8a3181801b926eaf94c9b5c942e"
+  integrity sha512-VHoN34MTZFkvamy7Vlmcx2HR5WVSuaQQjFNlVRNyWNi+rcjYT8OcsggzeDltFycseBh8cZveYTc/iPCEe6O0Sw==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
