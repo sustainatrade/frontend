@@ -44,7 +44,7 @@
     "react-spring": "7.2.7",
     "semantic-ui-react": "0.84.0",
     "subscriptions-transport-ws": "0.9.15",
-    "the-platform": "0.9.3"
+    "the-platform": "0.10.1"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=./src react-scripts start",
