@@ -9932,11 +9932,6 @@ react-app-polyfill@^0.2.0:
     raf "3.4.0"
     whatwg-fetch "3.0.0"
 
-react-cache@^2.0.0-alpha.0:
-  version "2.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/react-cache/-/react-cache-2.0.0-alpha.0.tgz#d02d16a4565fd9f12478a2a41e980ba4fcbab4d5"
-  integrity sha512-o7nA1dIbi6wOoIoQPQBL58CgIQ4tCA3itIR3WlE2VHMIFkIXbvsMyolg+Q9wDVUlCvU6b2n40RTTv8vOmjXCOQ==
-
 react-content-loader@3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-3.4.1.tgz#8eb273c630ffb36cb92f4383be811828eb8e1e66"
@@ -11485,13 +11480,12 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-the-platform@0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/the-platform/-/the-platform-0.9.3.tgz#4f19e05a43ea8de4bad76627254d182d93c48323"
-  integrity sha512-VlVYPX6VXhKM9Cq51i813bbyXfwTdkg9kiYo6VKvMNEXtzKSU6e4PjrwFRc/35IB3BMn4yuMjzwzvP5AiVwa2w==
+the-platform@0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/the-platform/-/the-platform-0.10.1.tgz#a704cfdd5ee1c5b7123c7ea6885bebbcf8b08e76"
+  integrity sha512-aeoAQh20/dQPiF7bqG9A4Q5kyLs/qfJAvADEXmMAgqLdzcWgtmRfTPUUvCB4sz3a9xKO5vu7AY6jaA+efE/zfQ==
   dependencies:
     json2mq "^0.2.0"
-    react-cache "^2.0.0-alpha.0"
 
 throat@^4.0.0:
   version "4.1.0"
