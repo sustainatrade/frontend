@@ -10001,10 +10001,10 @@ react-facebook@6.0.15:
     can-use-dom "^0.1.0"
     react-spinner-children "^1.0.8"
 
-react-hanger@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/react-hanger/-/react-hanger-1.1.1.tgz#f4f740fb200bdab87922d14f42b87c57e2acf4f5"
-  integrity sha512-hBbzJladOEUXMQGkVf7gsP6YpsTvXLvT9ku9wLl7jpQa2LlLtlX6BQv6NoBAJzBSGlIiM3TiGwpUXIZR6UjcqQ==
+react-hanger@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-hanger/-/react-hanger-1.2.0.tgz#26d3ccdebc7bd561640de6239fb9250a9c4834cd"
+  integrity sha512-YKMFa4wkWb8pvsxSX9F6atEpsvxfddbfyIv5TmReYs/0oWOZrGIYmVY95kQOX0bnsyy3xRSnjyv62+uZqzZrlQ==
 
 react-helmet@5.2.0:
   version "5.2.0"
