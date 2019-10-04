@@ -20,7 +20,7 @@
     "firebase": "5.7.2",
     "graphql": "14.0.2",
     "graphql-tag": "2.10.0",
-    "history": "4.7.2",
+    "history": "4.10.1",
     "immutable": "4.0.0-rc.12",
     "ioredis": "4.3.0",
     "loadable-components": "2.2.3",
