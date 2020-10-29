@@ -59,7 +59,7 @@
     "cross-env": "5.2.0",
     "eslint-plugin-prettier": "3.0.1",
     "prettier": "1.15.3",
-    "webpack-bundle-analyzer": "3.0.3"
+    "webpack-bundle-analyzer": "3.9.0"
   },
   "browserslist": [
     ">0.2%",
